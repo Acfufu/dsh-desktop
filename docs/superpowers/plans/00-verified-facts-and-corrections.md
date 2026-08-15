@@ -1,0 +1,145 @@
+# dsh-desktop — Verified Facts & Spec Corrections（实施基线的实证底稿）
+
+> 来源：2026-08-16 对 `~/codehub/deepseek-harness`（HEAD `47f943859bef60e4160492346772ded9b24f765a`, branch `master`）的 6 路并行源码核查 + crates.io/npm/docs.rs 版本实证。
+> 本文件是全部 5 个 milestone 计划的共享事实底座。任何计划任务不得引用与本文冲突的符号名。
+> 执行者（deepseek-v4-flash 级别）在遇到「与本文不符的上游代码」时，**以本文为准记录偏差，不得自行猜 API**。
+
+## 0. 环境实证（本机）
+
+| 项 | 值 | 与 spec 差异 |
+|---|---|---|
+| macOS | 26.6.1, arm64 | — |
+| Xcode | full Xcode 已装（/Applications/Xcode.app）+ CLT | — |
+| rustc/cargo | 1.97.1（Homebrew） | ≥ tauri MSRV 1.77.2 ✓ |
+| node | v24.14.1 | 满足 `^22.19.0 || >=24.0.0` ✓ |
+| pnpm | 11.3.0 | spec 写 pnpm 9 → **用已装的 11.3.0**（pnpm 向后兼容 workspace 协议） |
+| tauri-cli | **未安装** | 每个需要它的里程碑先 `cargo install tauri-cli --locked --version 2.11.4` 或 npm i -D `@tauri-apps/cli@2.11.4` |
+| DSH_REPO | `~/codehub/deepseek-harness` 存在 | — |
+
+## 1. Profile / patch 组合（核查 1、5）
+
+- **profile 'web' 不是 web-app patch 定义的**：profile 目录 = `$DSH_HOME/profiles/web`（`packages/boot/app-boot/src/profile.ts:114-117` PROFILE_TEMPLATES，bundles = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app']`）。web-app `cordis.patch.yml` 只是 bundle 层 patch。
+- **patch 应用顺序（确认）**：bundle(base→web-app) → profile 自身 `cordis.patch.yml` → `$DSH_HOME/cordis.patch.yml` → `--patch` overlays（argv 顺序，`apps/cli/src/args.ts:61,132,163`）→ agent-presets shipped-root（`config.roots` 整键覆盖，`profile-boot.ts:159-167`）→ telemetry switch（`168-169`）。**desktop patch 不是最终层**；telemetry 永远最后。
+- `--patch a.yml --patch b.yml` 可重复 ✓。`--port 0` = OS 分配 ✓（`packages/host/webserver/src/index.ts:48-49,62,78-81,216-224`）。**`--host 0.0.0.0` 被 CLI 拒绝**（`packages/bundle/web-app/src/startup.ts:69-71`）——webserver schema 允许 0.0.0.0 但 CLI 不许。
+- **`disabled: true` 语义（修正）**：不是 compose 期跳过——行保留在组合树中（`disabled: true` 标记），**激活期**被 loader 跳过（`vendor/loader/src/config/entry.ts:124-128` refresh early-return），且**不产生 `__DSH_BOOT__` 行**（`packages/client/modules/src/index.ts:387` processOne 要求 `!entry.disabled`）。
+- web-app patch 的 inject 行（patch 行级）：webserver → `[webStartup]`（:117）、web-runtime → `[webStartup]`（:132）、connection → `[webRuntime]`（:158）。**patch 内没有 `inject: ['webServer']` 行**；webServer 注入在**插件源码级**：connection `['webServer']`（connection/src/index.ts:47）、client-hmr `['clientModules','webServer']`（hmr/src/index.ts:28）、modules `['webServer','loader']`（modules/src/index.ts:185）、web-app 本身 `['webServer']`（bundle/web-app/src/index.ts:35）。→ desktop 禁用 webserver 后 connection/client-hmr/modules 因缺 provider 无法激活，**必禁**成立（机制是源码级 inject，不是 patch 行级）。
+- **`__DSH_BOOT__`**：schema `{rev, entries:[{id,url,rev,inject?,immediately?}]}`（`packages/client/modules/src/client/manifest.ts:50-69`，parser :108-144）。生成在 host 侧 `ClientModuleRegistry.compose()`/`graphRow()`（modules/src/index.ts:150-158, 315-318）；`url: \`/plugins/${id}/client.js?rev=${rev}\``（:153）。**`injectBootManifest(html, graph)` 是 `@deepseek-ai/dsh-client-modules` 根导出**（index.ts:168，package.json exports "."）。**`assertEntriesActive` 不存在**——实际失败机制：`arrive()` 抛「loaded without registering」（system.ts:105-107）、`import()` 对缺失行抛错（:170-173）。fork 计划不得写 assertEntriesActive。
+- **bundle 数**：39 个包声明 `dsh.client`（29 个 ui-* + 10 个非 ui：typert/registry、session-log-export、cordis-client-runner、api/remotes、api/gateway、locale、connection、hmr、runtime、modules）。web-app patch 共 51 个 insert 行（50 + agent-presets）；browser-roster 段（:151-274）= **33 行**；「~36 client 行」= 35 个 client 命名行 + api-gateway。desktop 禁用 connection/client-hmr/modules 后余 **33 行（spec 口径）**，精确数以运行时组合为准，**禁硬编码**。
+
+## 2. connection 包传输缝（核查 2、3、7）
+
+- `packages/client/connection/src/client/` **只有 7 个文件**（不是 spec 的 13）：api.ts、connection.ts、fixture.ts（**恰好 3188 行**）、index.ts、random-uuid.ts、rpc.ts、web-api-client.ts。
+- `index.ts:88`：`const api: IApiClient = fixtureClient ?? new WebApiClient()`——不是硬编码，`?fixture` 是 **apply() 内运行时 URLSearchParams 判断**（:86-89），非 vite 分支。
+- `web-api-client.ts`：`doFetch` = 裸 `globalThis.fetch`（:14-16，**无超时**）；`openMux`/`openHost` 是 async iterator，**yield `RpcRequest<MuxFrame|HostFrame>`（`{rpcId, payload}`），不是 ServerRequest**——ServerRequest 只进 `onEnvelope` tap（:62）；WS 仅文本帧（:55 二进制抛错）；无客户端应用消息发送（respond 走 HTTP POST /api/respond）。
+- `AbstractApiClient`（`packages/host/apiproxy/src/fetch/client.ts`）：`DEFAULT_TIMEOUT_MS=30_000`（:228）；`caller-signal-only`（:231, 317）；**`host.pickDirectory` 是基类唯一 caller-signal-only**（:434-444）。
+- **`command.execute` 不在 unary 面**：RpcMethodMap 无 command.*（`apiproxy/src/api/rpc-map.ts:24-77`）。走 TypertGateway 通道：ui-commands → `connection.rpc.call('/api','commands/execute',...)`（`packages/api/gateway/src/client/index.ts:406`）→ host `connection.rpc.intercept('/api', ...)`（`packages/api/gateway/src/index.ts:105-110`，该插件 `ctx.inject(['connection'])` :104）。
+- **ConnectionController 语义全部确认**：任一流结束→代际失败→退避 500ms×2 cap 10s（connection.ts:19-24, 93）；握手 = 双流 open + `host.describe` 成功（:138-155）；`streamOpenTimeoutMs`(3s) **只竞速双流 open，不覆盖 describe**（:141）；abort 只中止两路流，**不取消在途 unary**（:128-129, describe 无 signal :140）。
+- **`createWebConnectionRpc` 有消费者（修正 spec「无消费方」）**：`packages/api/gateway/src/client/index.ts:406` 经 `connection.rpc.call('/api',...)` 消费 handle.rpc。形状：`call(channel, endpoint, payload, signal?)` → POST `${channel}/${endpoint}`，ClientRequest 信封，`serverResponseSchema` 解析 + rpcId echo，返回 `full.result`（client/rpc.ts:19-49, 56-63），用 `globalThis.fetch`（:30）。fixture 模式旁路（fixture.ts:2998-3014）。
+- `serverRequestSchema` 定义在 `@deepseek-ai/dsh-host-apiproxy` → `packages/host/apiproxy/src/api/rpc.schema.ts:114-119`（type='server-request' + rpcId + method + payload unknown）。
+
+## 3. 导出面 / vendor 清单（核查 3、7）
+
+- **`toFetchHandler(api)`**：`@deepseek-ai/dsh-host-apiproxy` **根导出**（src/index.ts:27；定义 fetch/handler.ts:243），v0.1.0-rc.5。`./client` 子路径 → AbstractApiClient/IApiClient/InProcessApiClient。npm files 含 `lib/types/**/*.js` → **可从 npm 引**。
+- **`bridge` + `DEFAULT_MAX_REQUEST_BODY_BYTES`(160 MiB)**：在 connection `http-bridge.ts`（bridge :32，const :12），但**不在包根导出**（connection/src/index.ts:9 只 import 不 re-export），exports map 只有 `.`、`./invariant`、`./client`、`./src/*`、`./package.json`，而 `./src/*` 不在 npm files（files = lib 3 个 js + lib/types/**/*.d.ts）→ **必须 vendor 拷贝（连同 WebSocketDownlinks）**。
+- **`WebSocketDownlinks`**：`constructor(api: ApiProxy)`（websocket-downlink.ts:51,56），不依赖 webServer，独立可用；不在导出面、不在 files → **vendor**（spec 已说，确认）。
+- webserver：仅 TCP；upgrade 按**精确 pathname** 分发（webserver/src/index.ts:194 `this.upgrades.get(new URL(req.url).pathname)`）；teardown `closeAllConnections()`（:232，Node 不覆盖升级 socket，另有显式 upgradedSockets destroy :226-227）。路径常量在 connection `api-path.ts`：`MUX_EVENTS_PATH='/api/events.mux'`、`HOST_EVENTS_PATH='/api/events.host'`。
+- `PRIVILEGED_METHODS` 环回钉死：connection/src/index.ts:89-119（host.pickDirectory/openPath、settings.*、credentials.*、agentPreset.*、llm.discoverModels）。desktop 禁 connection 后此钉死消失 → 由 UDS 文件权限信任取代（spec 已说，确认）。
+
+## 4. **apiProxy 供给缝（M1 命门，核查 8）**
+
+- patch 行 `api-gateway`（cordis.patch.yml:99）= **`@deepseek-ai/dsh-host-apiproxy`**（不是 `@deepseek-ai/dsh-api-gateway`）。它是 **`apiProxy` 服务提供者**：`ApiProxyService extends Service`，`super(ctx, 'apiProxy')`（apiproxy/src/index.ts:97）。
+- `apiProxy` 服务的**唯一 host 消费者 = connection/src/index.ts**（:137, 156, 174）。base bundle 另有 `typert-gateway` 行 = `@deepseek-ai/dsh-api-gateway`（TypertGatewayService），它 `ctx.inject(['connection'])` 并 `connection.rpc.intercept('/api', ...)`——**desktop 禁用 connection 后它注入永不 resolve（软依赖，不硬崩），但 typert 远端端点失去分发**。
+- **路由缺口（M1 spike 必查）**：浏览器 `remote.commands.*`（ui-commands、ui-plan）、`remote.goals.*`（ui-goal）、`remote.pluginInventory.list`、`remote.dynamicCordisRunner.*`（cordis-client-runner、ui-cordis）经 client 侧 rpc → POST /api/<endpoint> → host 侧需 TypertGateway 拦截器分发；`toFetchHandler(apiProxy)` 的 RpcMethodMap **不含 command.***。carrier 若只接 `toFetchHandler(apiProxy)`，`commands.execute` 等会 method-not-found。→ **M1 必须有 spike 任务实测**：desktop 组合下 POST /api/commands.execute 是否可达；不可达则 carrier 需自实现「interceptor 优先 + apiProxy 兜底」的双层分发（镜像 `connection/src/rpc-host.ts` createSharedFetchHandler 逻辑）或保留一个最小 connection 兼容服务。**此为 M1 验收项 ⑥ 之外的显式决策点**。
+
+## 5. 前端 fork 清单（核查 4）
+
+- `apps/web/src/main.ts` = 10 行壳（import AppWebEntry + mount）；`index.html` 14 行**无 CSP meta**；`vite.config.ts` 有 `rejectStandaloneServe`（:11-19，config hook 里 env.command==='serve' 时 throw）+ **alias 数组直指 workspace src**（:138-149：dsh-client-web→web/src/boot.tsx；web-react/ui-slots/ui-primitives/ui-attachment/schema-form→各 src/index.ts；modules/client→src/client/index.ts；node:module→node-module-stub.ts）+ vendor manualChunks（:41-61,118-125）+ cordis-loader process defines（:151-159）。`public/` = favicon.svg + manifest.webmanifest ✓；`node-module-stub.ts` ✓。
+- `packages/client/web/src/` **恰好 13 文件**，清单与 spec 一致。`seed.ts` 静态 import：web-react(:15)、ui-slots(:14)、ui-primitives(:16)、ui-attachment(:17)、schema-form(:18) + react/cordis。
+- npm files：web/connection/modules 全部 **lib-only 无 src**；web 的 exports map 有 `./src/*` 但 **npm tarball 不 ship src**（workspace 内才可达）→ **vite 编译必须用 alias 指 workspace 源码，不能靠 npm 依赖编译 src**（spec §4.3「vite 必须编译 src/ 而非 lib」确认）。
+- `apps/cli/package.json`：files = `["lib/*.js","config"]`（:17-20）；**engines 不在 apps/cli**——在根 `package.json`：`{"node":"^22.19.0 || >=24.0.0"}`。`INSTALL_ANCHOR`（profile-boot.ts:54，lib/../package.json）、`SHIPPED_PRESET_ROOT`（:35，lib/../config/agent-presets/）。
+- 插件加载（bun 不可行实证）：loader = vendored `@deepseek-ai/cordis-plugin-loader`（vendor/loader），`import(name)` → `internal.import(name, baseUrl)` 或 `/* @vite-ignore */` 动态 import（config/tree.ts:145-162）——裸包名运行时计算，bundler 静态不可见；`mountRootInclude`（boot/app-boot/src/index.ts:492-504）；`healProfilesModuleFallback`（profile.ts:223-255，symlink profiles/node_modules）；`resolveBundleDir`（:344-355，缺则抛错）；typert-loader 全磁盘依赖（createRequire/require.resolve/readFileSync）。
+- HMR fallback：`runProfile` 在 `ctx.get('hmr')===undefined` 时挂 watch-only `cordis-plugin-hmr`（root:[]，profile-boot.ts:279-284）——web profile 恒触发（hmr 行被禁）→ node 运行时没问题，bun 下炸（spec §2 确认）。
+- `process.execPath` spawn 仅 Windows 路径：sandbox-local 的 windows-acl runner（win32 chain，:160-165, 557-564；macOS=seatbelt `sandbox-exec` :548）+ win32-dialog（native-picker.ts:69 `platform==='win32'` 门控）+ test-support/loader-smoke（dev 工具）。**macOS 运行时无 process.execPath spawn** → node 布局安全。
+- `node:sqlite`：session-query-sqlite openAt never（base patch :117-121 + web-app patch :30-33），`await import('node:sqlite')` 延迟（schema.ts:52）；`worker_threads`：code-runtime-worker-thread（:9, 378）。
+
+## 6. 版本 pin（2026-08-16 实证）
+
+| 组件 | 版本 | 备注 |
+|---|---|---|
+| tauri | **2.11.5** | MSRV 1.77.2, edition 2021 |
+| tauri-build | **2.6.3** | |
+| tauri-plugin-single-instance | **2.4.3** | |
+| tauri-plugin-autostart | **2.5.1** | |
+| tauri-plugin-notification | **2.3.3** | |
+| tauri-plugin-opener | **2.5.4** | |
+| tauri-cli / @tauri-apps/cli | **2.11.4** / 2.11.4 | cargo 或 npm 二选一 |
+| reqwest | **0.12.28**（推荐，spec 兼容） | `unix_socket` **0.12.23 引入**，**无 cargo feature**（`#[cfg(unix)]` 目标门控，默认 features 即可）；0.13.4 为最新但 breaking（rustls 默认、MSRV 1.85）→ **不用 0.13** |
+| tokio-tungstenite | **0.29.2**（spec 允许 0.28/0.29） | 0.30.0 为最新，spec 未 pin → 用 0.29 保守 |
+| tokio | **1.53.1** | |
+| @tauri-apps/api | **2.11.1** | |
+| @tauri-apps/plugin-notification | **2.3.3** | |
+| @tauri-apps/plugin-autostart | **2.5.1** | |
+| @tauri-apps/plugin-opener | **2.5.4** | |
+
+**Cargo.toml 建议片段（所有里程碑共用）**：
+```toml
+tauri = { version = "2.11", features = [] }
+tauri-build = { version = "2.6", features = [] }
+tauri-plugin-single-instance = "2.4"
+tauri-plugin-autostart = "2.5"
+tauri-plugin-notification = "2.3"
+tauri-plugin-opener = "2.5"
+tokio = { version = "1.53", features = ["full"] }
+tokio-tungstenite = "0.29"
+reqwest = { version = "0.12.28", default-features = false, features = ["rustls-tls", "json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+```
+
+**package.json 建议片段（fork）**：
+```json
+{
+  "@tauri-apps/api": "2.11.1",
+  "@tauri-apps/plugin-notification": "2.3.3",
+  "@tauri-apps/plugin-autostart": "2.5.1",
+  "@tauri-apps/plugin-opener": "2.5.4"
+}
+```
+
+## 7. Spec 修正汇总（写进计划时生效）
+
+1. `src/client/` 文件数 13 → **7**。
+2. `assertEntriesActive` → 不存在；用 `arrive()` 抛错 / `import()` 抛错语义。
+3. openMux/openHost yield 的是 `RpcRequest<MuxFrame|HostFrame>`（非 ServerRequest）；ServerRequest 只进 onEnvelope tap。
+4. `bridge` + `DEFAULT_MAX_REQUEST_BODY_BYTES` 必须 vendor（非 npm 导出），与 WebSocketDownlinks 同 commit 同 hash 哨兵。
+5. `createWebConnectionRpc` 有消费者（gateway client）——不得删除；fork 中换 invoke 版时保持签名 `call(channel, endpoint, payload, signal?)` 与「不设超时」。
+6. `engines` 在根 package.json，不在 apps/cli。
+7. profile 'web' 定义在 `$DSH_HOME/profiles/web`（PROFILE_TEMPLATES），web-app patch 只是 bundle 层。
+8. webServer 注入在插件源码级（connection/hmr/modules 各自 `['webServer'...]`），desktop 必禁理由成立但机制描述修正。
+9. pnpm 用 11.3.0（本机），不用 9。
+10. **新增缺口**：Typert 远端端点（commands/goals/pluginInventory/dynamicCordisRunner）在 connection 禁用后的分发——M1 spike 决策点（§4 上文）。
+
+## 8. R1 双审修正记录（2026-08-16，5 计划文件应用）
+
+| 编号 | 位置 | 修正 |
+|---|---|---|
+| R1-1 | M1/M3 启动命令 | `apps/cli/bin.js` → `apps/cli/lib/bin.js`（apps/cli files = lib/*.js） |
+| R1-2 | M2 Task 4 | spawn 用 `process_group(0)`（std CommandExt，安全 API）建独立进程组，`graceful_shutdown` 的 `kill(-pid)` 才安全；去掉 pre_exec 悬空承诺 |
+| R1-3 | M4 Task 5 | Rust `uds_path` 从 `$DSH_HOME` 派生（缺省 `~/.dsh/run/dsh.sock`），非 `resource_dir/dsh/run`（与 carrier 实际监听路径一致） |
+| R1-4 | M2/M3 下行终止 | 统一 `""` 空字符串终止帧：M2 流断/出错时 `send("")`，M3 `text === ''` 判终；删 `dsh:downlink:mux|host` 事件名假设 |
+| R1-5 | M3 Task 2 | 导入面拆分：AbstractApiClient/IApiClient ← `/client`；serverRequestSchema ← `/api`；RpcId ← 根；RpcRequest/MuxFrame/HostFrame ← fork `./rpc`（type-only） |
+| R1-6 | M3 Task 3 | `postEnvelope` path = `${channel}/${endpoint}`（channel 含前导 /），禁双斜杠 `//api/...`（被 Rust 输入校验拒绝） |
+| R1-7 | M4 Task 3 | `subscribeEnvelopes` 未实证 → 主路径改 fork 内 `onEnvelope` tap（facts §2 实证），抽象 `EnvelopeSource` 注入 |
+| R1-8 | M4 Task 1 | run() 保留退出序列接线（RunEvent::ExitRequested → prevent_exit → 异步关闭任务），不得被整体替换丢失 |
+| R1-9 | M1/M4 | 插件包名与 patch `name` 统一 `@dsh-desktop/uds-carrier`（scoped）；插件入口改编译产物 `lib/index.js`（node ESM 不解析 extensionless） |
+| R1-10 | M1 Task 5 | spike wire 格式 `/api/<ns>/<method>`（Typert 两段式）；双层分发（interceptor 优先 + apiProxy 兜底）**在 M1 内落地**，不「下一迭代」 |
+| R1-11 | M1 Task 4 | `${DSH_HOME}` 在 patch config 的 env 展开为 spike 验证项（不展开则字面量路径 → 验收②③失败；兜底 Rust 物化） |
+| R1-12 | M2 Task 2 | `dsh_http_impl` 纯函数化（薄包装命令），集成测试直测纯函数绕开 State 注入；AppState 三字段完整构造 |
+| R1-13 | M2 Task 2 | sidecar 重启后 client 重建（`e.is_connect()` → 重建重试一次，spec §4.2）——补显式任务 |
+| R1-14 | M2 Task 3 | `futures-util = "0.3"` 依赖补入；`reader.next()` 需 `StreamExt` |
+| R1-15 | M2 Task 4 | `ProbeResult` 三态（Alive/Stale/Error），删空 marker enum；测试并入 process.rs |
+| R1-16 | M3 Task 1 | 拷贝包 `workspace:*` 依赖重写为精确版本（standalone pnpm install 才可解析） |
+| R1-17 | M3 Task 5/6 | `composed-entries.json` 由 `derive-composed-entries.mjs` 从 bundle 产物派生（读 `dsh.client` + `lib/client.js`），禁手写 33；验收②必须用派生清单 |
+| R1-18 | M3 Task 6 | `beforeDevCommand: pnpm --dir ../frontend dev`（dev 必须拉起 vite，否则 devUrl 空白）；dev manifest 真实注入（非 stub） |
+| R1-19 | M5 Task 1 | 删 `assert!(true)` 空验证（迁移 7/8 属前端状态机，M3 覆盖）；probe 测试引用确认（M2 已建） |
+| R1-20 | M5 Task 5 | 许可逐个从包内 LICENSE 实证，禁断言 |
