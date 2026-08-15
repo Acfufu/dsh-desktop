@@ -173,10 +173,12 @@ chmod +x scripts/sync-carrier.sh && ./scripts/sync-carrier.sh
 
 预期输出：`vendor files in sync with 47f943859bef60e4160492346772ded9b24f765a`
 
-- [ ] **Step 7: 提交**
+- [ ] **Step 7: 提交（R3 修正：提交前先 pnpm install——否则 Task 2 首次 vitest 找不到命令）**
 
 ```bash
-git add host-patch scripts/sync-carrier.sh
+cd host-patch && pnpm install 2>&1 | tail -3
+pnpm add -D ws @types/ws   # R3 修正：tsc 会类型检查 vendored websocket-downlink.ts，ws 必须现在装
+cd .. && git add host-patch scripts/sync-carrier.sh
 git commit -m "feat(host-patch): scaffold uds-carrier with vendored transport files"
 ```
 
@@ -347,14 +349,14 @@ export function apply(ctx: Context, config: { udsPath?: string } = {}) {
 }
 ```
 
-- [ ] **Step 7: 类型检查（R2 修正：@deepseek-ai/cordis 必须显式依赖；host-patch 非 workspace，pnpm add 不加 --filter）**
+- [ ] **Step 7: 类型检查（R2 修正：@deepseek-ai/cordis 必须显式依赖；host-patch 非 workspace，pnpm add 不加 --filter；R3 修正：cordis 版本实证为 4.0.1，非 0.1.0-rc.5）**
 
 ```bash
-cd host-patch && pnpm add -D @deepseek-ai/cordis@0.1.0-rc.5 @deepseek-ai/dsh-host-apiproxy@0.1.0-rc.5
+cd host-patch && pnpm add -D @deepseek-ai/cordis@4.0.1 @deepseek-ai/dsh-host-apiproxy@0.1.0-rc.5
 pnpm exec tsc --noEmit -p tsconfig.json
 ```
 
-预期：exit 0。若 `@deepseek-ai/cordis` 包名/版本不存在（npm 404），改用 `pnpm add -D cordis@latest`（上游 vendored loader 的宿主框架——以 npm 实际包名为准，记录偏差）。
+预期：exit 0。若 `@deepseek-ai/cordis@4.0.1` 仍 404，读 `~/codehub/deepseek-harness/vendor/cordis/package.json` 的 `version` 字段（R3 实证为 4.0.1）并以此为准确认 npm 包名。
 
 - [ ] **Step 8: 提交**
 
@@ -418,6 +420,11 @@ vi.mock('node:fs', () => ({
   chmodSync: vi.fn(),
   unlinkSync: vi.fn(),
   existsSync: vi.fn(() => false),
+  // R3 修正：后续测试（Step 5 / M5 Task 2）调用这些——mock 不补全会 TypeError
+  mkdtempSync: vi.fn(() => '/tmp/dsh-mock-tmp'),
+  rmSync: vi.fn(),
+  statSync: vi.fn(() => ({ mode: 0o700 })),
+  writeFileSync: vi.fn(),
 }));
 vi.mock('node:http', () => ({
   createServer: vi.fn(() => ({
@@ -588,13 +595,15 @@ it('refuses to start when chmod 600 unsupported (platform claim) — dirs are 07
 });
 ```
 
-- [ ] **Step 6: 运行全部单测**
+- [ ] **Step 6: 运行全部单测（R3 修正：补 build 产物——lib/index.js 从无构建步骤，M1 Task 4 真实启动会 ERR_MODULE_NOT_FOUND）**
 
 ```bash
 cd host-patch && pnpm vitest run
+# R3 修正：构建插件产物（tsc --noEmit 只查类型，不产 lib/index.js）
+cd packages/uds-carrier && pnpm run build && ls lib/index.js
 ```
 
-预期：socket-path 4 passed + index 测试通过（若 mock 注入与实现有出入，调整测试以匹配实现行为——信任断言：chmod 600 调用、0700 目录、残留 unlink 路径）。
+预期：socket-path 4 passed + index 测试通过（若 mock 注入与实现有出入，调整测试以匹配实现行为——信任断言：chmod 600 调用、0700 目录、残留 unlink 路径）；`lib/index.js` 存在。
 
 - [ ] **Step 7: 提交**
 
@@ -606,6 +615,8 @@ git commit -m "feat(uds-carrier): uplink bridge + downlink upgrade dispatch + so
 ---
 
 ### Task 4: desktop.patch.yml + 真实启动验证（M1 验收 ①–④）
+
+> **R3 修正：执行顺序标记**——本 Task Step 2 的真实启动**依赖插件能被 loader 解析**；先跳去 Task 5 Step 1 做 baseUrl 锚定实测（决定插件装哪/是否物化），再回本 Task。若插件未入 node_modules，本 Task Step 2 会 DOA。
 
 **Files:**
 - Create: `host-patch/desktop.patch.yml`
@@ -699,16 +710,26 @@ fi
 
 预期：有响应（业务 JSON；无 key 时是错误帧但**连接建立 + HTTP 响应到达**）。
 
-- [ ] **Step 6: 验收 ④ WS upgrade（用 node 脚本探测）**
+- [ ] **Step 6: 验收 ④ WS upgrade（用 node 脚本探测；R3 修正：`http.connect` 不存在，改 `http.request` + 'upgrade' 事件）**
 
 临时脚本 `/tmp/m1-ws-check.mjs`：
 ```javascript
-import { connect } from 'node:http';
+import { request } from 'node:http';
 
 const sock = '/tmp/dsh-m1-test/run/dsh.sock';
 function tryUpgrade(streamPath) {
   return new Promise((resolve) => {
-    const req = connect({ socketPath: sock, path: streamPath, headers: { Upgrade: 'websocket', Connection: 'Upgrade', 'Sec-WebSocket-Key': 'dGhlIHNhbXBsZSBub25jZQ==', 'Sec-WebSocket-Version': '13' } });
+    const req = request({
+      socketPath: sock,
+      path: streamPath,
+      method: 'GET',
+      headers: {
+        Upgrade: 'websocket',
+        Connection: 'Upgrade',
+        'Sec-WebSocket-Key': 'dGhlIHNhbXBsZSBub25jZQ==',
+        'Sec-WebSocket-Version': '13',
+      },
+    });
     req.on('upgrade', (res, socket) => { console.log(streamPath, '→ UPGRADE OK', res.statusCode); socket.destroy(); resolve(true); });
     req.on('response', (res) => { console.log(streamPath, '→ HTTP', res.statusCode); resolve(false); });
     req.on('error', (e) => { console.log(streamPath, '→ ERROR', e.code); resolve(false); });
@@ -725,10 +746,11 @@ node /tmp/m1-ws-check.mjs
 
 预期：两行 `→ UPGRADE OK 101`（若 101 不出现，检查 WebSocketDownlinks 的握手要求与 header 完整性）。
 
-- [ ] **Step 7: 清理 + 提交**
+- [ ] **Step 7: 清理 + 提交（R3 修正：PID 捕获而非 %N 跨 shell 引用）**
 
 ```bash
-kill %1 %2 2>/dev/null; rm -rf /tmp/dsh-m1-test
+kill $SIDE_PID $SIDE_PID2 2>/dev/null || true   # 上一步用 $! 捕获的 PID（无则忽略）
+rm -rf /tmp/dsh-m1-test
 git add host-patch/desktop.patch.yml host-patch/README.md scripts/verify-m1.sh
 git commit -m "feat(host-patch): desktop.patch.yml disabling TCP carriers, M1 acceptance verified"
 ```

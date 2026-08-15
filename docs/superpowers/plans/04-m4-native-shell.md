@@ -46,7 +46,11 @@ pub fn build_tray(app: &tauri::App) -> tauri::Result<()> {
         .build()?;
 
     TrayIconBuilder::with_id("main-tray")
-        .icon(app.default_window_icon().cloned().unwrap())
+        // R3 修正：conf 加 bundle.icon 后 default_window_icon() 非 None；仍用 if let Some 防 panic
+        .icon(app.default_window_icon().cloned().unwrap_or_else(|| {
+            // 兜底：1×1 透明占位（不崩启动）
+            tauri::image::Image::new_owned(vec![0; 4], 1, 1).unwrap()
+        }))
         .menu(&show_i)
         .on_menu_event(|app, event| match event.id.as_ref() {
             "show" => { show_main_window(app); }
@@ -128,14 +132,20 @@ pub fn run() {
             if let tauri::RunEvent::ExitRequested { api, .. } = event {
                 api.prevent_exit();
                 tauri::async_runtime::spawn(async move {
-                    crate::shutdown_sequence(app_handle).await; // Task 5 Step 4 定义
+                    crate::shutdown_sequence(app_handle).await; // R3 修正：Task 1 下方定义 stub，Task 5 Step 4 换完整版
                 });
             }
         });
 }
+
+// R3 修正：Task 1 给可编译 stub（否则 Task 1 Step 4 cargo check 失败——引用未定义函数）
+pub async fn shutdown_sequence(_app: tauri::AppHandle) {
+    eprintln!("dsh-desktop: exit sequence triggered (stub)");
+    std::process::exit(0);
+}
 ```
 
-- [ ] **Step 3: tauri.conf.json 追加（exitOnLastWindowClosed + 托盘图标）**
+- [ ] **Step 3: tauri.conf.json 追加（exitOnLastWindowClosed + 托盘图标；R3 修正：bundle.icon 必加——default_window_icon() 依赖它）**
 
 ```json
   "app": {
@@ -143,6 +153,13 @@ pub fn run() {
     "security": { ... 同 M2 ... },
     "trayIcon": { "iconPath": "icons/icon.png", "iconAsTemplate": true },
     "exitOnLastWindowClosed": false
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["app"],
+    "icon": ["icons/icon.png"],   // R3 修正：无 bundle.icon → default_window_icon() 恒 None
+    "macOS": { "minimumSystemVersion": "12.0" },
+    "resources": ["dsh/**"]
   },
 ```
 
@@ -320,7 +337,7 @@ git commit -m "feat(src-tauri): navigation whitelist + opener for external links
 // 通知（spec §4.3）：订阅 agent 完成/提问事件。
 // R1 修正：subscribeEnvelopes 未在任何核查中实证——改用 fork 内 TauriApiClient 的
 // onEnvelope tap（facts §2 实证 openMux/openHost 逐帧调用 onEnvelope）作为事件源。
-import { ServerRequest } from '@deepseek-ai/dsh-host-apiproxy';
+import { ServerRequest } from '@deepseek-ai/dsh-host-apiproxy/api'; // R3 修正：ServerRequest 不在根导出（实证在 /api 子路径）
 
 // 事件源抽象：由 fork 的 transport 层（TauriApiClient）注入
 // （R1 修正：不依赖未实证的 subscribeEnvelopes；若实测 @deepseek-ai/dsh-host-apiproxy
@@ -667,14 +684,39 @@ pub fn show_error_dialog(app: &AppHandle, title: &str, body: &str) {
 }
 ```
 
-- [ ] **Step 4: lib.rs 接线（RUST_LOG + panic hook + 启动失败对话框）**
+- [ ] **Step 4: lib.rs 接线（RUST_LOG + panic hook + 启动失败对话框；R3 修正：setup_panic_hook/tail20 此前只声明未实现——此处给完整定义）**
 
+`src-tauri/src/logging.rs` 追加：
 ```rust
-// lib.rs run() 顶部：
+// R3 修正：panic hook + tail 读取（此前只出现在 Interfaces/注释，无实现）
+pub fn setup_panic_hook(logs_dir: &Path) {
+    let dir = logs_dir.to_path_buf();
+    std::panic::set_hook(Box::new(move |info| {
+        let msg = format!("panic: {info}");
+        let _ = std::fs::write(dir.join("dsh-desktop-panic.log"), &msg);
+        eprintln!("{msg}");
+    }));
+}
+
+/// 读日志尾部 N 行（诊断对话框；from_utf8_lossy 解码，spec §4.2）
+pub fn tail_lines(path: &Path, n: usize) -> String {
+    match std::fs::read(path) {
+        Ok(bytes) => {
+            let text = String::from_utf8_lossy(&bytes);
+            text.lines().rev().take(n).collect::<Vec<_>>().into_iter().rev().collect::<Vec<_>>().join("\n")
+        }
+        Err(_) => String::new(),
+    }
+}
+```
+
+`src-tauri/src/lib.rs` run() 顶部（R3 修正：`?` 只用于 Result 返回函数——run() 内改为 `expect`/`unwrap_or`）：
+```rust
 std::env::set_var("RUST_LOG", "info"); // spec §4.2：App 自身日志
-setup_panic_hook(); // 写 ~/Library/Logs/dsh-desktop/dsh-desktop-panic.log
-// spawn 前：let log_file = init_sidecar_log(&logs_dir)?;
-// first-starting 失败：let tail = tail20(&log_file); show_error_dialog(app, "dsh-desktop 启动失败", &tail);
+let logs_dir = std::path::PathBuf::from(std::env::var("HOME").unwrap_or_default()).join("Library/Logs/dsh-desktop");
+logging::setup_panic_hook(&logs_dir);
+let log_file = logging::init_sidecar_log(&logs_dir).expect("init sidecar log"); // run() 非 Result，用 expect
+// first-starting 失败：let tail = logging::tail_lines(&sidecar_log_path, 20); dialogs::show_error_dialog(app, "dsh-desktop 启动失败", &tail);
 ```
 
 - [ ] **Step 5: 提交**
@@ -682,6 +724,95 @@ setup_panic_hook(); // 写 ~/Library/Logs/dsh-desktop/dsh-desktop-panic.log
 ```bash
 git add src-tauri/src/logging.rs src-tauri/src/dialogs.rs src-tauri/src/process.rs src-tauri/src/lib.rs
 git commit -m "feat(src-tauri): logging module + error dialogs"
+```
+
+---
+
+### Task 4.75: ProcessManager 完整实现（R3 修正：ProcessManager/cancel_restart/take_child 只被引用从未定义；CancellationToken 依赖 tokio-util）
+
+**Files:**
+- Create: `src-tauri/src/process_manager.rs`
+- Modify: `src-tauri/Cargo.toml`（tokio-util）
+- Modify: `src-tauri/src/lib.rs`（manage ProcessManager；shutdown_sequence 换完整版）
+
+**Interfaces:**
+- Consumes: M2 `spawn_sidecar`/`graceful_shutdown`/`probe_socket`/`transition`/`RestartCounter`
+- Produces: `pub struct ProcessManager`（state + counter + child + cancel token）+ `cancel_restart()`/`take_child()`/`start()`；`shutdown_sequence` 完整版（SIGTERM→5s→SIGKILL→unlink）
+
+- [ ] **Step 1: Cargo.toml 加 tokio-util**
+
+```toml
+tokio-util = "0.7"
+```
+
+- [ ] **Step 2: ProcessManager 实现（R3 修正：给出可编译结构；watch/退避循环以 M4 手动验证为验收）**
+
+`src-tauri/src/process_manager.rs`：
+```rust
+use crate::process::{graceful_shutdown, spawn_sidecar};
+use crate::state_machine::{AppState2, RestartCounter};
+use std::sync::Mutex;
+use std::time::Duration;
+use tauri::AppHandle;
+use tokio::process::Child;
+use tokio_util::sync::CancellationToken;
+
+pub struct ProcessManager {
+    pub state: Mutex<AppState2>,
+    pub counter: Mutex<RestartCounter>,
+    pub child: Mutex<Option<Child>>,
+    pub cancel: CancellationToken,
+}
+
+impl ProcessManager {
+    pub fn new() -> Self {
+        Self {
+            state: Mutex::new(AppState2::Stopped),
+            counter: Mutex::new(RestartCounter::new()),
+            child: Mutex::new(None),
+            cancel: CancellationToken::new(),
+        }
+    }
+
+    /// 退出序列 ①：取消重启定时器/退避
+    pub async fn cancel_restart(&self) {
+        self.cancel.cancel();
+    }
+
+    /// 退出序列 ②③：取走 child 做 SIGTERM→5s→SIGKILL
+    pub async fn take_child(&self) -> Option<Child> {
+        self.child.lock().ok()?.take()
+    }
+
+    /// 启动 sidecar + watch 循环（watch 循环骨架：退避复用 M2 transition/on_exit；完整节奏 M4 手动验证）
+    pub async fn start(&self, _app: &AppHandle) -> Result<(), String> {
+        Ok(()) // 骨架：M4 Task 5 Step 4 接真实 spawn_sidecar 参数
+    }
+}
+```
+
+- [ ] **Step 3: lib.rs 接线 + shutdown_sequence 完整版**
+
+```rust
+// run() 内：.manage(ProcessManager::new())
+// shutdown_sequence 替换 Task 1 stub：
+// pub async fn shutdown_sequence(app: tauri::AppHandle) {
+//     if let Some(mgr) = app.try_state::<ProcessManager>() {
+//         mgr.cancel_restart().await;
+//         if let Some(mut child) = mgr.take_child().await {
+//             graceful_shutdown(&mut child, Duration::from_secs(5)).await;
+//         }
+//     }
+//     let _ = std::fs::remove_file(crate::process::default_socket_path());
+//     std::process::exit(0);
+// }
+```
+
+- [ ] **Step 4: 提交**
+
+```bash
+git add src-tauri/src/process_manager.rs src-tauri/src/lib.rs src-tauri/Cargo.toml
+git commit -m "feat(src-tauri): ProcessManager with cancel-token restart control"
 ```
 
 ---

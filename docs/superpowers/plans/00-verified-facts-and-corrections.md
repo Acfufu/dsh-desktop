@@ -74,7 +74,7 @@
 | tauri-plugin-opener | **2.5.4** | |
 | tauri-cli / @tauri-apps/cli | **2.11.4** / 2.11.4 | cargo 或 npm 二选一 |
 | reqwest | **0.12.28**（推荐，spec 兼容） | `unix_socket` **0.12.23 引入**，**无 cargo feature**（`#[cfg(unix)]` 目标门控，默认 features 即可）；0.13.4 为最新但 breaking（rustls 默认、MSRV 1.85）→ **不用 0.13** |
-| tokio-tungstenite | **0.29.2**（spec 允许 0.28/0.29） | 0.30.0 为最新，spec 未 pin → 用 0.29 保守 |
+| tokio-tungstenite | **0.29.0**（R3 修正：crates.io 无 0.29.2，只有 0.29.0/0.30.0；spec 允许 0.28/0.29） | 0.30.0 为最新，spec 未 pin → 用 0.29.0 保守 |
 | tokio | **1.53.1** | |
 | @tauri-apps/api | **2.11.1** | |
 | @tauri-apps/plugin-notification | **2.3.3** | |
@@ -90,7 +90,7 @@ tauri-plugin-autostart = "2.5"
 tauri-plugin-notification = "2.3"
 tauri-plugin-opener = "2.5"
 tokio = { version = "1.53", features = ["full"] }
-tokio-tungstenite = "0.29"
+tokio-tungstenite = "0.29.0"
 reqwest = { version = "0.12.28", default-features = false, features = ["rustls-tls", "json"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -164,3 +164,38 @@ serde_json = "1"
 | R2-14 | M4 Task 4 | >10MiB 拖拽链路：新增 `dsh_import_dropped` + on_drag_drop_event；下载改 Rust 侧流式落盘（`dsh_export_session`），禁 invoke bytes 回传 |
 | R2-15 | M5 Task 1/2 | capability 测试真扫 fork 源码 import；stale unlink 测试驱动真实 `start()`；删 `assert!(true)` 空验证 |
 | R2-16 | M5 Task 4.5 | 新增 `scripts/dev.sh`（spec §9 脚本清单补全）+ 握手 describe 10s 调用点超时 + 测试 |
+
+## 10. R3 双审修正记录（2026-08-16，两审 FAIL——B 审做了实证验证）
+
+| 编号 | 位置 | 修正 |
+|---|---|---|
+| R3-1 | facts §6 / M2 Cargo | tokio-tungstenite **0.29.2 不存在**（crates.io 只有 0.29.0/0.30.0）→ pin `0.29.0` |
+| R3-2 | M1/M3 | `@deepseek-ai/cordis` 版本是 **4.0.1**（vendor/cordis/package.json 实证），非 0.1.0-rc.5 → 全部改用 4.0.1 |
+| R3-3 | M1 Task 2 | 首次 vitest 前必须 `pnpm install`（Task 1 Step 7 补）；`ws @types/ws` 一并安装（tsc 会类型检查 vendored websocket-downlink.ts） |
+| R3-4 | M1 Task 3 | `lib/index.js` 从无构建步骤（tsc --noEmit 只查类型）→ Task 3 Step 6 后加 `pnpm run build`；否则 M1 Task 4 真实启动 ERR_MODULE_NOT_FOUND |
+| R3-5 | M1 Task 3/5 | `vi.mock('node:fs')` 缺 mkdtempSync/rmSync/statSync → mock 补全（M1 Task 3 Step 2 + M5 Task 2 Step 2 调用它们） |
+| R3-6 | M1 Task 4 Step 6 | WS 探测脚本 `import { connect } from 'node:http'` **不存在**（实证 http.connect undefined）→ 改 `http.request` + 'upgrade' 事件 |
+| R3-7 | M1 Task 4 Step 7 | `kill %1 %2` 跨 shell 失效 → PID 捕获 `$!`；同 M2 Task 3 Step 6、M2 Task 5 Step 1 |
+| R3-8 | M1 Task 4/5 | `${DSH_HOME}` 展开 + Task 5 重排仍是 note-only → Task 4 头部加显式重排标记；Task 4 Step 1 加 socket 路径实测 |
+| R3-9 | M2 Task 1 | printf PNG **损坏**（实证：file/sips 读头 OK 但 zlib 解压 CRC 失败；Rust image crate 解码必失败）→ 用 base64 已验证 1×1 PNG |
+| R3-10 | M2 Task 2 | AppState + streams 前引用 Task 3 → AppState+impl Clone+StreamRegistry 完整代码移入 Task 2；`dsh_http_impl` 从未给代码 → 补全 |
+| R3-11 | M2 Task 3 | `client_async_tls_with_config` 在默认 features 下**不存在**（实证 0.29 lib.rs cfg 门控）→ 用 `client_async_with_config(request, stream, None)`（非 TLS） |
+| R3-12 | M2 Task 3 | `reg.tasks.insert` Mutex 无 insert 方法 → `reg.tasks.lock()?.insert(...)` |
+| R3-13 | M2 Task 3 | fake-sidecar 的 `ws` import 无法解析（repo 根无 node_modules）→ repo 根 `npm i -D ws`（或 spawn cwd=frontend） |
+| R3-14 | M2 Task 5 | `cargo test bench_big_body` 零测试静默假过 → 补 bench 测试完整代码或改用真实测量命令 |
+| R3-15 | M3 Task 1 | `frontend/tsconfig.json` 只列名未给内容 → 补全（ESNext/bundler/strict/paths 8 alias） |
+| R3-16 | M3 Task 1 | 6 个 `@deepseek-ai/dsh-client-*` 依赖缺 frontend/package.json → 精确版本补入（seed.ts 静态 import 面） |
+| R3-17 | M3 Task 4 | vitest include 只 `packages/**` → scripts/ 测试全被排除 → include 加 `scripts/**/*.test.ts` |
+| R3-18 | M3 Task 5 | build-pipeline.test.ts `__dirname` 在 ESM 未定义（R2 只标了 M4 依赖没修 __dirname）→ fileURLToPath(import.meta.url) |
+| R3-19 | M3 Task 5 | transformIndexHtml 返回 `{html}` 类型不合法 → `{ html, tags: [] }` |
+| R3-20 | M3 Task 5/6 | derive-composed-entries 输入是 M4 产物（里程碑倒挂）→ M3 阶段指向 `~/codehub/deepseek-harness/node_modules` |
+| R3-21 | M3 Task 2 | 生产 `(err as any).kind` + `RpcRequest<any>` → Error 子类带 kind 字段；onmessage 内 parse 加 try/catch（防单帧异常杀 generator） |
+| R3-22 | M4 Task 1 | `shutdown_sequence` 定义在 Task 5 → Task 1 给可编译 stub（或前移定义） |
+| R3-23 | M4 Task 1 | `default_window_icon().unwrap()` 恒 None（conf 无 bundle.icon）→ conf 加 `bundle.icon: ["icons/icon.png"]`；tray.rs 用 if let Some |
+| R3-24 | M4 Task 4.5 | `setup_panic_hook`/`tail20` 从未定义；run() 内 `?` 非法 → 补定义 + Result 路径 |
+| R3-25 | M4 Task 5 | `ProcessManager` 全无实现（M2 只有纯函数）→ 新增 Task：ProcessManager struct + spawn/watch/backoff 循环 + cancel token |
+| R3-26 | M4 Task 4 | `dsh_export_session` 引用了未实现 → 补命令定义（Rust 侧流式拉取→落盘）或从能力清单删除 |
+| R3-27 | M4 Task 3 | `ServerRequest` 不在 apiproxy 根导出（实证在 /api）→ import 自 `@deepseek-ai/dsh-host-apiproxy/api` |
+| R3-28 | M5 Task 1 | e2e_smoke.rs 无 DSH_SOCKET 时 bare `cargo test` 失败 → 无 env 时 early return skip |
+| R3-29 | M5 Task 2 | capability.test.ts `__dirname` ESM 未定义 → import.meta.url |
+| R3-30 | M5 Task 4.5 | describe-timeout 测试挂死（mock 忽略 signal，promise 永不 reject）→ mock 监听 abort 后 reject |

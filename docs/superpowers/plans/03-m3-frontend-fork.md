@@ -94,7 +94,7 @@ rm "$DST/connection/src/client/web-api-client.ts"   # 被 tauri-api-client 取�
 rm "$DST/connection/src/client/fixture.ts"          # 3188 行测试夹具，删 ?fixture 分支
 ```
 
-- [ ] **Step 5: fork 根 package.json（精确版本，禁 ^）**
+- [ ] **Step 5: fork 根 package.json（精确版本，禁 ^；R3 修正：cordis 4.0.1、6 个 dsh-client-* 依赖补入）**
 
 `frontend/package.json`：
 ```json
@@ -115,11 +115,17 @@ rm "$DST/connection/src/client/fixture.ts"          # 3188 行测试夹具，删
     "react-dom": "18.3.1",
     "@deepseek-ai/dsh-host-apiproxy": "0.1.0-rc.5",
     "@deepseek-ai/dsh-client-modules": "0.1.0-rc.5",
-    "@deepseek-ai/cordis": "0.1.0-rc.5",
+    "@deepseek-ai/cordis": "4.0.1",
     "@tauri-apps/api": "2.11.1",
     "@tauri-apps/plugin-notification": "2.3.3",
     "@tauri-apps/plugin-autostart": "2.5.1",
-    "@tauri-apps/plugin-opener": "2.5.4"
+    "@tauri-apps/plugin-opener": "2.5.4",
+    "@deepseek-ai/dsh-client-web": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-web-react": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-ui-attachment": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-schema-form": "0.1.0-rc.5"
   },
   "devDependencies": {
     "vite": "^6.0.0",
@@ -137,7 +143,26 @@ rm "$DST/connection/src/client/fixture.ts"          # 3188 行测试夹具，删
 
 > 注：vite/plugin-react 版本以 fork 的 `apps/web/package.json` 上游版本为准，如上游是 5.x 则用 5.x——本步以「build 可跑」为目标，冲突时对齐上游 devDependencies。
 
-- [ ] **Step 6: vite.config.ts（删 rejectStandaloneServe + alias 改 fork 路径）**
+- [ ] **Step 6.5: fork tsconfig（R3 修正：Task 1 补内容——Task 2/3 的 tsc 门依赖它）**
+
+`frontend/tsconfig.json`：
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"]
+  },
+  "include": ["apps/web/src", "packages/**/*.ts", "packages/**/*.tsx", "scripts", "vite.config.ts", "vitest.config.ts"]
+}
+```
 
 `frontend/vite.config.ts`（基于上游，删 `rejectStandaloneServe` 插件，alias 指 fork 路径）：
 ```typescript
@@ -158,7 +183,7 @@ function devBootManifest(): Plugin {
         const entries = JSON.parse(readFileSync(new URL('./composed-entries.json', import.meta.url), 'utf8'));
         const manifest = buildManifest(entries.map((e: any) => ({ id: e.id, file: '', rev: e.rev })));
         const script = `<script>window.__DSH_BOOT__=${JSON.stringify(manifest)}</script>`;
-        return { html: html.replace('</head>', `${script}</head>`) };
+        return { html: html.replace('</head>', `${script}</head>`), tags: [] }; // R3 修正：vite IndexHtmlTransformResult 需 tags 字段
       },
     },
   };
@@ -269,19 +294,21 @@ git commit -m "feat(frontend): fork 8 packages with pinned deps and sync sentine
 `frontend/packages/client/connection/src/client/tauri-api-client.test.ts`：
 ```typescript
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { TauriApiClient, classifyError } from './tauri-api-client';
+import { TauriApiClient, TransportError } from './tauri-api-client';
 
-describe('classifyError', () => {
+describe('TransportError classification', () => {
   it('invoke reject with kind → transport error', () => {
-    expect(classifyError({ kind: 'connection-refused' })).toBe('transport');
+    expect(new TransportError('transport', 'x').kind).toBe('transport');
   });
 
   it('plain error → transport error', () => {
-    expect(classifyError(new Error('boom'))).toBe('transport');
+    const e = new TransportError('transport', 'boom');
+    expect(e.kind).toBe('transport');
+    expect(e instanceof Error).toBe(true);
   });
 
-  it('HTTP-status-like object is NOT classified here (business errors carry status+body)', () => {
-    expect(classifyError({ status: 500, body: 'x' })).toBe('business');
+  it('business kind carried on TransportError', () => {
+    expect(new TransportError('business', 'x').kind).toBe('business');
   });
 });
 ```
@@ -311,9 +338,15 @@ import type { RpcRequest, MuxFrame, HostFrame } from './rpc';
 
 // 传输错误 vs 业务错误分类（spec §4.3）：invoke reject（连接拒绝/IO/超时，带 kind）→ 可重试传输错误；
 // HTTP status + body → 业务错误（由 doFetch 内构造 Response 返回）。
-export function classifyError(e: unknown): 'transport' | 'business' {
-  if (e && typeof e === 'object' && 'status' in e && 'body' in e) return 'business';
-  return 'transport';
+// R3 修正：传输/业务错误分类——用带 kind 字段的 Error 子类，禁生产 as any
+// 替代上面 doFetch 内 (err as any).kind：定义此类型并 throw 它
+export class TransportError extends Error {
+  kind: 'transport' | 'business';
+  constructor(kind: 'transport' | 'business', message: string, cause?: unknown) {
+    super(message, { cause });
+    this.kind = kind;
+    this.name = 'TransportError';
+  }
 }
 
 export class TauriApiClient extends AbstractApiClient implements IApiClient {
@@ -342,9 +375,8 @@ export class TauriApiClient extends AbstractApiClient implements IApiClient {
         body: body ? Array.from(body) : null,
       });
     } catch (e) {
-      const err = new Error(`dsh_http failed: ${JSON.stringify(e)}`, { cause: e });
-      (err as any).kind = classifyError(e);
-      throw err;
+      // R3 修正：抛带 kind 的 TransportError（不再 (err as any).kind）
+      throw new TransportError('transport', `dsh_http failed: ${JSON.stringify(e)}`, e);
     }
 
     // 响应字节以 ArrayBuffer 保真重建 Response body（附件图片等二进制走此路，spec §4.3）
@@ -367,10 +399,10 @@ export class TauriApiClient extends AbstractApiClient implements IApiClient {
   private async *openDownlink(
     stream: 'mux' | 'host',
     signal?: AbortSignal,
-  ): AsyncGenerator<RpcRequest<any>> {
+  ): AsyncGenerator<RpcRequest<MuxFrame | HostFrame>> {
     // 先创建 Channel 并注册 onmessage，再 invoke（invoke 返回即 onOpen 信号，spec §4.3）
     const channel = new Channel<string>();
-    const frames: Array<RpcRequest<any>> = [];
+    const frames: Array<RpcRequest<MuxFrame | HostFrame>> = [];
     let endResolve: () => void = () => {};
     let ended = false;
     const endPromise = new Promise<void>((r) => { endResolve = r; });
@@ -379,21 +411,24 @@ export class TauriApiClient extends AbstractApiClient implements IApiClient {
 
     channel.onmessage = (text: string) => {
       if (text === '') { ended = true; endResolve(); return; }
-      const full = serverRequestSchema.parse(JSON.parse(text));
-      this.onEnvelope?.(full); // 逐帧 onEnvelope tap（settings/credentials 安全观察，spec §4.3）
-      const req: RpcRequest<any> = { rpcId: RpcId(full.rpcId), payload: full.payload };
-      frames.push(req);
-      pending = true;
-      notify();
+      try {
+        const full = serverRequestSchema.parse(JSON.parse(text));
+        this.onEnvelope?.(full); // 逐帧 onEnvelope tap（settings/credentials 安全观察，spec §4.3）
+        const req: RpcRequest<MuxFrame | HostFrame> = { rpcId: RpcId(full.rpcId), payload: full.payload };
+        frames.push(req);
+        pending = true;
+        notify();
+      } catch {
+        // R3 修正：单帧异常不得杀 generator（非 envelope 帧/坏 JSON 跳过）
+      }
     };
 
     let streamId: number;
     try {
       streamId = await invoke<number>('dsh_open_stream', { stream, channel });
     } catch (e) {
-      const err = new Error(`open stream ${stream} failed: ${JSON.stringify(e)}`, { cause: e });
-      (err as any).kind = 'transport';
-      throw err;
+      // R3 修正：抛带 kind 的 TransportError
+      throw new TransportError('transport', `open stream ${stream} failed: ${JSON.stringify(e)}`, e);
     }
 
     // 挂起的 open_stream invoke 绑定代际 AbortSignal（spec §4.3）
@@ -445,7 +480,7 @@ const api: IApiClient = new TauriApiClient();
 cd frontend && pnpm vitest run packages/client/connection/src/client/
 ```
 
-预期：classifyError 3 passed（openDownlink 需 mock `invoke`——vitest 里 `vi.mock('@tauri-apps/api/core', ...)`，见 Task 4 测试基建）。
+预期：TransportError 3 passed（openDownlink 需 mock `invoke`——vitest 里 `vi.mock('@tauri-apps/api/core', ...)`，见 Task 4 测试基建）。
 
 - [ ] **Step 6: 提交**
 
@@ -527,7 +562,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   test: {
-    include: ['packages/**/*.test.ts', 'packages/**/*.test.tsx'],
+    include: ['packages/**/*.test.ts', 'packages/**/*.test.tsx', 'scripts/**/*.test.ts'], // R3 修正：scripts/ 测试此前被排除
     environment: 'jsdom',
     setupFiles: ['./test/setup.ts'],
   },
@@ -766,19 +801,24 @@ console.log(`collected ${entries.length} bundles into ${distRoot}/plugins`);
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url'; // R3 修正：ESM 无 __dirname
 
 describe('build pipeline output', () => {
+  // R3 修正：ESM 无 __dirname——用 import.meta.url
+  const here = fileURLToPath(new URL('.', import.meta.url));
+  const dist = join(here, '../dist');
+
   it('dist/index.html contains CSP meta with connect-src ipc:', () => {
-    const html = readFileSync(join(__dirname, '../dist/index.html'), 'utf8');
+    const html = readFileSync(join(dist, 'index.html'), 'utf8');
     expect(html).toContain('Content-Security-Policy');
     expect(html).toContain('connect-src');
     expect(html).toContain('ipc:');
   });
 
   it('dist/plugins entry count matches composed entries (non-hardcoded)', () => {
-    const entries = JSON.parse(readFileSync(join(__dirname, '../composed-entries.json'), 'utf8'));
+    const entries = JSON.parse(readFileSync(join(here, '../composed-entries.json'), 'utf8'));
     for (const { id } of entries) {
-      const f = join(__dirname, `../dist/plugins/${id}/client.js`);
+      const f = join(dist, `plugins/${id}/client.js`);
       expect(() => readFileSync(f)).not.toThrow();
     }
   });
@@ -815,7 +855,7 @@ console.log(`derived ${entries.length} entries → ${outFile}`);
 
 ```bash
 cd frontend && pnpm build
-node scripts/derive-composed-entries.mjs ../src-tauri/resources/dsh/node_modules ./composed-entries.json
+node scripts/derive-composed-entries.mjs ~/codehub/deepseek-harness/node_modules ./composed-entries.json   # R3 修正：M3 阶段输入 = DSH_REPO node_modules（M4 产物尚不存在）
 node scripts/generate-manifest.ts ./composed-entries.json ./dist 2>&1 | tail -3
 ```
 

@@ -33,11 +33,10 @@
 - Create: `src-tauri/capabilities/desktop.json`
 - Create: `src-tauri/icons/icon.png`（R2 修正：Task 1 即生成占位 PNG——tauri.conf.json trayIcon 引用它，M2「可空」会导致 cargo check 失败）
 
-`src-tauri/icons/icon.png` 生成：
+`src-tauri/icons/icon.png` 生成（R3 修正：printf 手拼 PNG 损坏——实证 zlib CRC 失败，Rust image crate 必解码失败；改用 base64 已验证 1×1 PNG）：
 ```bash
 mkdir -p src-tauri/icons
-# 1x1 红色占位 PNG（后续 M4 品牌替换）
-printf '\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\x0dIDATx\x9cc\xf8\xff\xff?\x00\x08\x05\x02\xfe\xa9\x7f\xa4\x00\x00\x00\x00IEND\xaeB`\x82' > src-tauri/icons/icon.png
+printf 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==' | base64 -d > src-tauri/icons/icon.png
 file src-tauri/icons/icon.png   # 预期: PNG image data, 1 x 1
 ```
 
@@ -73,7 +72,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tokio = { version = "1.53", features = ["full"] }
 reqwest = { version = "0.12.28", default-features = false, features = ["rustls-tls", "json"] }
-tokio-tungstenite = "0.29"
+tokio-tungstenite = "0.29.0"
 futures-util = "0.3"
 url = "2"
 libc = "0.2"
@@ -265,18 +264,35 @@ cd src-tauri && cargo test validate_request 2>&1 | tail -5
 
 预期：PASS（纯函数测试本应直接过；此步确认编译与测试框架就绪）。若已过，继续 Step 3。
 
-- [ ] **Step 3: 实现 dsh_http 命令（含 mock server 单测）**
+- [ ] **Step 3: 实现 dsh_http_impl 纯函数 + AppState 定义 + 薄命令（R3 修正：AppState + StreamRegistry 完整代码在此落位，Task 2 不再前引用 Task 3；`dsh_http_impl` 给出完整实现）**
 
-`src-tauri/src/http_command.rs` 追加：
+`src-tauri/src/http_command.rs` 追加（同时定义 AppState 与 StreamRegistry 的最小版——streams 注册表完整实现在 Task 3，此处先给可编译骨架）：
 ```rust
 use tauri::State;
-use tokio::io::AsyncWriteExt;
+use std::sync::{Arc, Mutex};
 
 pub const UDS_PATH: &str = "/tmp/dsh-uds-test/dsh.sock"; // 假 sidecar 路径（Task 4 换成进程管理器提供）
 
-#[tauri::command]
-pub async fn dsh_http(
-    state: State<'_, crate::AppState>,
+// R3 修正：AppState 定义在此（Task 2），Task 3/4 的 lib.rs 复用
+pub struct AppState {
+    pub http_client: reqwest::Client,
+    pub uds_path: String,
+    pub registry: Arc<Mutex<crate::streams::StreamRegistry>>,
+}
+
+impl Clone for AppState {
+    fn clone(&self) -> Self {
+        Self {
+            http_client: self.http_client.clone(),
+            uds_path: self.uds_path.clone(),
+            registry: Arc::clone(&self.registry),
+        }
+    }
+}
+
+// R3 修正：核心逻辑抽成纯函数（可测，绕开 tauri State 注入）；命令薄包装
+pub async fn dsh_http_impl(
+    state: AppState,
     method: String,
     path: String,
     body: Option<Vec<u8>>,
@@ -296,8 +312,30 @@ pub async fn dsh_http(
         builder = builder.body(body_bytes);
     }
 
-    // 不设自身超时（spec §4.2）
-    let resp = builder.send().await.map_err(|e| format!("transport: {e}"))?;
+    // 不设自身超时（spec §4.2）；R3 修正：connect 错误重建 client 重试一次（spec §4.2）
+    match builder.send().await {
+        Ok(resp) => resp_to_http(resp).await,
+        Err(e) if e.is_connect() => {
+            let new_client = reqwest::ClientBuilder::new()
+                .unix_socket(&state.uds_path)
+                .build()
+                .map_err(|e| format!("rebuild client: {e}"))?;
+            let mut retry = new_client
+                .request(reqwest::Method::from_bytes(method.as_bytes()).map_err(|e| e.to_string())?, &format!("http://dsh{path}"))
+                .header("Host", "dsh");
+            let body2 = body.unwrap_or_default();
+            if method == "POST" {
+                retry = retry.header("Content-Type", "application/json").body(body2);
+            } else {
+                retry = retry.body(body2);
+            }
+            resp_to_http(retry.send().await.map_err(|e| format!("transport after rebuild: {e}"))?).await
+        }
+        Err(e) => Err(format!("transport: {e}")),
+    }
+}
+
+async fn resp_to_http(resp: reqwest::Response) -> Result<HttpResponse, String> {
     let status = resp.status().as_u16();
     let headers = resp
         .headers()
@@ -305,8 +343,40 @@ pub async fn dsh_http(
         .filter_map(|(k, v)| v.to_str().ok().map(|s| (k.to_string(), s.to_string())))
         .collect::<HashMap<_, _>>();
     let body = resp.bytes().await.map_err(|e| format!("read: {e}"))?.to_vec();
-
     Ok(HttpResponse { status, headers, body })
+}
+
+#[tauri::command]
+pub async fn dsh_http(
+    state: State<'_, crate::AppState>,
+    method: String,
+    path: String,
+    body: Option<Vec<u8>>,
+) -> Result<HttpResponse, String> {
+    dsh_http_impl(state.inner().clone(), method, path, body).await
+}
+```
+
+> R3 修正：`crate::streams::StreamRegistry` 的**最小可编译骨架**定义于 `src-tauri/src/streams.rs`（Task 3 补全）：
+```rust
+// src-tauri/src/streams.rs（Task 2 先建骨架，Task 3 补 StreamTask/WS 逻辑）
+use std::collections::HashMap;
+use std::sync::Mutex;
+
+pub struct StreamRegistry {
+    pub tasks: Mutex<HashMap<u64, ()>>,
+    next_id: u64,
+}
+
+impl StreamRegistry {
+    pub fn new() -> Self {
+        Self { tasks: Mutex::new(HashMap::new()), next_id: 1 }
+    }
+    pub fn next_id(&mut self) -> u64 {
+        let id = self.next_id;
+        self.next_id += 1;
+        id
+    }
 }
 ```
 
@@ -432,17 +502,22 @@ git commit -m "feat(src-tauri): dsh_http uplink over UDS with input validation"
   - `#[tauri::command] async fn dsh_close_stream(id: u64, state: State<AppState>) -> Result<(), String>`——幂等 no-op
   - `#[tauri::command] async fn dsh_cancel(id: u64, state: State<AppState>) -> Result<(), String>`——取消在途请求（Task 2 扩展，先留占位）
 
-- [ ] **Step 1: 写失败测试（close_stream 幂等 + 未知 id）**
+- [ ] **Step 1: 写失败测试 + 补全 StreamRegistry（R3 修正：Task 2 已建骨架，本步把 `tasks: Mutex<HashMap<u64, ()>>` 升级为 StreamTask 并补 close 方法——注意 Task 2 骨架与 Task 3 补全必须合并为一份代码）**
 
-`src-tauri/src/streams.rs`：
+`src-tauri/src/streams.rs` 补全（替换 Task 2 骨架）：
 ```rust
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 use tauri::ipc::Channel;
 
 pub struct StreamRegistry {
     pub tasks: Mutex<HashMap<u64, StreamTask>>,
     next_id: u64,
+}
+
+pub struct StreamTask {
+    pub channel: Channel<String>,
+    pub handle: tokio::task::JoinHandle<()>,
 }
 
 impl StreamRegistry {
@@ -497,7 +572,7 @@ cd src-tauri && cargo test streams 2>&1 | tail -5
 ```rust
 use tokio::net::UnixStream;
 use tokio_tungstenite::tungstenite::protocol::Message as WsMessage;
-use tokio_tungstenite::{client_async_tls_with_config};
+use tokio_tungstenite::{client_async_with_config}; // R3 修正：client_async_tls_with_config 在默认 features 下不存在（实证 0.29 cfg 门控）；非 TLS 用 client_async_with_config
 use futures_util::StreamExt; // R2 修正：reader.next() 必需
 
 const MUX_PATH: &str = "/api/events.mux";
@@ -526,8 +601,6 @@ pub async fn dsh_open_stream(
     };
 
     let ws_url = format!("ws://dsh{path}");
-    // tokio-tungstenite over UDS：connect_async_tls 需 URL 的 host 作 SNI，但 TLS 关闭时仍用
-    // socket 地址。此处用 tungstenite 的底层握手（handshake over UnixStream）。
     let (ws, _) = open_ws_over_uds(&state.uds_path, &ws_url)
         .await
         .map_err(|e| format!("open ws {path}: {e}"))?;
@@ -554,21 +627,21 @@ pub async fn dsh_open_stream(
 
     {
         let mut reg = state.registry.lock().map_err(|e| e.to_string())?;
-        reg.tasks.insert(id, StreamTask { channel, handle });
+        // R3 修正：tasks 是 Mutex<HashMap>，需再 lock 才能 insert
+        reg.tasks.lock().map_err(|e| e.to_string())?.insert(id, StreamTask { channel, handle });
     }
     Ok(id)
 }
 
 async fn open_ws_over_uds(socket_path: &str, ws_url: &str) -> Result<(tokio_tungstenite::WebSocketStream<UnixStream>, ()), String> {
     use tokio_tungstenite::tungstenite::client::IntoClientRequest;
-    use tokio_tungstenite::tungstenite::handshake::client::Response;
 
     let stream = UnixStream::connect(socket_path).await.map_err(|e| e.to_string())?;
     let request = ws_url.into_client_request().map_err(|e| e.to_string())?;
-    let (ws, resp) = tokio_tungstenite::client_async_tls_with_config(request, stream, None, None)
+    // R3 修正：非 TLS（UDS 不需要 TLS）——client_async_with_config(request, stream, None) 默认 features 即可用
+    let (ws, _resp) = client_async_with_config(request, stream, None)
         .await
         .map_err(|e| e.to_string())?;
-    let _ = resp;
     Ok((ws, ()))
 }
 ```
@@ -651,7 +724,10 @@ server.on('upgrade', (req, socket, head) => {
 });
 ```
 
-> 注：`ws` 是 devDependency——`cd host-patch && pnpm add -D ws @types/ws`（root 仓库）或在 fake-sidecar 所在处安装。M2 手测用。
+> 注：`ws` 是 fake-sidecar 依赖——**R3 修正：安装位置必须在 repo 根**（`scripts/fake-sidecar.mjs` 的 node 解析从 `scripts/` 向上，永远到不了 host-patch/node_modules）：
+```bash
+npm i -D ws   # repo 根（创建 dsh-desktop/package.json）
+```
 
 - [ ] **Step 6: 手动验证（tauri dev 暂不可用，先 cargo 直测核心逻辑；R2 修正：补 WS 端到端测试——M2 阶段 open_stream 不得是死代码）**
 
@@ -690,10 +766,12 @@ mod ws_integration {
 ```
 
 ```bash
+# R3 修正：PID 捕获（kill %1 跨 shell 失效）
 node scripts/fake-sidecar.mjs &
+FAKE_PID=$!
 sleep 1
 cd src-tauri && cargo test 2>&1 | tail -8
-kill %1
+kill $FAKE_PID 2>/dev/null || true
 ```
 
 预期：测试通过（含 open_stream_receives_frame_and_end_sentinel；`""` 哨兵验证在 kill 场景由 M4 e2e 覆盖）。

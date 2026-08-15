@@ -112,8 +112,11 @@ use std::process::Command;
 
 #[test]
 fn sidecar_socket_reachable() {
-    // 前置：e2e-smoke.sh 已启动真实 sidecar（desktop patch），DSH_SOCKET 指向其 socket
-    let sock = std::env::var("DSH_SOCKET").expect("DSH_SOCKET must be set by e2e-smoke.sh");
+    // R3 修正：无 DSH_SOCKET 环境时跳过（bare cargo test 不应失败）
+    let Ok(sock) = std::env::var("DSH_SOCKET") else {
+        eprintln!("skipping: DSH_SOCKET not set (run via e2e-smoke.sh)");
+        return;
+    };
     let out = Command::new("curl")
         .args([
             "--unix-socket", &sock,
@@ -165,10 +168,14 @@ git commit -m "test(src-tauri): close spec §7 Rust coverage gaps"
 import { describe, it, expect, vi } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url'; // R3 修正：ESM 无 __dirname
 
 // R2 修正：真扫 fork 源码，断言无 plugin-fs/shell/dialog 的 import
 // （§4.5 排除原则的机器可验版本）
 describe('capability whitelist contract', () => {
+  const here = fileURLToPath(new URL('.', import.meta.url));
+  const root = join(here, '../../..');
+
   function walk(dir: string, acc: string[] = []): string[] {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
       const p = join(dir, e.name);
@@ -179,7 +186,7 @@ describe('capability whitelist contract', () => {
   }
 
   it('fork source imports no fs/shell/dialog plugins', () => {
-    const files = walk(join(__dirname, '../../../..')); // frontend/packages
+    const files = walk(root);
     const forbidden = ['@tauri-apps/plugin-fs', '@tauri-apps/plugin-shell', '@tauri-apps/plugin-dialog'];
     for (const f of files) {
       const src = readFileSync(f, 'utf8');
@@ -190,7 +197,7 @@ describe('capability whitelist contract', () => {
   });
 
   it('transport commands are the only dsh_* invokes', () => {
-    const files = walk(join(__dirname, '../../../..'));
+    const files = walk(root);
     const allowed = new Set(['dsh_http', 'dsh_open_stream', 'dsh_close_stream', 'dsh_cancel', 'dsh_save_export', 'dsh_write_temp', 'dsh_import_dropped', 'dsh_export_session']);
     for (const f of files) {
       const src = readFileSync(f, 'utf8');
@@ -403,8 +410,15 @@ describe('handshake describe timeout', () => {
   afterEach(() => vi.useRealTimers());
 
   it('describe AbortSignal.timeout(10s) fires on hung sidecar', async () => {
-    // mock api：host.describe 永不 resolve（挂起）
-    const api = { host: { describe: vi.fn(() => new Promise(() => {})) } } as any; // test-only cast
+    // R3 修正：mock 必须监听 abort 并 reject（否则 promise 永不 settle，测试挂死）
+    const api = {
+      host: {
+        describe: vi.fn((_req: unknown, signal?: AbortSignal) =>
+          new Promise((_, reject) => {
+            signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+          })),
+      },
+    } as any; // test-only cast
     const signal = AbortSignal.timeout(10_000);
     const promise = api.host.describe({}, signal);
     vi.advanceTimersByTime(10_100);
