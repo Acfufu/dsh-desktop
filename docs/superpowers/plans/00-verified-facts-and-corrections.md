@@ -143,3 +143,24 @@ serde_json = "1"
 | R1-18 | M3 Task 6 | `beforeDevCommand: pnpm --dir ../frontend dev`（dev 必须拉起 vite，否则 devUrl 空白）；dev manifest 真实注入（非 stub） |
 | R1-19 | M5 Task 1 | 删 `assert!(true)` 空验证（迁移 7/8 属前端状态机，M3 覆盖）；probe 测试引用确认（M2 已建） |
 | R1-20 | M5 Task 5 | 许可逐个从包内 LICENSE 实证，禁断言 |
+
+## 9. R2 双审修正记录（2026-08-16，两审均 FAIL：6+8 个 BLOCKER/HIGH）
+
+| 编号 | 位置 | 修正 |
+|---|---|---|
+| R2-1 | M1 Task 1 | vendor 文件不再追加头部注释（会破坏 sync-carrier.sh 的 cmp 逐字节校验）——provenance 只放 README |
+| R2-2 | M1 Task 2 | `@deepseek-ai/cordis` 显式 devDependency；host-patch 非 workspace，pnpm add 不加 --filter |
+| R2-3 | M1 Task 3 | 测试焦点改为 start() 副作用（mock node:fs/node:http）；`this.config` 显式字段赋值；`svc.start().catch(logger.error)` |
+| R2-4 | M1 Task 5 | baseUrl 实测**前置于** Task 4 启动验证（插件未入 node_modules 会 DOA）；interceptor 双层分发给完整代码（不再引用上游文件） |
+| R2-5 | M2 Task 1 | `frontend/dist` 空占位目录（frontendDist 校验）；`icons/icon.png` Task 1 即生成占位 PNG |
+| R2-6 | M2 Task 2 | fake-sidecar 用 `CARGO_MANIFEST_DIR` 锚定绝对路径；AppState 定义提前到 Task 2；`impl Clone`；client 重建测试补代码 |
+| R2-7 | M2 Task 3 | `use futures_util::StreamExt` 补入；WS 端到端测试（open_stream 收帧） |
+| R2-8 | M2 Task 4 | 迁移 5 语义修正（ever_ready 区分首次/重启后 pre-ready 崩溃）；`ProbeResult` 三态 |
+| R2-9 | M2 Task 5 | 150MiB 基准经 `dsh_http_impl`（不经 invoke 不得冒充验收数据点）；退出序列替换 `.run()` 而非追加 |
+| R2-10 | M3 Task 1/5/6 | `workspace:*` 重写；node 入口守卫用 `pathToFileURL(argv[1]).href`；doFetch 保留 query string；composed-entries 派生产物；beforeDevCommand 拉 vite |
+| R2-11 | M3 Task 2/4 | 删删文件引用 grep 确认；删除自证恒真断言（expect(true)） |
+| R2-12 | M3 Task 5 | CSP 注明 dev 变体需放行 HMR ws；build-pipeline 测试依赖 M4 产物已标注 |
+| R2-13 | M4 Task 1/4.5/5 | `shutdown_sequence` 完整定义（M4 Task 1 引用）；`nanoid` 提为生产 pub fn；fs/PermissionsExt 导入；tempfiles 补 `use std::fs`；新增 Task 4.5 日志模块（§4.2：轮转/LC_ALL/from_utf8_lossy/panic hook）+ 错误对话框（eval alert，无 dialog 插件） |
+| R2-14 | M4 Task 4 | >10MiB 拖拽链路：新增 `dsh_import_dropped` + on_drag_drop_event；下载改 Rust 侧流式落盘（`dsh_export_session`），禁 invoke bytes 回传 |
+| R2-15 | M5 Task 1/2 | capability 测试真扫 fork 源码 import；stale unlink 测试驱动真实 `start()`；删 `assert!(true)` 空验证 |
+| R2-16 | M5 Task 4.5 | 新增 `scripts/dev.sh`（spec §9 脚本清单补全）+ 握手 describe 10s 调用点超时 + 测试 |

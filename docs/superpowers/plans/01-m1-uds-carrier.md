@@ -123,16 +123,9 @@ cmp "$SRC/websocket-downlink.ts" "$DEST/websocket-downlink.ts" && echo "websocke
 
 预期输出：两行 OK。
 
-- [ ] **Step 5: vendor 头部注释 + README**
+- [ ] **Step 5: vendor 头部注释 + README（R2 修正：provenance 只放 README，vendor 文件保持逐字节一致——否则 sync-carrier.sh 的 cmp 哨兵首次运行即报 DRIFT）**
 
-在两个 vendor 文件**顶部**追加（保留原文件全部内容）：
-```typescript
-/**
- * VENDORED from deepseek-harness@47f943859bef60e4160492346772ded9b24f765a
- * Source: packages/client/connection/src/<原文件名>
- * Do NOT edit. Sync via ../../../../../scripts/sync-carrier.sh (hash sentinel).
- */
-```
+**不再向 vendor 文件顶部追加注释**（R1 写法会破坏逐字节拷贝；R2 修正）。provenance 统一记在 README：
 
 `host-patch/vendor/README.md`：
 ```markdown
@@ -143,7 +136,7 @@ cmp "$SRC/websocket-downlink.ts" "$DEST/websocket-downlink.ts" && echo "websocke
 | `packages/uds-carrier/vendor/http-bridge.ts` | packages/client/connection/src/http-bridge.ts | `bridge` 不在 npm 导出面（仅 ./src/*，npm files 不含 src） |
 | `packages/uds-carrier/vendor/websocket-downlink.ts` | packages/client/connection/src/websocket-downlink.ts | `WebSocketDownlinks` 不在导出面 |
 
-同步：`scripts/sync-carrier.sh`（hash 哨兵，防与 npm 依赖漂移）。
+同步：`scripts/sync-carrier.sh`（cmp 逐字节校验，vendor 文件不得手改——头部/注释一律写本文件）。
 ```
 
 - [ ] **Step 6: sync-carrier.sh（hash 哨兵）**
@@ -354,13 +347,14 @@ export function apply(ctx: Context, config: { udsPath?: string } = {}) {
 }
 ```
 
-- [ ] **Step 7: 类型检查**
+- [ ] **Step 7: 类型检查（R2 修正：@deepseek-ai/cordis 必须显式依赖；host-patch 非 workspace，pnpm add 不加 --filter）**
 
 ```bash
-cd host-patch && pnpm exec tsc --noEmit -p tsconfig.json
+cd host-patch && pnpm add -D @deepseek-ai/cordis@0.1.0-rc.5 @deepseek-ai/dsh-host-apiproxy@0.1.0-rc.5
+pnpm exec tsc --noEmit -p tsconfig.json
 ```
 
-预期：exit 0（若 `@deepseek-ai/dsh-host-apiproxy` 未安装会报模块缺失——执行 `cd host-patch && pnpm add @deepseek-ai/dsh-host-apiproxy@0.1.0-rc.5 --filter dsh-desktop-host-patch` 或用 `pnpm install` 后重试；该依赖仅用于类型，运行时由 sidecar node_modules 提供）。
+预期：exit 0。若 `@deepseek-ai/cordis` 包名/版本不存在（npm 404），改用 `pnpm add -D cordis@latest`（上游 vendored loader 的宿主框架——以 npm 实际包名为准，记录偏差）。
 
 - [ ] **Step 8: 提交**
 
@@ -410,40 +404,53 @@ export function makeMockServer(handler: (req: unknown, res: unknown) => void) {
 }
 ```
 
-- [ ] **Step 2: 写失败测试（apply 生命周期 + 权限）**
+- [ ] **Step 2: 写失败测试（apply 生命周期 + 权限；R2 修正：apply 已存在于 Task 2——测试焦点改为 start() 的网络/权限副作用，mock node:fs/node:http）**
 
 `host-patch/packages/uds-carrier/src/index.test.ts`：
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { apply } from './index';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { UdsCarrierService } from './index';
 import { makeMockApiProxy } from './mock-test-util';
 
-describe('uds-carrier apply', () => {
-  it('creates server with chmod 600 socket and 0700 dir', async () => {
-    const fsMock = {
-      chmodSync: vi.fn(),
-      mkdirSync: vi.fn(),
-      unlinkSync: vi.fn(),
-      existsSync: vi.fn(() => false),
-    };
-    const httpMock = {
-      createServer: vi.fn(() => makeMockServer(() => {})),
-    };
-    // 注入 mock 通过 vi.mock 或模块参数（见实现处说明）
-    const ctx = { logger: { info: vi.fn() }, get: vi.fn(() => makeMockApiProxy(async () => ({}))), provide: vi.fn() } as any;
-    const svc = apply(ctx, { udsPath: '/tmp/dsh-test/dsh.sock' });
-    expect(svc.getSocketPath()).toBe('/tmp/dsh-test/dsh.sock');
+// R2 修正：真实 fs/http 由 vi.mock 替换，测 start() 副作用（chmod 600、0700 目录、残留 unlink）
+vi.mock('node:fs', () => ({
+  mkdirSync: vi.fn(),
+  chmodSync: vi.fn(),
+  unlinkSync: vi.fn(),
+  existsSync: vi.fn(() => false),
+}));
+vi.mock('node:http', () => ({
+  createServer: vi.fn(() => ({
+    on: vi.fn(),
+    listen: vi.fn((p: unknown, cb?: () => void) => { cb?.(); return this; }),
+    close: vi.fn((cb?: () => void) => { cb?.(); }),
+    closeAllConnections: vi.fn(),
+  })),
+}));
+
+describe('uds-carrier start', () => {
+  it('starts server, chmod 600 socket, mkdir 0700 dir', async () => {
+    const fs = await import('node:fs');
+    const http = await import('node:http');
+    const svc = new UdsCarrierService(
+      { logger: { info: vi.fn(), error: vi.fn() }, get: vi.fn(() => makeMockApiProxy(async () => ({}))) } as any, // test-only cast
+      { udsPath: '/tmp/dsh-test/dsh.sock' },
+    );
+    await svc.start();
+    expect(fs.mkdirSync).toHaveBeenCalledWith('/tmp/dsh-test', expect.objectContaining({ mode: 0o700 }));
+    expect(fs.chmodSync).toHaveBeenCalledWith('/tmp/dsh-test/dsh.sock', 0o600);
+    expect(http.createServer).toHaveBeenCalled();
   });
 });
 ```
 
-- [ ] **Step 3: 运行确认失败**
+- [ ] **Step 3: 运行确认失败（R2 修正：预期 FAIL 点是 svc.start() 尚不存在/无副作用——先跑出红，再实现）**
 
 ```bash
 cd host-patch && pnpm vitest run packages/uds-carrier/src/index.test.ts
 ```
 
-预期：FAIL（apply 未实现 createServer 逻辑或 mock 注入不匹配——先让测试通过再补全）。
+预期：FAIL（UdsCarrierService.start 未实现或无 mock 断言路径）。
 
 - [ ] **Step 4: 实现完整 apply()（核心）**
 
@@ -474,9 +481,11 @@ export class UdsCarrierService extends Service {
   private server?: Server;
   private downlinks?: WebSocketDownlinks;
   private socketPath: string;
+  private config: UdsCarrierConfig = {}; // R2 修正：显式字段
 
   constructor(ctx: Context, config: UdsCarrierConfig = {}) {
     super(ctx, 'udsCarrier');
+    this.config = config; // R2 修正：存 config，否则 this.config?.maxBodyBytes 恒为 undefined
     this.socketPath =
       config.udsPath ??
       selectSocketPath(process.env.DSH_HOME, process.getuid?.() ?? 0, os.tmpdir());
@@ -551,7 +560,8 @@ export function apply(ctx: Context, config: UdsCarrierConfig = {}): UdsCarrierSe
   const svc = new UdsCarrierService(ctx, config);
   ctx.provide('udsCarrier', svc);
   ctx.on('dispose', () => { void svc.stop(); });
-  void svc.start();
+  // R2 修正：捕获 start() 拒绝，避免 unhandled rejection
+  void svc.start().catch((e) => ctx.logger.error(`uds-carrier start failed: ${e}`));
   return svc;
 }
 ```
@@ -734,7 +744,9 @@ git commit -m "feat(host-patch): desktop.patch.yml disabling TCP carriers, M1 ac
 - Consumes: Task 4 的启动环境
 - Produces: ① baseUrl 锚定结论（决定 Rust 侧物化策略）；② Typert 远端端点（commands/goals/pluginInventory/dynamicCordisRunner）在 connection 禁用后是否可达的结论（决定 carrier 是否需双层分发）
 
-- [ ] **Step 1: baseUrl 锚定实测**
+- [ ] **Step 1: baseUrl 锚定实测（R2 修正：本步前置于 Task 4 启动验证——插件未入 node_modules 时 Task 4 启动会 DOA）**
+
+> R2 修正：**顺序调整**——先跑本步（插件解析方式），再回 Task 4 Step 2 做真实启动。若插件需先装入 `$DSH_HOME/profiles/web/node_modules/@dsh-desktop/uds-carrier` 才能被 loader 解析，则在 Task 4 Step 2 前先执行安装（`mkdir -p $DSH_HOME/profiles/web/node_modules/@dsh-desktop && cp -r host-patch/packages/uds-carrier $DSH_HOME/profiles/web/node_modules/@dsh-desktop/`）或改用绝对路径物化 patch。
 
 ```bash
 cd ~/codehub/deepseek-harness
@@ -760,7 +772,20 @@ curl --unix-socket /tmp/dsh-m1-test/run/dsh.sock \
   http://dsh/api/goals/execute
 ```
 
-预期：记录 `commands/execute` 与 `goals/execute` 的响应——method-not-found（缺口确认，carrier 需双层分发）或成功（apiProxy 实际覆盖，无缺口）。**R1 修正**：wire 格式为 `/api/<ns>/<method>`（Typert 两段式，facts §2 gateway client `connection.rpc.call('/api','commands/execute',...)`），**不是** `/api/commands.execute` 单段。**结论与对策写进 `docs/m1-spike-findings.md`**；**若缺口确认，双层分发必须在本 Task 内落地**（不得「下一迭代」）：在 `bridge` 前加 interceptor 层——镜像 `connection/src/rpc-host.ts` 的 `createSharedFetchHandler` 逻辑：carrier 的 uplink handler 先查已注册 interceptor（TypertGateway 若在），无则直落 `toFetchHandler(apiProxy)`；实现代码加入 Task 3 的 apply()（`this.interceptorFetch` 字段 + 注册表），并补充一条单测（mock 一个 interceptor 命中 vs 未命中）。若 M3 验收⑤（真实 agent 回合）在 M1 缺口未闭合时阻塞，则 M3 Task 6 先验证 ①–④，⑤ 延后到缺口闭合后。
+预期：记录 `commands/execute` 与 `goals/execute` 的响应——method-not-found（缺口确认，carrier 需双层分发）或成功（apiProxy 实际覆盖，无缺口）。**R1 修正**：wire 格式为 `/api/<ns>/<method>`（Typert 两段式，facts §2 gateway client `connection.rpc.call('/api','commands/execute',...)`），**不是** `/api/commands.execute` 单段。**结论与对策写进 `docs/m1-spike-findings.md`**；**若缺口确认，双层分发必须在本 Task 内落地**（不得「下一迭代」）。**R2 修正：interceptor 实现代码在此给出，不再引用上游文件让执行者自取**：
+
+```typescript
+// carrier 双层分发（R2 修正：完整代码）——先查已注册 interceptor，无则直落 apiProxy
+// 注册表：interceptors: Array<{ claims: (endpoint: string) => boolean; fetch: (req: IncomingMessage, res: ServerResponse) => Promise<void> }>
+// 在 UdsCarrierService 增加：
+//   registerInterceptor(i) / unregisterInterceptor(i)
+// start() 内 uplink handler 改为：
+//   const match = this.interceptors.find((i) => i.claims(pathname));
+//   if (match) await match.fetch(req, res); else await bridge(req, res, fetchHandler, maxBody);
+// 单测（index.test.ts 追加）：mock 一个 claims 恒真的 interceptor，断言其被调用；再 mock claims 恒假，断言落到 bridge。
+```
+
+若 M3 验收⑤（真实 agent 回合）在 M1 缺口未闭合时阻塞，则 M3 Task 6 先验证 ①–④，⑤ 延后到缺口闭合后。
 
 - [ ] **Step 3: 落档 + 提交**
 

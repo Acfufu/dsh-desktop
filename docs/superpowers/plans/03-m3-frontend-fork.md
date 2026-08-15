@@ -325,7 +325,9 @@ export class TauriApiClient extends AbstractApiClient implements IApiClient {
     // 前端 AbortSignal 映射为 Rust 侧取消（spec §4.3）：invoke 携带请求 id + 取消通道。
     // v1 简化：invoke 不挂起时由 dsh_cancel(id) 取消；此处保持 doFetch 无超时（调用点施加）。
     const method = (init?.method ?? 'GET').toUpperCase();
-    const path = new URL(input.toString(), 'http://dsh').pathname;
+    // R2 修正：保留 query string（pathname 会丢 session.export?xxx 等参数）
+    const url = new URL(input.toString(), 'http://dsh');
+    const path = url.pathname + url.search;
     const body = init?.body instanceof ArrayBuffer
       ? new Uint8Array(init.body)
       : typeof init?.body === 'string'
@@ -421,7 +423,14 @@ export class TauriApiClient extends AbstractApiClient implements IApiClient {
 
 > 注：以上导入路径为 R1 修正后的预期；若 `./rpc` 未导出 `RpcRequest/MuxFrame/HostFrame`（编译报错），则以 fork 内实际导出为准（`type` 导入只影响类型，本步以 tsc 通过为验收）。`super({ timeoutMs: 30_000 })` 若构造器签名不符（facts 只证 DEFAULT_TIMEOUT_MS 常量），改为调用基类默认构造并在 doFetch 层不设超时（调用点施加，符合 spec）。
 
-- [ ] **Step 4: index.ts 换 transport 构造**
+- [ ] **Step 4: index.ts 换 transport 构造（R2 修正：先 grep 其余对删除文件的引用再改）**
+
+```bash
+# R2 修正：确认 web-api-client/fixture 无其他引用（api.ts/connection.ts/seed 等）
+cd frontend && grep -rn "web-api-client\|WebApiClient\|fixture" packages/client/connection/src/ || echo "no refs"
+```
+
+预期：仅剩 index.ts 一处（或全部无引用）。若他处引用，一并在本步替换。随后：
 
 `frontend/packages/client/connection/src/client/index.ts`：把 `new WebApiClient()` 替换为 `new TauriApiClient()`，删除 `?fixture` 分支（fixture 已删）：
 ```typescript
@@ -546,30 +555,19 @@ vi.mock('@tauri-apps/api/core', () => {
 
 - [ ] **Step 2: ConnectionController 代际测试（上游语义确认）**
 
-`frontend/packages/client/connection/src/client/connection.test.ts`：
+`frontend/packages/client/connection/src/client/connection.test.ts`（R2 修正：删除自证恒真的断言——只测真实常量/行为）：
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
-import { ConnectionController, ConnectionConfig } from './connection';
+// R2 修正：导入真实默认配置（上游 connection.ts 导出），不自行声明常量后自证
+import { ConnectionController } from './connection';
 
 describe('ConnectionController regeneration', () => {
-  it('config defaults: base 500ms, factor 2, cap 10s, streamOpenTimeout 3s', () => {
-    const defaults: ConnectionConfig = {
-      api: {} as any,
-      backoffBaseMs: 500,
-      backoffFactor: 2,
-      backoffMaxMs: 10_000,
-      streamOpenTimeoutMs: 3_000,
-    };
-    expect(defaults.backoffBaseMs).toBe(500);
-    expect(defaults.backoffFactor).toBe(2);
-    expect(defaults.backoffMaxMs).toBe(10_000);
-  });
-
-  it('handshake requires describe success AND both streams open', () => {
-    // 以拷贝的上游 connection.ts 为准：138-155 行逻辑——此处验证常量契约，行为由上游单测覆盖
-    const cc = ConnectionController as any;
+  it('re-exported class exists and can be constructed with api stub', () => {
+    const cc = ConnectionController as any; // test-only cast
     expect(typeof cc).toBe('function');
   });
+  // R2 修正：不为「无行为可测」写自证断言（expect(true).toBe(true) 已删）；
+  // 行为由 M3 前端集成测试（mock invoke/Channel，见 Task 4 vitest 基建）覆盖。
 });
 ```
 
@@ -656,6 +654,7 @@ import { createHash } from 'node:crypto';
 import { injectBootManifest } from '@deepseek-ai/dsh-client-modules';
 import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync, copyFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { pathToFileURL } from 'node:url'; // R2 修正：入口守卫用绝对 URL 比较
 
 export interface ManifestEntry {
   id: string;
@@ -716,10 +715,12 @@ export function runMain() {
   console.log(`__DSH_BOOT__: ${full.length} entries, rev=${manifest.rev}`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   runMain();
 }
 ```
+
+> R2 修正：`import.meta.url === \`file://${process.argv[1]}\`` 在相对路径调用下永不相等（argv[1] 为相对路径）→ runMain 静默不执行。必须用 `pathToFileURL(process.argv[1]).href` 比较。
 
 - [ ] **Step 4: 运行测试确认通过**
 
@@ -750,10 +751,12 @@ console.log(`collected ${entries.length} bundles into ${distRoot}/plugins`);
 
 - [ ] **Step 6: index.html CSP + 品牌（spec §4.3 CSP）**
 
-`frontend/apps/web/index.html` 的 `<head>` 内加（替换 title）：
+`frontend/apps/web/index.html` 的 `<head>` 内加（替换 title；R2 修正：注明 dev 变体需额外放行 HMR ws）：
 ```html
 <title>dsh-desktop</title>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: asset:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost; font-src 'self' data:" />
+<!-- R2 修正：dev 模式（vite HMR）需 connect-src 额外加 ws://localhost:1420——由 vite 插件按 mode 注入
+     或接受 dev 下 HMR 受限（改文件自动重载不可用，手动刷新）；release 保持严格串。 -->
 ```
 
 - [ ] **Step 7: 构建管线测试（bundle 数 = 组合行数 + CSP 断言）**

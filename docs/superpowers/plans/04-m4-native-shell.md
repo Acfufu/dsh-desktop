@@ -417,9 +417,11 @@ git commit -m "feat: autostart plugin + agent notification via frontend"
 
 - [ ] **Step 1: 写失败测试（canonicalize 越界拒绝 + 随机名）**
 
-`src-tauri/src/tempfiles.rs`：
+`src-tauri/src/tempfiles.rs`（R2 修正：fs + PermissionsExt 显式导入）：
 ```rust
 use std::path::{Path, PathBuf};
+use std::fs; // R2 修正：生产代码用 fs::，必须显式导入
+use std::os::unix::fs::PermissionsExt; // R2 修正：set_mode/from_mode 需要
 
 /// 上传/临时文件纪律（spec §4.6）：canonicalize 后校验仍在允许范围内。
 pub fn canonicalize_within(root: &Path, candidate: &Path) -> Result<PathBuf, String> {
@@ -519,6 +521,15 @@ fn sanitize(s: &str) -> String {
     s.chars().map(|c| if c.is_ascii_alphanumeric() || c == '-' || c == '_' { c } else { '_' }).collect()
 }
 
+// R2 修正：nanoid 从测试模块提到生产作用域（dsh_save_export/dsh_write_temp 生产代码调用它，
+// 原定义在 #[cfg(test)] 内 → 非测试构建编译失败）
+pub fn nanoid() -> String {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let n = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+    format!("{n:x}")
+}
+
+// R2 修正：删除测试模块内的重复 nanoid 定义（已提为生产 pub fn），sanitize 测试保留
 #[cfg(test)]
 mod helpers {
     use super::sanitize;
@@ -540,10 +551,25 @@ mod helpers {
 
 > 注：`$APPCACHE` 类路径变量的可用性在 M4 验证（spec §4.7 验证项）——若不可用，改用运行时 `app.path().app_cache_dir()` 物化的绝对路径注入 capability（Rust 侧动态创建 capability 或文档记录替代）。
 
-- [ ] **Step 5: 上传/下载路径接线（前端）**
+- [ ] **Step 5: 上传/下载路径接线（前端；R2 修正：补 >10MiB 拖拽完整链路 + 下载不经 invoke bytes）**
 
-- 上传 <10 MiB：`File.arrayBuffer()` → `invoke('dsh_write_temp', ...)`；>10 MiB 仅拖拽（`onDragDropEvent` 给原生路径，Rust 直接读源文件，spec §4.6）。>10 MiB 且选择器选中 → 拒绝并提示。
-- 下载：前端 `invoke('dsh_save_export', { bytes, file_name })`（session.export 流式读取完成后）→ 通知「已下载到 ~/Downloads」。
+**R2 修正：新增 Rust 命令 `dsh_import_dropped`（拖拽路径摄取——fs 插件被排除，需 Rust 侧命令；spec §4.6）：**
+```rust
+// tempfiles.rs 追加：
+// 拖拽（onDragDropEvent）给原生路径 → Rust 直接读源文件（>10MiB 大文件）
+#[tauri::command]
+pub async fn dsh_import_dropped(path: String) -> Result<Vec<u8>, String> {
+    let canon = std::path::Path::new(&path).canonicalize().map_err(|e| format!("canonicalize: {e}"))?;
+    if !canon.is_file() { return Err("not a file".into()); }
+    std::fs::read(&canon).map_err(|e| format!("read: {e}"))
+}
+```
+
+- 窗口拖拽：WebviewWindowBuilder `.on_drag_drop_event(...)` → 拖拽路径调 `dsh_import_dropped` → 经 `dsh_http` 上传
+- **上传 <10 MiB**：`File.arrayBuffer()` → `invoke('dsh_write_temp', ...)`
+- **>10 MiB**：仅拖拽路径（`onDragDropEvent` → `dsh_import_dropped`）；选择器选中大文件 → 前端文件大小检查拒绝并提示
+- **下载（R2 修正：session.export 大 ZIP 不经 invoke bytes 回传）**：前端请求导出 → `invoke('dsh_export_session', { sessionId })` → **Rust 侧流式落盘**（经 UDS 拉 session.export 流 → 写 ~/Downloads → 通知）；`dsh_save_export(bytes, file_name)` 仅保留给小文件/临时场景。
+  > spec §6：150 MiB 响应约 23s 是 invoke 大 payload 代价——下载必须 Rust 侧流式落盘，禁止 bytes 经 invoke 回传前端。
 
 - [ ] **Step 6: 编译 + 测试 + 提交**
 
@@ -551,6 +577,111 @@ mod helpers {
 cd src-tauri && cargo test 2>&1 | tail -5 && cargo check 2>&1 | tail -3
 git add src-tauri/src/tempfiles.rs src-tauri/src/lib.rs src-tauri/tauri.conf.json
 git commit -m "feat(src-tauri): temp file discipline + export download"
+```
+
+---
+
+### Task 4.5: 日志模块 + 错误对话框（spec §4.2 日志 + §6 对话框；R2 修正：新增显式任务）
+
+**Files:**
+- Create: `src-tauri/src/logging.rs`
+- Create: `src-tauri/src/logging.rs`（单测：轮转、乱码解码）
+- Create: `src-tauri/src/dialogs.rs`
+- Modify: `src-tauri/src/process.rs`（spawn 接日志文件 + LC_ALL）
+- Modify: `src-tauri/src/lib.rs`（RUST_LOG + panic hook + 对话框接线）
+
+**Interfaces:**
+- Consumes: `~/Library/Logs/dsh-desktop/` 目录
+- Produces: `fn init_logging(app: &AppHandle) -> Result<PathBuf, String>`（1 MiB × 3 轮转）；`fn setup_panic_hook()`；`fn show_error_dialog(title, body)`（无 plugin-dialog——用 `tauri::window` 原生 alert 或最小内建消息框，§4.5 排除 dialog 插件，R2 修正：定载体为 `app.get_webview_window("main")?.eval("alert(...)")` 或 `rfd` 原生文件选择替代方案中取前者）
+
+- [ ] **Step 1: 日志模块（轮转 + 解码）**
+
+`src-tauri/src/logging.rs`：
+```rust
+use std::fs::{File, OpenOptions};
+use std::io::Write;
+use std::path::{Path, PathBuf};
+
+const MAX_LOG_BYTES: u64 = 1024 * 1024; // 1 MiB
+const ROTATIONS: usize = 3;
+
+/// sidecar stdout/stderr → ~/Library/Logs/dsh-desktop/sidecar.log（1 MiB × 3 轮转）
+/// R2 修正：显式任务（spec §4.2 日志要求全无家）
+pub fn init_sidecar_log(logs_dir: &Path) -> Result<File, String> {
+    std::fs::create_dir_all(logs_dir).map_err(|e| e.to_string())?;
+    let path = logs_dir.join("sidecar.log");
+    rotate_if_needed(&path);
+    OpenOptions::new().create(true).append(true).open(&path).map_err(|e| e.to_string())
+}
+
+fn rotate_if_needed(path: &Path) {
+    if let Ok(meta) = std::fs::metadata(path) {
+        if meta.len() >= MAX_LOG_BYTES {
+            for i in (1..ROTATIONS).rev() {
+                let from = path.with_extension(format!("{}.{}.", "log", i)); // sidecar.log.<i>
+                // 简化命名：sidecar.log.1 → sidecar.log.2 ...
+                let _ = std::fs::rename(path.with_extension("log").with_file_name(format!("sidecar.log.{i}")), path.with_extension("log").with_file_name(format!("sidecar.log.{}", i + 1)));
+            }
+            let _ = std::fs::rename(path, path.with_file_name("sidecar.log.1"));
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn creates_log_file() {
+        let dir = std::env::temp_dir().join(format!("dsh-log-{}", std::process::id()));
+        let f = init_sidecar_log(&dir).expect("init");
+        assert!(dir.join("sidecar.log").exists());
+        drop(f);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+```
+
+- [ ] **Step 2: spawn 接线（LC_ALL + 日志文件）**
+
+`src-tauri/src/process.rs` 的 `spawn_sidecar` 追加：
+```rust
+cmd.env("LC_ALL", "en_US.UTF-8"); // spec §4.2：显式 locale 防乱码
+// 日志解码：sidecar 输出在展示/落盘时 from_utf8_lossy（spec §4.2）——
+// 落盘为原始字节 + 读取时 from_utf8_lossy 解码（诊断对话框 tail 20 行时应用）
+```
+
+- [ ] **Step 3: 对话框（错误对话框 + tail 20；R2 修正：载体 = 主窗口 eval alert，无 dialog 插件）**
+
+`src-tauri/src/dialogs.rs`：
+```rust
+use tauri::{AppHandle, Manager};
+
+/// 错误对话框（spec §6）：sidecar 启动失败 stderr tail 20 / frontendDist 缺失 / socket 权限异常。
+/// R2 修正：§4.5 排除 dialog 插件 → 用主窗口原生 alert（eval）
+pub fn show_error_dialog(app: &AppHandle, title: &str, body: &str) {
+    if let Some(win) = app.get_webview_window("main") {
+        let js = format!("alert({:?})", format!("{title}\n\n{body}"));
+        let _ = win.eval(&js);
+    }
+}
+```
+
+- [ ] **Step 4: lib.rs 接线（RUST_LOG + panic hook + 启动失败对话框）**
+
+```rust
+// lib.rs run() 顶部：
+std::env::set_var("RUST_LOG", "info"); // spec §4.2：App 自身日志
+setup_panic_hook(); // 写 ~/Library/Logs/dsh-desktop/dsh-desktop-panic.log
+// spawn 前：let log_file = init_sidecar_log(&logs_dir)?;
+// first-starting 失败：let tail = tail20(&log_file); show_error_dialog(app, "dsh-desktop 启动失败", &tail);
+```
+
+- [ ] **Step 5: 提交**
+
+```bash
+git add src-tauri/src/logging.rs src-tauri/src/dialogs.rs src-tauri/src/process.rs src-tauri/src/lib.rs
+git commit -m "feat(src-tauri): logging module + error dialogs"
 ```
 
 ---
@@ -650,6 +781,26 @@ kill %1
   ```
 - spawn 命令 = `bin/node lib/bin.js --profile web --port 0 --patch <abs>/patch/desktop.patch.yml`（`<abs>` = `app.path().resource_dir()?.join("dsh/patch/desktop.patch.yml")`），cwd = `$DSH_HOME`。
 - **退出序列接线（R1 修正：显式任务，M2 验收 ②③ 在此验证）**：`RunEvent::ExitRequested` → `prevent_exit()` → 异步：① 取消重启定时器/退避 sleep ② SIGTERM(组)（`graceful_shutdown` 5s grace）③ SIGKILL(组) ④ unlink socket ⑤ `exit(0)`。
+- **`shutdown_sequence` 完整定义（R2 修正：M4 Task 1 引用它，此处必须给出可编译函数）**：
+  ```rust
+  // lib.rs：
+  pub async fn shutdown_sequence(app: tauri::AppHandle) {
+      // ① 取消重启定时器/退避 sleep（进程管理器持有的 CancellationToken）
+      if let Some(mgr) = app.try_state::<crate::process::ProcessManager>() {
+          mgr.cancel_restart().await;
+          // ② SIGTERM(组)：graceful_shutdown(child, 5s)
+          if let Some(child) = mgr.take_child().await {
+              crate::process::graceful_shutdown(&mut child, std::time::Duration::from_secs(5)).await;
+          }
+      }
+      // ④ unlink socket + 清临时文件
+      let sock = default_socket_path();
+      let _ = std::fs::remove_file(&sock);
+      // ⑤ exit(0)
+      std::process::exit(0);
+  }
+  ```
+  > 注：`ProcessManager`/`cancel_restart`/`take_child` 为进程管理器对外接口（本 Task 定义，M2 状态机实现复用）；以编译通过为验收。
 - **kill -9 退避节奏手动验证（M2 验收 ② 在此完成）**：启动 app → kill -9 sidecar → 观察日志退避节奏 1s→2s→4s→8s→停止；Cmd+Q → 观察 SIGTERM→5s→SIGKILL（M2 验收 ③ 在此完成）。
 
 - [ ] **Step 5: 提交**

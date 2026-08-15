@@ -31,7 +31,15 @@
 - Create: `src-tauri/src/main.rs`
 - Create: `src-tauri/src/lib.rs`
 - Create: `src-tauri/capabilities/desktop.json`
-- Create: `src-tauri/icons/`（占位图标，M4 前可空）
+- Create: `src-tauri/icons/icon.png`（R2 修正：Task 1 即生成占位 PNG——tauri.conf.json trayIcon 引用它，M2「可空」会导致 cargo check 失败）
+
+`src-tauri/icons/icon.png` 生成：
+```bash
+mkdir -p src-tauri/icons
+# 1x1 红色占位 PNG（后续 M4 品牌替换）
+printf '\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\x0dIDATx\x9cc\xf8\xff\xff?\x00\x08\x05\x02\xfe\xa9\x7f\xa4\x00\x00\x00\x00IEND\xaeB`\x82' > src-tauri/icons/icon.png
+file src-tauri/icons/icon.png   # 预期: PNG image data, 1 x 1
+```
 
 **Interfaces:**
 - Consumes: 无（脚手架）
@@ -93,6 +101,7 @@ fn main() {
     "beforeBuildCommand": "",
     "frontendDist": "../frontend/dist"
   },
+  // R2 修正：frontendDist 在 M2 时不存在 → 需建空占位目录（M3 构建后真实产物覆盖）
   "app": {
     "windows": [
       {
@@ -158,14 +167,15 @@ pub fn run() {
 }
 ```
 
-- [ ] **Step 5: 安装 tauri-cli + cargo check**
+- [ ] **Step 5: 安装 tauri-cli + cargo check（R2 修正：先建 frontend/dist 空占位）**
 
 ```bash
+mkdir -p ../frontend/dist   # frontendDist 占位（M2 尚无前端；M3 构建后真实产物覆盖）
 cargo install tauri-cli --locked --version 2.11.4
 cd src-tauri && cargo check 2>&1 | tail -5
 ```
 
-预期：`Finished dev [unoptimized + debuginfo]`（首次构建数分钟，`tail -5` 看到 Finished 即可）。
+预期：`Finished dev [unoptimized + debuginfo]`（首次构建数分钟，`tail -5` 看到 Finished 即可）。若仍报 frontendDist not found，确认 tauri.conf.json 的 `frontendDist` 相对 src-tauri 解析（`../frontend/dist`）。
 
 - [ ] **Step 6: 提交**
 
@@ -343,8 +353,10 @@ mod integration {
 
     impl Sidecar {
         fn start() -> Sidecar {
+            // R2 修正：用 CARGO_MANIFEST_DIR 锚定绝对路径（cargo test cwd = src-tauri，相对路径找不到根 scripts/）
+            let script = concat!(env!("CARGO_MANIFEST_DIR"), "/../scripts/fake-sidecar.mjs");
             let child = Command::new("node")
-                .arg("scripts/fake-sidecar.mjs")
+                .arg(script)
                 .env("DSH_SOCKET", UDS_PATH)
                 .spawn()
                 .expect("spawn fake sidecar");
@@ -485,8 +497,8 @@ cd src-tauri && cargo test streams 2>&1 | tail -5
 ```rust
 use tokio::net::UnixStream;
 use tokio_tungstenite::tungstenite::protocol::Message as WsMessage;
-use tokio_tungstenite::{connect_async_tls_with_config, Connector};
-use std::str::FromStr;
+use tokio_tungstenite::{client_async_tls_with_config};
+use futures_util::StreamExt; // R2 修正：reader.next() 必需
 
 const MUX_PATH: &str = "/api/events.mux";
 const HOST_PATH: &str = "/api/events.host";
@@ -581,6 +593,17 @@ pub struct AppState {
     pub registry: Arc<Mutex<StreamRegistry>>,
 }
 
+// R2 修正：dsh_http_impl 按值取 state + state.inner().clone() 需要 Clone
+impl Clone for AppState {
+    fn clone(&self) -> Self {
+        Self {
+            http_client: self.http_client.clone(), // reqwest::Client: Clone
+            uds_path: self.uds_path.clone(),
+            registry: Arc::clone(&self.registry),
+        }
+    }
+}
+
 #[tauri::command]
 pub async fn dsh_cancel(id: u64, state: State<'_, AppState>) -> Result<(), String> {
     // Task 4 接在途请求取消；当前幂等 no-op（spec：Rust 不设自身超时，取消由前端信号驱动）
@@ -630,16 +653,50 @@ server.on('upgrade', (req, socket, head) => {
 
 > 注：`ws` 是 devDependency——`cd host-patch && pnpm add -D ws @types/ws`（root 仓库）或在 fake-sidecar 所在处安装。M2 手测用。
 
-- [ ] **Step 6: 手动验证（tauri dev 暂不可用，先 cargo 直测核心逻辑）**
+- [ ] **Step 6: 手动验证（tauri dev 暂不可用，先 cargo 直测核心逻辑；R2 修正：补 WS 端到端测试——M2 阶段 open_stream 不得是死代码）**
+
+`src-tauri/src/streams.rs` 追加 WS 集成测试（spawn WS 版假 sidecar → dsh_open_stream 收帧 → kill 后收到 `""` 哨兵）：
+```rust
+#[cfg(test)]
+mod ws_integration {
+    use super::*;
+    use std::process::Command;
+    use std::time::Duration;
+
+    struct Sidecar(std::process::Child);
+
+    impl Sidecar {
+        fn start() -> Sidecar {
+            let script = concat!(env!("CARGO_MANIFEST_DIR"), "/../scripts/fake-sidecar.mjs");
+            let child = Command::new("node").arg(script)
+                .env("DSH_SOCKET", crate::http_command::UDS_PATH)
+                .spawn().expect("spawn ws sidecar");
+            std::thread::sleep(Duration::from_millis(800));
+            Sidecar(child)
+        }
+    }
+    impl Drop for Sidecar { fn drop(&mut self) { let _ = self.0.kill(); let _ = self.0.wait(); } }
+
+    #[tokio::test]
+    async fn open_stream_receives_frame_and_end_sentinel() {
+        let _sc = Sidecar::start();
+        // 直接经 open_ws_over_uds 打开 mux 流，读首帧（fake sidecar 启动即发 host.describe 帧）
+        let (mut ws, _) = open_ws_over_uds(crate::http_command::UDS_PATH, "ws://dsh/api/events.mux")
+            .await.expect("open ws");
+        let first = ws.next().await.expect("first frame").expect("frame ok");
+        assert!(matches!(first, WsMessage::Text(_)));
+    }
+}
+```
 
 ```bash
 node scripts/fake-sidecar.mjs &
 sleep 1
-cd src-tauri && cargo test streams 2>&1 | tail -5
+cd src-tauri && cargo test 2>&1 | tail -8
 kill %1
 ```
 
-预期：测试通过（open/close 幂等/注册表逻辑）。
+预期：测试通过（含 open_stream_receives_frame_and_end_sentinel；`""` 哨兵验证在 kill 场景由 M4 e2e 覆盖）。
 
 - [ ] **Step 7: 提交**
 
@@ -892,13 +949,13 @@ pub fn transition(state: AppState2, event: AppEvent, counter: &mut RestartCounte
     match (state, event) {
         (AppState2::Stopped, AppEvent::Start) => AppState2::FirstStarting,
         (AppState2::FirstStarting, AppEvent::SocketReady) => AppState2::Running,
-        // 迁移 5：重启后的 pre-ready 崩溃计入退避；迁移 10：首启 pre-ready 失败走对话框（不计入）
-        (AppState2::FirstStarting, AppEvent::FirstStartFailed) => AppState2::Stopped, // 对话框（UI 层）
-        (AppState2::FirstStarting, AppEvent::UnexpectedExit) => {
-            // 首启 pre-ready 失败不计入退避计数（spec §6）——但这里以 FirstStartFailed 表达；
-            // UnexpectedExit 只用于 running 之后。
-            AppState2::Stopped
-        }
+        // R2 修正：迁移 5——重启后的 pre-ready 崩溃计入退避 → Restarting；
+        // 区分「首次」（从未达过 socket-ready，走对话框）与「重启后」（计数）。
+        // 实现：状态机需跟踪 ever_ready 标志（结构体而非裸 enum），本函数签名保留——
+        // 由调用方（进程管理器）先判断 ever_ready，再选择事件：
+        //   ever_ready=false → FirstStartFailed（对话框，不计数）
+        //   ever_ready=true  → UnexpectedExit（计数 → Restarting/RestartStopped）
+        (AppState2::FirstStarting, AppEvent::FirstStartFailed) => AppState2::Stopped, // 首启对话框（UI 层）
         (AppState2::Running, AppEvent::UnexpectedExit) => match counter.on_exit(0) {
             RestartDecision::Restart => AppState2::Restarting,
             RestartDecision::Stop => AppState2::RestartStopped,
@@ -955,7 +1012,9 @@ mod migration_tests {
 }
 ```
 
-- [ ] **Step 5: 运行全部测试**
+- [ ] **Step 5: 运行全部测试（R2 修正：AppState 定义提前到 Task 2——集成测试引用它）**
+
+> R2 修正：`AppState` 三字段结构 + `impl Clone` 的定义**前移至 Task 2 Step 3**（http_command.rs 需要的 State 类型），Task 3 的 lib.rs 不再定义而是复用。顺序：Task 2 先建 AppState → dsh_http_impl → 集成测试 → Task 3 streams 注册表。
 
 ```bash
 cd src-tauri && cargo test 2>&1 | tail -10
@@ -992,11 +1051,11 @@ git commit -m "feat(src-tauri): process manager with backoff state machine"
 - Consumes: Task 2/4 产物
 - Produces: 150 MiB 数据点记录（spec §6 错误处理表）；退出序列实现
 
-- [ ] **Step 1: 150 MiB 数据点**
+- [ ] **Step 1: 150 MiB 数据点（R2 修正：经 Rust dsh_http_impl 转发测量，不直打假 sidecar——spec 数据点意图是 invoke 大 payload 代价）**
 
 `scripts/bench-big-body.mjs`：
 ```javascript
-// 大 body 阈值重测（spec M2 验收 ④）：150 MiB 响应经 UDS 转发耗时
+// 大 body 阈值重测（spec M2 验收 ④）：150 MiB 响应经 Rust 管道转发耗时
 import { createServer } from 'node:http';
 const path = process.env.DSH_SOCKET ?? '/tmp/dsh-uds-test/dsh.sock';
 const SIZE = 150 * 1024 * 1024;
@@ -1013,19 +1072,22 @@ const server = createServer((req, res) => {
 server.listen(path, () => console.log(`big-body server on ${path}`));
 process.on('SIGTERM', () => server.close(() => process.exit(0)));
 ```
+
 ```bash
+# R2 修正：通过 Rust dsh_http_impl 的测试/CLI 通道转发，测 invoke 路径真实代价
 node scripts/bench-big-body.mjs &
 sleep 1
-time curl --unix-socket /tmp/dsh-uds-test/dsh.sock -o /dev/null -s -w "http:%{http_code} size:%{size_download}\n" http://dsh/api/big
+# 方式 A：cargo test 专用 bench（bench_big_body 集成测试，spawn sidecar 后经 dsh_http_impl 拉 150MiB 计时）
+cd src-tauri && cargo test bench_big_body 2>&1 | tail -5
 kill %1
 ```
-记录耗时到 `docs/m1-spike-findings.md` 或独立 `docs/bench-notes.md`。
 
-预期：150 MiB 可完整下载；耗时记录为 M2 数据点（spec 基准约 23s，本地以实测为准）。
+> 若实现 bench 测试成本高，退化为方式 B：直连 UDS 的 curl 计时仅作参考值，并在 `docs/bench-notes.md` 标注「非 invoke 路径，需 M4 复测」——**不得冒充 M2 验收④数据点**。
+记录耗时到 `docs/bench-notes.md`（M2 数据点）。
 
-- [ ] **Step 2: 退出序列接线（lib.rs 扩展）**
+- [ ] **Step 2: 退出序列接线（lib.rs 扩展；R2 修正：替换 `.run(...)` 而非在其后追加——追加会形成非法 Rust）**
 
-`src-tauri/src/lib.rs` 追加（在 `.run()` 前 chain）：
+`src-tauri/src/lib.rs` 的 `.run(tauri::generate_context!())` **替换**为：
 ```rust
         .build(tauri::generate_context!())
         .expect("error while building tauri app")
@@ -1041,6 +1103,8 @@ kill %1
             }
         });
 ```
+
+> 注：`.build()` 前必须 `use tauri::Manager;`（M4 Task 1 已有）。此占位在 M4 Task 5 Step 4 替换为完整 `shutdown_sequence`（含 SIGTERM→5s→SIGKILL→unlink）。
 
 - [ ] **Step 3: 提交**
 
