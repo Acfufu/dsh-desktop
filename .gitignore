@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# AI agent work files
+.codegraph/
+.omc/
+.opencode/
+.claude/
+docs/
+artifacts/
