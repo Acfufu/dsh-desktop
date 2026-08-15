@@ -353,6 +353,7 @@ dsh-desktop/
 - rustup stable；node ^22.19 \|\| >=24（与 sidecar pin 一致）；pnpm 9
 - deepseek-harness checkout（`DSH_REPO`，commit 由 `UPSTREAM_PIN` 锁定）
 - bun 不再需要（R4 后主方案为 node；bun 仅远期可选）
+- 许可合规：deepseek-harness 为 MIT——fork 拷贝文件保留上游 MIT 头与署名；node/ws 等再分发组件收录进 `THIRD_PARTY_NOTICES`；仓库整体许可策略（当前为 GPL-3.0，含 MIT 组件，可分发但属用户定夺项）
 
 ### 里程碑与验收标准
 
