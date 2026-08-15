@@ -950,6 +950,15 @@ pub async fn probe_socket(socket_path: &str) -> ProbeResult {
     }
 }
 
+/// $DSH_HOME 派生 socket 路径（spec §4.2；R4 修正：从 lib.rs 移入——process_manager 引用它）
+/// 与 M1 selectSocketPath 主路径一致（$DSH_HOME/run/dsh.sock）；缺省 ~/.dsh
+pub fn default_socket_path() -> String {
+    let home = std::env::var("DSH_HOME").unwrap_or_else(|_| {
+        std::env::var("HOME").map(|h| format!("{h}/.dsh")).unwrap_or_else(|_| "/tmp/dsh-desktop".into())
+    });
+    format!("{home}/run/dsh.sock")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1023,18 +1032,14 @@ pub enum AppEvent {
     UserQuit,         // Cmd+Q / 托盘退出
 }
 
-pub fn transition(state: AppState2, event: AppEvent, counter: &mut RestartCounter) -> AppState2 {
+// R4 修正：ever_ready 由调用方经事件选择（FirstStartFailed vs UnexpectedExit）表达；
+// alive_secs 传入 on_exit（≥30s 重置规则可经状态机路径表达，不再硬编码 0）
+pub fn transition(state: AppState2, event: AppEvent, counter: &mut RestartCounter, alive_secs: u64) -> AppState2 {
     match (state, event) {
         (AppState2::Stopped, AppEvent::Start) => AppState2::FirstStarting,
         (AppState2::FirstStarting, AppEvent::SocketReady) => AppState2::Running,
-        // R2 修正：迁移 5——重启后的 pre-ready 崩溃计入退避 → Restarting；
-        // 区分「首次」（从未达过 socket-ready，走对话框）与「重启后」（计数）。
-        // 实现：状态机需跟踪 ever_ready 标志（结构体而非裸 enum），本函数签名保留——
-        // 由调用方（进程管理器）先判断 ever_ready，再选择事件：
-        //   ever_ready=false → FirstStartFailed（对话框，不计数）
-        //   ever_ready=true  → UnexpectedExit（计数 → Restarting/RestartStopped）
-        (AppState2::FirstStarting, AppEvent::FirstStartFailed) => AppState2::Stopped, // 首启对话框（UI 层）
-        (AppState2::Running, AppEvent::UnexpectedExit) => match counter.on_exit(0) {
+        (AppState2::FirstStarting, AppEvent::FirstStartFailed) => AppState2::Stopped, // 首启对话框（UI 层，不计数）
+        (AppState2::Running, AppEvent::UnexpectedExit) => match counter.on_exit(alive_secs) {
             RestartDecision::Restart => AppState2::Restarting,
             RestartDecision::Stop => AppState2::RestartStopped,
         },
@@ -1056,35 +1061,44 @@ mod migration_tests {
     #[test]
     fn start_to_running() {
         let mut c = RestartCounter::new();
-        assert_eq!(transition(AppState2::Stopped, AppEvent::Start, &mut c), AppState2::FirstStarting);
-        assert_eq!(transition(AppState2::FirstStarting, AppEvent::SocketReady, &mut c), AppState2::Running);
+        assert_eq!(transition(AppState2::Stopped, AppEvent::Start, &mut c, 0), AppState2::FirstStarting);
+        assert_eq!(transition(AppState2::FirstStarting, AppEvent::SocketReady, &mut c, 0), AppState2::Running);
     }
 
     #[test]
     fn unexpected_exit_backoff_then_stop() {
         let mut c = RestartCounter::new();
-        let s = transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c);
+        let s = transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c, 5);
         assert_eq!(s, AppState2::Restarting);
-        assert_eq!(transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut c), AppState2::FirstStarting);
+        assert_eq!(transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut c, 0), AppState2::FirstStarting);
+    }
+
+    #[test]
+    fn long_lived_crash_resets_via_transition() {
+        let mut c = RestartCounter::new();
+        c.on_exit(5); c.on_exit(5); // 2 次短命失败
+        let s = transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c, 60); // 存活≥30s
+        assert_eq!(s, AppState2::Restarting);
+        assert_eq!(c.consecutive_failures, 0); // R4 修正：≥30s 重置经状态机路径验证
     }
 
     #[test]
     fn five_failures_stops() {
         let mut c = RestartCounter::new();
         for _ in 0..5 {
-            let s = transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c);
+            let s = transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c, 0);
             if s == AppState2::Restarting {
-                transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut c);
+                transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut c, 0);
             }
         }
-        assert_eq!(transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c), AppState2::RestartStopped);
+        assert_eq!(transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c, 0), AppState2::RestartStopped);
     }
 
     #[test]
     fn quit_anywhere_stops() {
         let mut c = RestartCounter::new();
         for s in [AppState2::Running, AppState2::Restarting, AppState2::FirstStarting] {
-            assert_eq!(transition(s, AppEvent::UserQuit, &mut c), AppState2::Stopping);
+            assert_eq!(transition(s, AppEvent::UserQuit, &mut c, 0), AppState2::Stopping);
         }
     }
 }

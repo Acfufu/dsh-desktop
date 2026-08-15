@@ -199,3 +199,17 @@ serde_json = "1"
 | R3-28 | M5 Task 1 | e2e_smoke.rs 无 DSH_SOCKET 时 bare `cargo test` 失败 → 无 env 时 early return skip |
 | R3-29 | M5 Task 2 | capability.test.ts `__dirname` ESM 未定义 → import.meta.url |
 | R3-30 | M5 Task 4.5 | describe-timeout 测试挂死（mock 忽略 signal，promise 永不 reject）→ mock 监听 abort 后 reject |
+
+## 11. R4 双审修正记录（2026-08-16，安全/生命周期两审均 FAIL）
+
+| 编号 | 位置 | 修正 |
+|---|---|---|
+| R4-1 | M2 state_machine | `transition` 增 `alive_secs` 参数——≥30s 重置规则可经状态机路径表达（不再硬编码 on_exit(0)）；补 `long_lived_crash_resets_via_transition` 测试 |
+| R4-2 | M4 ProcessManager | **watch/backoff 循环完整实现**（此前是 `Ok(())` 骨架）：probe→Alive→退出 / Stale→unlink→spawn；ever_ready 字段（迁移 5）；child.wait→on_exit(alive_secs)→退避 sleep（select! 监听 cancel token）→respawn；RestartStopped→托盘弹窗 |
+| R4-3 | M4 module path | `crate::process::ProcessManager` → `crate::process_manager::ProcessManager`（编译错误）；`default_socket_path` 移入 process.rs（被 process_manager 引用） |
+| R4-4 | M4 tempfiles | `dsh_import_dropped` 加**拖拽来源白名单**（DROPPED_PATHS HashSet，on_drag_drop_event 记录）——XSS 不能 invoke 任意路径读文件；加 160MiB 大小上限 |
+| R4-5 | M4 tempfiles | `dsh_export_session` **完整命令定义**（此前只引用未实现）：Rust 侧拉 session.export → ~/Downloads → 通知；磁盘满 → 「磁盘空间不足」明确消息（dsh_write_temp 同） |
+| R4-6 | M4 tempfiles | **age_sweep**（启动按年龄清扫孤儿，spec §4.6）+ 退出序列⑤ remove_dir_all(temp-uploads)（此前只出现在 Interfaces） |
+| R4-7 | M3 Task 6 | **组合矩阵 UI**（spec §6）：StatusIndicator 组件——启动中/重连>30s banner+诊断/restart-stopped 托盘弹窗（此前零任务） |
+| R4-8 | M5 m6 | 测试改名语义：Running 状态幂等保持（不冒充迁移 6/7/8，后者属前端 ConnectionController） |
+| R4-9 | M4 Task 1 stub | shutdown_sequence 可编译 stub（Task 1）→ Task 4.75/5 换完整版（取消定时器→SIGTERM→5s→SIGKILL→unlink→exit） |

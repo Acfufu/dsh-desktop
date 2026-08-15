@@ -52,21 +52,21 @@ mod full_migration_table {
     // spec §6 迁移表 11 条路径
     #[test]
     fn m1_start_to_first_starting() {
-        assert_eq!(transition(AppState2::Stopped, AppEvent::Start, &mut fresh()), AppState2::FirstStarting);
+        assert_eq!(transition(AppState2::Stopped, AppEvent::Start, &mut fresh(), 0), AppState2::FirstStarting);
     }
     #[test]
     fn m2_socket_ready_to_running() {
-        assert_eq!(transition(AppState2::FirstStarting, AppEvent::SocketReady, &mut fresh()), AppState2::Running);
+        assert_eq!(transition(AppState2::FirstStarting, AppEvent::SocketReady, &mut fresh(), 0), AppState2::Running);
     }
     #[test]
     fn m3_unexpected_exit_to_restarting_or_stopped() {
         let mut c = fresh();
-        let s = transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c);
+        let s = transition(AppState2::Running, AppEvent::UnexpectedExit, &mut c, 5);
         assert!(s == AppState2::Restarting || s == AppState2::RestartStopped);
     }
     #[test]
     fn m4_backoff_elapsed_to_first_starting() {
-        assert_eq!(transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut fresh()), AppState2::FirstStarting);
+        assert_eq!(transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut fresh(), 0), AppState2::FirstStarting);
     }
     #[test]
     fn m5_first_starting_crash_counts_after_restart() {
@@ -78,25 +78,25 @@ mod full_migration_table {
     #[test]
     fn m6_handshake_success_connected() {
         // 前端状态机由 ConnectionController 覆盖（M3）；Rust 侧仅关心 App 级
-        assert_eq!(transition(AppState2::Running, AppEvent::SocketReady, &mut fresh()), AppState2::Running);
+        assert_eq!(transition(AppState2::Running, AppEvent::SocketReady, &mut fresh(), 0), AppState2::Running);
     }
     // R1 修正：迁移 7/8（stream end → reconnecting / reconnect → connected）属前端
     // ConnectionController 状态机——由 M3 前端测试覆盖（connection.test.ts），Rust 侧无对应迁移，
     // 不写占位测试（禁 assert!(true) 空验证）。
     #[test]
     fn m9_user_quit_stopping() {
-        assert_eq!(transition(AppState2::Running, AppEvent::UserQuit, &mut fresh()), AppState2::Stopping);
-        assert_eq!(transition(AppState2::Restarting, AppEvent::UserQuit, &mut fresh()), AppState2::Stopping);
+        assert_eq!(transition(AppState2::Running, AppEvent::UserQuit, &mut fresh(), 0), AppState2::Stopping);
+        assert_eq!(transition(AppState2::Restarting, AppEvent::UserQuit, &mut fresh(), 0), AppState2::Stopping);
     }
     #[test]
     fn m10_first_start_failure_dialog() {
-        assert_eq!(transition(AppState2::FirstStarting, AppEvent::FirstStartFailed, &mut fresh()), AppState2::Stopped);
+        assert_eq!(transition(AppState2::FirstStarting, AppEvent::FirstStartFailed, &mut fresh(), 0), AppState2::Stopped);
     }
     #[test]
     fn m11_tray_retry_resets_counter() {
         let mut c = fresh();
         c.on_exit(5); c.on_exit(5); c.on_exit(5); c.on_exit(5); c.on_exit(5);
-        assert_eq!(transition(AppState2::RestartStopped, AppEvent::RetryFromTray, &mut c), AppState2::FirstStarting);
+        assert_eq!(transition(AppState2::RestartStopped, AppEvent::RetryFromTray, &mut c, 0), AppState2::FirstStarting);
         assert_eq!(c.consecutive_failures, 0);
     }
 }

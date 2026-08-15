@@ -912,7 +912,34 @@ DSH_SOCKET=/tmp/dsh-m3-test/run/dsh.sock cargo tauri dev
 
 前端日志应显示：双流 open（dsh_open_stream mux+host 返回）→ describe 成功 → connected（ConnectionController 代际成功路径）。
 
-- [ ] **Step 4: 验收 ④ 会话列表/设置可交互**
+- [ ] **Step 4: 验收 ④ 会话列表/设置可交互（R4 修正：同 Task 补状态指示 UI——spec §6 组合矩阵）**
+
+**R4 修正：补状态指示组件（组合矩阵 UI 呈现，spec §6）**——`frontend/packages/client/web/src/status-indicator.tsx`：
+```tsx
+// R4 修正：组合矩阵 UI（spec §6）——此前零任务
+// first-starting×connecting → 启动中；running×reconnecting>30s → banner+诊断入口；restart-stopped → 重试
+import { useEffect, useState } from 'react';
+
+export function StatusIndicator({ appState, connState }: { appState: string; connState: string }) {
+  const [stuck, setStuck] = useState(false);
+  useEffect(() => {
+    if (connState === 'reconnecting') {
+      const t = setTimeout(() => setStuck(true), 30_000); // >30s → banner（防静默降级，spec §6）
+      return () => clearTimeout(t);
+    }
+    setStuck(false);
+  }, [connState]);
+
+  if (appState === 'first-starting' && connState === 'connecting') {
+    return <div className="dsh-status">启动中…</div>;
+  }
+  if (connState === 'reconnecting') {
+    return <div className="dsh-status dsh-banner">{stuck ? '连接异常，点击查看诊断' : '重连中…'}</div>;
+  }
+  return null;
+}
+```
+接线：boot 层读 App 状态（Rust 状态事件）与 ConnectionController 状态，渲染 `<StatusIndicator/>`。`restart-stopped` → 托盘弹窗已由 M4 ProcessManager 处理。
 
 WebView 内点击会话/设置 tab，UI 响应正常（经 dsh_http 往返）。
 

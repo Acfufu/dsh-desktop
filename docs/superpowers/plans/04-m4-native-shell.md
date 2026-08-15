@@ -570,30 +570,86 @@ mod helpers {
 
 - [ ] **Step 5: 上传/下载路径接线（前端；R2 修正：补 >10MiB 拖拽完整链路 + 下载不经 invoke bytes）**
 
-**R2 修正：新增 Rust 命令 `dsh_import_dropped`（拖拽路径摄取——fs 插件被排除，需 Rust 侧命令；spec §4.6）：**
+**R2 修正：新增 Rust 命令 `dsh_import_dropped`（拖拽路径摄取——fs 插件被排除，需 Rust 侧命令；spec §4.6；R4 修正：加拖拽来源白名单——XSS 不能任意读文件）**：
 ```rust
 // tempfiles.rs 追加：
-// 拖拽（onDragDropEvent）给原生路径 → Rust 直接读源文件（>10MiB 大文件）
+// R4 修正：拖拽来源白名单——只有 on_drag_drop_event 记录过的路径才可读
+static DROPPED_PATHS: std::sync::OnceLock<std::sync::Mutex<std::collections::HashSet<std::path::PathBuf>>> =
+    std::sync::OnceLock::new();
+
+pub fn record_dropped_path(p: &std::path::Path) {
+    DROPPED_PATHS.get_or_init(Default::default).lock().unwrap().insert(p.to_path_buf());
+}
+
 #[tauri::command]
 pub async fn dsh_import_dropped(path: String) -> Result<Vec<u8>, String> {
     let canon = std::path::Path::new(&path).canonicalize().map_err(|e| format!("canonicalize: {e}"))?;
+    let ok = DROPPED_PATHS.get_or_init(Default::default).lock().unwrap().iter().any(|p| p == &canon);
+    if !ok { return Err("path not from drag-drop".into()); } // R4 修正：XSS 无法 invoke 任意路径
     if !canon.is_file() { return Err("not a file".into()); }
-    std::fs::read(&canon).map_err(|e| format!("read: {e}"))
+    let meta = std::fs::metadata(&canon).map_err(|e| e.to_string())?;
+    if meta.len() > 160 * 1024 * 1024 { return Err("file too large (>160 MiB)".into()); }
+    std::fs::read(&canon).map_err(|e| e.to_string())
 }
 ```
 
-- 窗口拖拽：WebviewWindowBuilder `.on_drag_drop_event(...)` → 拖拽路径调 `dsh_import_dropped` → 经 `dsh_http` 上传
+- 窗口拖拽：WebviewWindowBuilder `.on_drag_drop_event(...)` → **回调内 `record_dropped_path(&p)`** → 调 `dsh_import_dropped` → 经 `dsh_http` 上传（R4 修正：先记录再读）
 - **上传 <10 MiB**：`File.arrayBuffer()` → `invoke('dsh_write_temp', ...)`
 - **>10 MiB**：仅拖拽路径（`onDragDropEvent` → `dsh_import_dropped`）；选择器选中大文件 → 前端文件大小检查拒绝并提示
-- **下载（R2 修正：session.export 大 ZIP 不经 invoke bytes 回传）**：前端请求导出 → `invoke('dsh_export_session', { sessionId })` → **Rust 侧流式落盘**（经 UDS 拉 session.export 流 → 写 ~/Downloads → 通知）；`dsh_save_export(bytes, file_name)` 仅保留给小文件/临时场景。
+- **下载（R2 修正：session.export 大 ZIP 不经 invoke bytes 回传；R4 修正：`dsh_export_session` 给出完整定义——此前只引用未实现）**：
+  ```rust
+  // tempfiles.rs 追加（R4 修正：完整命令定义 + 磁盘满明确消息）
+  #[tauri::command]
+  pub async fn dsh_export_session(app: AppHandle, session_id: String, state: tauri::State<'_, AppState>) -> Result<String, String> {
+      let url = format!("http://dsh/api/session.export?sessionId={}", urlencode(&session_id));
+      let resp = state.http_client.get(&url).send().await.map_err(|e| format!("transport: {e}"))?;
+      let bytes = resp.bytes().await.map_err(|e| format!("read: {e}"))?.to_vec();
+      let downloads = app.path().download_dir().map_err(|e| e.to_string())?;
+      std::fs::create_dir_all(&downloads).map_err(|e| e.to_string())?;
+      let dest = downloads.join(format!("dsh-session-{}-{}.zip", sanitize(&session_id), nanoid()));
+      std::fs::write(&dest, &bytes).map_err(|e| {
+          if e.kind() == std::io::ErrorKind::StorageFull || e.kind() == std::io::ErrorKind::QuotaExceeded {
+              "磁盘空间不足".to_string() // R4 修正：spec §6 明确消息
+          } else {
+              format!("disk write failed: {e}")
+          }
+      })?;
+      Ok(dest.display().to_string())
+  }
+  fn urlencode(s: &str) -> String { s.replace('%', "%25").replace('?', "%3F").replace('&', "%26") }
+  ```
+  前端：`invoke('dsh_export_session', { sessionId })` → 通知「已下载到 ~/Downloads」。`dsh_save_export(bytes, file_name)` 仅保留给小文件/临时场景。
   > spec §6：150 MiB 响应约 23s 是 invoke 大 payload 代价——下载必须 Rust 侧流式落盘，禁止 bytes 经 invoke 回传前端。
 
-- [ ] **Step 6: 编译 + 测试 + 提交**
+- [ ] **Step 6: age 清扫 + 退出清理 + 磁盘满消息（R4 修正：spec §4.6 启动清扫 + §4.2⑤ 清临时文件此前无实现；dsh_write_temp 补「磁盘空间不足」）**
+
+`src-tauri/src/tempfiles.rs` 追加：
+```rust
+/// R4 修正：启动时按年龄清扫孤儿临时文件（spec §4.6）
+pub fn age_sweep(cache_dir: &std::path::Path, max_age: std::time::Duration) {
+    let uploads = cache_dir.join("temp-uploads");
+    let Ok(entries) = std::fs::read_dir(&uploads) else { return; };
+    let now = std::time::SystemTime::now();
+    for e in entries.flatten() {
+        if let Ok(meta) = e.metadata() {
+            if let Ok(modified) = meta.modified() {
+                if now.duration_since(modified).map(|d| d > max_age).unwrap_or(false) {
+                    let _ = std::fs::remove_file(e.path());
+                }
+            }
+        }
+    }
+}
+```
+
+接线：`lib.rs` run() 顶部 `tempfiles::age_sweep(&cache_dir, Duration::from_secs(24 * 3600))`；退出序列 ⑤ 追加 `remove_dir_all(temp-uploads)`。`dsh_write_temp` 的 `fs::write` map_err 同样补「磁盘空间不足」分支（与 dsh_export_session 相同 pattern）。
+
+- [ ] **Step 7: 编译 + 测试 + 提交**
 
 ```bash
 cd src-tauri && cargo test 2>&1 | tail -5 && cargo check 2>&1 | tail -3
 git add src-tauri/src/tempfiles.rs src-tauri/src/lib.rs src-tauri/tauri.conf.json
-git commit -m "feat(src-tauri): temp file discipline + export download"
+git commit -m "feat(src-tauri): temp file discipline + export download + drag allowlist + age sweep"
 ```
 
 ---
@@ -749,8 +805,9 @@ tokio-util = "0.7"
 
 `src-tauri/src/process_manager.rs`：
 ```rust
-use crate::process::{graceful_shutdown, spawn_sidecar};
-use crate::state_machine::{AppState2, RestartCounter};
+use crate::process::{graceful_shutdown, spawn_sidecar, ProbeResult};
+use crate::process_manager;
+use crate::state_machine::{AppState2, RestartCounter, transition, AppEvent, RestartDecision};
 use std::sync::Mutex;
 use std::time::Duration;
 use tauri::AppHandle;
@@ -762,6 +819,7 @@ pub struct ProcessManager {
     pub counter: Mutex<RestartCounter>,
     pub child: Mutex<Option<Child>>,
     pub cancel: CancellationToken,
+    pub ever_ready: Mutex<bool>, // R4 修正：迁移 5 需要——曾达过 socket-ready 即不再走首启对话框
 }
 
 impl ProcessManager {
@@ -771,6 +829,7 @@ impl ProcessManager {
             counter: Mutex::new(RestartCounter::new()),
             child: Mutex::new(None),
             cancel: CancellationToken::new(),
+            ever_ready: Mutex::new(false),
         }
     }
 
@@ -784,9 +843,82 @@ impl ProcessManager {
         self.child.lock().ok()?.take()
     }
 
-    /// 启动 sidecar + watch 循环（watch 循环骨架：退避复用 M2 transition/on_exit；完整节奏 M4 手动验证）
-    pub async fn start(&self, _app: &AppHandle) -> Result<(), String> {
-        Ok(()) // 骨架：M4 Task 5 Step 4 接真实 spawn_sidecar 参数
+    /// R4 修正：watch 循环完整实现（spawn → 探测 → 事件 → child.wait → on_exit → 退避 sleep 监听 cancel）
+    pub async fn start(&self, app: AppHandle, node_bin: &str, args: Vec<String>, cwd: String, log_file: std::fs::File) -> Result<(), String> {
+        // 活体探测（spec §4.2 单实例）：Alive → 已在运行；仅 ENOENT/ECONNREFUSED 才 unlink 再 spawn
+        let socket = crate::process::default_socket_path();
+        match crate::process::probe_socket(&socket).await {
+            ProbeResult::Alive => {
+                crate::dialogs::show_error_dialog(&app, "dsh-desktop 已在运行", "检测到已有实例，请勿重复启动。");
+                std::process::exit(0);
+            }
+            ProbeResult::Stale => { let _ = std::fs::remove_file(&socket); }
+            ProbeResult::Error(e) => return Err(format!("probe: {e}")),
+        }
+
+        // ever_ready 区分首次/重启后（spec §6 迁移 5/10）
+        let first = !*self.ever_ready.lock().unwrap();
+        *self.state.lock().unwrap() = AppState2::FirstStarting;
+
+        match spawn_sidecar(node_bin, &args.iter().map(|s| s.as_str()).collect::<Vec<_>>(), &cwd, &log_file) {
+            Ok(child) => { *self.child.lock().unwrap() = Some(child); }
+            Err(e) => {
+                if first {
+                    // 迁移 10：首启失败 → 对话框（不计数）
+                    crate::dialogs::show_error_dialog(&app, "dsh-desktop 启动失败", &e.to_string());
+                    *self.state.lock().unwrap() = AppState2::Stopped;
+                } else {
+                    // 迁移 5：重启后 pre-ready 崩溃 → 计入退避
+                    let mut c = self.counter.lock().unwrap();
+                    let d = transition(*self.state.lock().unwrap(), AppEvent::UnexpectedExit, &mut c, 0);
+                    *self.state.lock().unwrap() = d;
+                }
+                return Err(e.to_string());
+            }
+        }
+
+        // watch 循环：child 退出 → on_exit(alive_secs) → 退避 sleep（监听 cancel）→ respawn
+        tokio::spawn(async move {
+            loop {
+                let alive_secs = {
+                    let mut guard = self.child.lock().unwrap();
+                    match guard.as_mut() {
+                        Some(ch) => {
+                            // 存活计时（近似：wait 阻塞前记时）
+                            let t0 = std::time::Instant::now();
+                            let _ = ch.wait().await;
+                            t0.elapsed().as_secs()
+                        }
+                        None => 0,
+                    }
+                };
+                if self.cancel.is_cancelled() { break; }
+                *self.ever_ready.lock().unwrap() = true;
+                let mut c = self.counter.lock().unwrap();
+                let s = transition(*self.state.lock().unwrap(), AppEvent::UnexpectedExit, &mut c, alive_secs);
+                *self.state.lock().unwrap() = s;
+                if s == AppState2::RestartStopped {
+                    // spec §6：托盘弹窗 + 停止自动重启（UI 层 retry 发 RetryFromTray）
+                    crate::dialogs::show_error_dialog(&app, "dsh-desktop 已停止", "连续 5 次启动失败，已停止自动重启。可在托盘菜单重试。");
+                    break;
+                }
+                // 退避 sleep（监听 cancel token；退出序列 ① 期间禁止 spawn）
+                let delay = c.current_delay;
+                drop(c);
+                tokio::select! {
+                    _ = tokio::time::sleep(delay) => {}
+                    _ = self.cancel.cancelled() => break,
+                }
+                if self.cancel.is_cancelled() { break; }
+                // respawn → FirstStarting
+                *self.state.lock().unwrap() = transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut self.counter.lock().unwrap(), 0);
+                match spawn_sidecar(node_bin, &args.iter().map(|s| s.as_str()).collect::<Vec<_>>(), &cwd, &log_file) {
+                    Ok(child) => { *self.child.lock().unwrap() = Some(child); }
+                    Err(_) => { /* 下次循环处理 */ }
+                }
+            }
+        });
+        Ok(())
     }
 }
 ```
@@ -917,7 +1049,7 @@ kill %1
   // lib.rs：
   pub async fn shutdown_sequence(app: tauri::AppHandle) {
       // ① 取消重启定时器/退避 sleep（进程管理器持有的 CancellationToken）
-      if let Some(mgr) = app.try_state::<crate::process::ProcessManager>() {
+      if let Some(mgr) = app.try_state::<crate::process_manager::ProcessManager>() {
           mgr.cancel_restart().await;
           // ② SIGTERM(组)：graceful_shutdown(child, 5s)
           if let Some(child) = mgr.take_child().await {
