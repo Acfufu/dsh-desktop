@@ -271,7 +271,8 @@ git commit -m "test: close spec §7 TS coverage gaps"
 ```bash
 #!/usr/bin/env bash
 # e2e smoke（spec §7 CI 自动化层）：零 WebDriver；前端 boot/握手成功经状态事件上报，Rust 断言。
-# 用法：DSH_HOME=/tmp/dsh-e2e ./scripts/e2e-smoke.sh [dev|release]
+# R5 修正：release 模式不得预启 sidecar——App 自身 ProcessManager 会 probe Alive → 弹「已在运行」并退出；
+# dev 模式（未接 ProcessManager 的旧产物）才允许外部预启。
 set -euo pipefail
 MODE="${1:-release}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -279,32 +280,38 @@ SIDECAR="$ROOT/src-tauri/resources/dsh"
 export DSH_HOME="${DSH_HOME:-$HOME/.dsh-e2e}"
 export DSH_SOCKET="$DSH_HOME/run/dsh.sock"
 
-echo "==> starting sidecar (desktop patch)"
-mkdir -p "$DSH_HOME"
-"$SIDECAR/bin/node" "$SIDECAR/lib/bin.js" --profile web --port 0 \
-  --patch "$SIDECAR/patch/desktop.patch.yml" &
-SIDE_PID=$!
-trap 'kill $SIDE_PID 2>/dev/null || true' EXIT
+if [ "$MODE" = "dev" ]; then
+  echo "==> starting sidecar (desktop patch) [dev only]"
+  mkdir -p "$DSH_HOME"
+  "$SIDECAR/bin/node" "$SIDECAR/lib/bin.js" --profile web --port 0 \
+    --patch "$SIDECAR/patch/desktop.patch.yml" &
+  SIDE_PID=$!
+  trap 'kill $SIDE_PID 2>/dev/null || true' EXIT
 
-echo "==> waiting for socket"
-for i in $(seq 1 30); do
-  [ -S "$DSH_SOCKET" ] && break
-  sleep 1
-done
-[ -S "$DSH_SOCKET" ] || { echo "FAIL: socket not ready"; exit 1; }
+  echo "==> waiting for socket"
+  for i in $(seq 1 30); do
+    [ -S "$DSH_SOCKET" ] && break
+    sleep 1
+  done
+  [ -S "$DSH_SOCKET" ] || { echo "FAIL: socket not ready"; exit 1; }
+fi
 
 echo "==> running Rust smoke (sidecar_socket_reachable)"
 cd "$ROOT/src-tauri"
 cargo test --test e2e_smoke 2>&1 | tail -5
 
 if [ "$MODE" = "release" ]; then
-  echo "==> launching built .app (release smoke)"
+  echo "==> launching built .app (release smoke; app self-manages sidecar)"
   APP="$ROOT/src-tauri/target/release/bundle/macos/dsh-desktop.app"
   [ -d "$APP" ] || { echo "FAIL: no .app build"; exit 1; }
-  # 启动 app；状态事件经 Rust 钩子上报（本阶段以进程存活 + socket 可达为 smoke 判据）
   open "$APP"
   sleep 8
-  pgrep -f "dsh-desktop" >/dev/null && echo "PASS: app running" || { echo "FAIL: app not running"; exit 1; }
+  # R5 修正：sidecar 由 app 自身 spawn——断言 socket 最终出现而非预启
+  for i in $(seq 1 15); do
+    [ -S "$DSH_SOCKET" ] && break
+    sleep 1
+  done
+  [ -S "$DSH_SOCKET" ] && echo "PASS: app running + sidecar up" || { echo "FAIL: app or sidecar not running"; exit 1; }
 fi
 echo "SMOKE PASS ($MODE)"
 ```
@@ -370,22 +377,15 @@ git commit -m "docs(e2e): optional WebDriver layer + real agent round manual pat
 
 - [ ] **Step 1: scripts/dev.sh（R2 修正：spec §9 脚本清单补全）**
 
-`scripts/dev.sh`：
+`scripts/dev.sh`（R5 修正：M4 后 App 自身经 ProcessManager spawn sidecar——外部预启会导致 probe Alive → 退出；dev.sh 不再预启，只跑 cargo tauri dev）：
 ```bash
 #!/usr/bin/env bash
-# dev 一键流（spec §9）：起 sidecar（desktop patch）→ cargo tauri dev（beforeDevCommand 拉 vite）
+# dev 一键流（spec §9）：cargo tauri dev（beforeDevCommand 拉 vite；sidecar 由 App 自身 ProcessManager 管理）
+# R5 修正：不再预启 sidecar——M4 后 App 会 probe socket，外部实例被判定「已在运行」
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export DSH_HOME="${DSH_HOME:-$HOME/.dsh-dev}"
-SIDECAR="$ROOT/src-tauri/resources/dsh"
-
 mkdir -p "$DSH_HOME"
-if [ -d "$SIDECAR" ]; then
-  "$SIDECAR/bin/node" "$SIDECAR/lib/bin.js" --profile web --port 0 \
-    --patch "$SIDECAR/patch/desktop.patch.yml" &
-  SIDE_PID=$!
-  trap 'kill $SIDE_PID 2>/dev/null || true' EXIT
-fi
 cd "$ROOT/src-tauri" && cargo tauri dev
 ```
 

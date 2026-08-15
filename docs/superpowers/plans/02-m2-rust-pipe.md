@@ -166,10 +166,10 @@ pub fn run() {
 }
 ```
 
-- [ ] **Step 5: 安装 tauri-cli + cargo check（R2 修正：先建 frontend/dist 空占位）**
+- [ ] **Step 5: 安装 tauri-cli + cargo check（R2 修正：先建 frontend/dist 空占位；R5 修正：mkdir 路径从 repo 根建 `frontend/dist`，非 `../frontend/dist`（后者指向仓库外））**
 
 ```bash
-mkdir -p ../frontend/dist   # frontendDist 占位（M2 尚无前端；M3 构建后真实产物覆盖）
+mkdir -p frontend/dist   # frontendDist 占位（M2 尚无前端；M3 构建后真实产物覆盖）——cwd 必须是 repo 根
 cargo install tauri-cli --locked --version 2.11.4
 cd src-tauri && cargo check 2>&1 | tail -5
 ```
@@ -196,9 +196,42 @@ git commit -m "feat(src-tauri): scaffold tauri v2 crate with pinned deps"
 - Consumes: `reqwest::ClientBuilder::unix_socket`（0.12.28，目标门控）；UDS 路径由进程管理器提供（Task 4 前用常量 `UDS_PATH`）
 - Produces: `#[tauri::command] dsh_http(method: String, path: String, body: Option<Vec<u8>>) -> Result<HttpResponse, String>`；`HttpResponse { status: u16, headers: HashMap<String,String>, body: Vec<u8> }`（derive Serialize/Deserialize）
 
-- [ ] **Step 1: 写失败测试（输入校验 + 响应形状）**
+- [ ] **Step 1: lib.rs 建 mod 声明 + AppState 唯一真源（R5 修正：Task 2/3 的 cargo test 若 mod 未声明会静默跑 0 个测试；AppState 不得在 http_command.rs 重复定义——E0308）**
 
-`src-tauri/src/http_command.rs`：
+`src-tauri/src/lib.rs`（Task 1 空壳替换）：
+```rust
+mod http_command;
+mod streams;
+mod process;
+mod state_machine;
+
+use std::sync::{Arc, Mutex};
+
+// R5 修正：AppState 唯一真源（Task 2 起）；http_command.rs 只 use crate::AppState
+pub struct AppState {
+    pub http_client: reqwest::Client,
+    pub uds_path: String,
+    pub registry: Arc<Mutex<streams::StreamRegistry>>,
+}
+
+impl Clone for AppState {
+    fn clone(&self) -> Self {
+        Self {
+            http_client: self.http_client.clone(),
+            uds_path: self.uds_path.clone(),
+            registry: Arc::clone(&self.registry),
+        }
+    }
+}
+
+pub fn run() {
+    // Task 3 Step 4 补完整 Builder chain
+}
+```
+
+- [ ] **Step 2: 写失败测试（输入校验 + 响应形状）**
+
+`src-tauri/src/http_command.rs`（R5 修正：**不含 AppState**——从 `use crate::AppState` 引用）：
 ```rust
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -264,33 +297,16 @@ cd src-tauri && cargo test validate_request 2>&1 | tail -5
 
 预期：PASS（纯函数测试本应直接过；此步确认编译与测试框架就绪）。若已过，继续 Step 3。
 
-- [ ] **Step 3: 实现 dsh_http_impl 纯函数 + AppState 定义 + 薄命令（R3 修正：AppState + StreamRegistry 完整代码在此落位，Task 2 不再前引用 Task 3；`dsh_http_impl` 给出完整实现）**
+- [ ] **Step 3: 实现 dsh_http_impl 纯函数 + 薄命令（R5 修正：AppState 来自 lib.rs，此处不定义）**
 
-`src-tauri/src/http_command.rs` 追加（同时定义 AppState 与 StreamRegistry 的最小版——streams 注册表完整实现在 Task 3，此处先给可编译骨架）：
+`src-tauri/src/http_command.rs` 追加：
 ```rust
 use tauri::State;
-use std::sync::{Arc, Mutex};
+use crate::AppState; // R5 修正：唯一真源在 lib.rs
 
 pub const UDS_PATH: &str = "/tmp/dsh-uds-test/dsh.sock"; // 假 sidecar 路径（Task 4 换成进程管理器提供）
 
-// R3 修正：AppState 定义在此（Task 2），Task 3/4 的 lib.rs 复用
-pub struct AppState {
-    pub http_client: reqwest::Client,
-    pub uds_path: String,
-    pub registry: Arc<Mutex<crate::streams::StreamRegistry>>,
-}
-
-impl Clone for AppState {
-    fn clone(&self) -> Self {
-        Self {
-            http_client: self.http_client.clone(),
-            uds_path: self.uds_path.clone(),
-            registry: Arc::clone(&self.registry),
-        }
-    }
-}
-
-// R3 修正：核心逻辑抽成纯函数（可测，绕开 tauri State 注入）；命令薄包装
+// R5 修正：核心逻辑抽成纯函数（可测，绕开 tauri State 注入）；命令薄包装
 pub async fn dsh_http_impl(
     state: AppState,
     method: String,
@@ -1143,13 +1159,15 @@ git commit -m "feat(src-tauri): process manager with backoff state machine"
 - Consumes: Task 2/4 产物
 - Produces: 150 MiB 数据点记录（spec §6 错误处理表）；退出序列实现
 
-- [ ] **Step 1: 150 MiB 数据点（R2 修正：经 Rust dsh_http_impl 转发测量，不直打假 sidecar——spec 数据点意图是 invoke 大 payload 代价）**
+- [ ] **Step 1: 150 MiB 数据点（R2 修正：经 Rust dsh_http_impl 转发测量，不直打假 sidecar——spec 数据点意图是 invoke 大 payload 代价；R5 修正：bench 测试给出完整代码，`cargo test bench_big_body` 不得零测试静默假过）**
 
-`scripts/bench-big-body.mjs`：
+`src-tauri/src/bench_test.rs`（R5 修正：完整 bench 集成测试）——前置创建 `scripts/bench-big-body.mjs`（150MiB UDS HTTP 服务，spawn 由测试驱动，无独立 `&` 启动）：
 ```javascript
-// 大 body 阈值重测（spec M2 验收 ④）：150 MiB 响应经 Rust 管道转发耗时
+// scripts/bench-big-body.mjs：150 MiB UDS HTTP 服务（bench 测试 spawn 用）
 import { createServer } from 'node:http';
+import { mkdirSync } from 'node:fs';
 const path = process.env.DSH_SOCKET ?? '/tmp/dsh-uds-test/dsh.sock';
+mkdirSync(path.slice(0, path.lastIndexOf('/')), { recursive: true, mode: 0o700 });
 const SIZE = 150 * 1024 * 1024;
 const chunk = Buffer.alloc(64 * 1024, 0x61);
 const server = createServer((req, res) => {
@@ -1164,18 +1182,55 @@ const server = createServer((req, res) => {
 server.listen(path, () => console.log(`big-body server on ${path}`));
 process.on('SIGTERM', () => server.close(() => process.exit(0)));
 ```
+```rust
+#[cfg(test)]
+mod bench {
+    use super::*;
+    use crate::http_command::{dsh_http_impl, UDS_PATH};
+    use crate::AppState; // R5 修正：AppState 在 lib.rs
+    use std::process::{Child, Command};
+    use std::sync::{Arc, Mutex};
+    use std::time::{Duration, Instant};
 
-```bash
-# R2 修正：通过 Rust dsh_http_impl 的测试/CLI 通道转发，测 invoke 路径真实代价
-node scripts/bench-big-body.mjs &
-sleep 1
-# 方式 A：cargo test 专用 bench（bench_big_body 集成测试，spawn sidecar 后经 dsh_http_impl 拉 150MiB 计时）
-cd src-tauri && cargo test bench_big_body 2>&1 | tail -5
-kill %1
+    struct Sidecar(Child);
+    impl Sidecar {
+        fn start() -> Sidecar {
+            let script = concat!(env!("CARGO_MANIFEST_DIR"), "/../scripts/bench-big-body.mjs");
+            let child = Command::new("node").arg(script)
+                .env("DSH_SOCKET", UDS_PATH)
+                .spawn().expect("spawn bench sidecar");
+            std::thread::sleep(Duration::from_millis(800));
+            Sidecar(child)
+        }
+    }
+    impl Drop for Sidecar { fn drop(&mut self) { let _ = self.0.kill(); let _ = self.0.wait(); } }
+
+    #[tokio::test]
+    async fn bench_150mib_through_pipe() {
+        let _sc = Sidecar::start();
+        let client = reqwest::ClientBuilder::new().unix_socket(UDS_PATH).build().unwrap();
+        let state = crate::AppState {
+            http_client: client,
+            uds_path: UDS_PATH.to_string(),
+            registry: Arc::new(Mutex::new(crate::streams::StreamRegistry::new())),
+        };
+        let t0 = Instant::now();
+        let resp = dsh_http_impl(state, "GET".into(), "/api/big".into(), None).await.expect("fetch 150MiB");
+        let elapsed = t0.elapsed();
+        assert_eq!(resp.body.len(), 150 * 1024 * 1024);
+        println!("bench: 150 MiB through dsh_http_impl in {elapsed:?}");
+        // 记录到 docs/bench-notes.md（M2 数据点）
+    }
+}
 ```
 
-> 若实现 bench 测试成本高，退化为方式 B：直连 UDS 的 curl 计时仅作参考值，并在 `docs/bench-notes.md` 标注「非 invoke 路径，需 M4 复测」——**不得冒充 M2 验收④数据点**。
-记录耗时到 `docs/bench-notes.md`（M2 数据点）。
+```bash
+node scripts/bench-big-body.mjs &
+BENCH_PID=$!
+sleep 1
+cd src-tauri && cargo test bench_150mib 2>&1 | tail -5
+kill $BENCH_PID 2>/dev/null || true
+```
 
 - [ ] **Step 2: 退出序列接线（lib.rs 扩展；R2 修正：替换 `.run(...)` 而非在其后追加——追加会形成非法 Rust）**
 

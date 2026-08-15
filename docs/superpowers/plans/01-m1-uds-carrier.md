@@ -7,7 +7,7 @@
 
 **Architecture:** 本地目录插件 `host-patch/packages/uds-carrier`（不发布 npm），`desktop.patch.yml` 禁用 webserver/web-runtime/connection/client-hmr/modules 五行、insert uds-carrier 行；carrier 从 `ctx.get('apiProxy')` 取 ApiProxy（提供者 = api-gateway 行 `@deepseek-ai/dsh-host-apiproxy`，仍存活）。bridge 与 WebSocketDownlinks 从 connection 包 vendor 拷贝（同 commit，hash 哨兵脚本防漂移）。
 
-**Tech Stack:** node 24（本机 v24.14.1）、pnpm 11.3.0、vitest、deepseek-harness @ 47f94385（UPSTREAM_PIN）、`@deepseek-ai/dsh-host-apiproxy@0.1.0-rc.5`（npm 根导出 toFetchHandler）。
+**Tech Stack:** node 24（本机 v24.14.1）、pnpm 11.3.0、vitest、deepseek-harness @ 47f94385（UPSTREAM_PIN）、`@deepseek-ai/dsh-host-apiproxy@0.1.0-rc.6`（npm 根导出 toFetchHandler）。
 
 ## Global Constraints
 
@@ -271,7 +271,24 @@ cd host-patch && pnpm vitest run packages/uds-carrier/src/socket-path.test.ts
 
 预期：4 passed。
 
-- [ ] **Step 5: 插件 package.json**
+- [ ] **Step 5: 插件 package.json + tsconfig（R5 修正：uds-carrier/tsconfig.json 列了 Files 但从无步骤创建——tsconfig.build.json extends 它会失败）**
+
+`host-patch/packages/uds-carrier/tsconfig.json`（R5 修正：新内容）：
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "vendor/**/*.ts"]
+}
+```
 
 `host-patch/packages/uds-carrier/package.json`（R1 修正：入口编译产物 `lib/index.js`——node ESM 无法解析 extensionless 相对导入，源码 `src/` 供 vitest 直测，产物供插件加载）：
 ```json
@@ -286,7 +303,7 @@ cd host-patch && pnpm vitest run packages/uds-carrier/src/socket-path.test.ts
     "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-host-apiproxy": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-host-apiproxy": "0.1.0-rc.6",
     "ws": "^8.18.0"
   }
 }
@@ -349,10 +366,10 @@ export function apply(ctx: Context, config: { udsPath?: string } = {}) {
 }
 ```
 
-- [ ] **Step 7: 类型检查（R2 修正：@deepseek-ai/cordis 必须显式依赖；host-patch 非 workspace，pnpm add 不加 --filter；R3 修正：cordis 版本实证为 4.0.1，非 0.1.0-rc.5）**
+- [ ] **Step 7: 类型检查（R2 修正：@deepseek-ai/cordis 必须显式依赖；host-patch 非 workspace，pnpm add 不加 --filter；R3 修正：cordis 版本实证为 4.0.1，非 0.1.0-rc.6）**
 
 ```bash
-cd host-patch && pnpm add -D @deepseek-ai/cordis@4.0.1 @deepseek-ai/dsh-host-apiproxy@0.1.0-rc.5
+cd host-patch && pnpm add -D @deepseek-ai/cordis@4.0.1 @deepseek-ai/dsh-host-apiproxy@0.1.0-rc.6
 pnpm exec tsc --noEmit -p tsconfig.json
 ```
 
@@ -663,6 +680,7 @@ pnpm run build 2>&1 | tail -3
 # 无 key 启动：应能起服务（describe 会因缺 key 报业务错，但 socket 应可连）
 DSH_HOME=/tmp/dsh-m1-test node apps/cli/lib/bin.js --profile web --port 0 \
   --patch /Users/acfufu/Codehub/dsh-desktop/host-patch/desktop.patch.yml &
+SIDE_PID=$!   # R5 修正：捕获 PID（Step 7 清理用）
 sleep 6
 ```
 
@@ -700,6 +718,7 @@ if [ -n "${DEEPSEEK_API_KEY:-}" ]; then
   DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" DSH_HOME=/tmp/dsh-m1-test \
     node apps/cli/lib/bin.js --profile web --port 0 \
     --patch /Users/acfufu/Codehub/dsh-desktop/host-patch/desktop.patch.yml &
+  SIDE_PID2=$!   # R5 修正：捕获 PID
   sleep 6
   curl --unix-socket /tmp/dsh-m1-test/run/dsh.sock \
     -H 'Content-Type: application/json' \
@@ -749,7 +768,7 @@ node /tmp/m1-ws-check.mjs
 - [ ] **Step 7: 清理 + 提交（R3 修正：PID 捕获而非 %N 跨 shell 引用）**
 
 ```bash
-kill $SIDE_PID $SIDE_PID2 2>/dev/null || true   # 上一步用 $! 捕获的 PID（无则忽略）
+kill $SIDE_PID $SIDE_PID2 2>/dev/null || true   # R5 修正：Step 2/5 已用 $! 捕获
 rm -rf /tmp/dsh-m1-test
 git add host-patch/desktop.patch.yml host-patch/README.md scripts/verify-m1.sh
 git commit -m "feat(host-patch): desktop.patch.yml disabling TCP carriers, M1 acceptance verified"

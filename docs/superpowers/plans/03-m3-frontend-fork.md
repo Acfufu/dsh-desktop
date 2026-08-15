@@ -7,7 +7,7 @@
 
 **Architecture:** fork 形态 = 「编译面整体复制 + npm 固定版本 + 构建期拉取插件 bundle」（spec §4.3 确定结论）。8 个拷贝包（web、modules、connection、web-react、ui-slots、ui-primitives、ui-attachment、schema-form），同步冲突面 ~40 文件，`UPSTREAM_PIN` + `sync-frontend.sh`（canary：web-api-client.ts 漂移哨兵）。
 
-**Tech Stack:** vite（上游版本，读 fork 后 `frontend/apps/web/package.json`）、React 18、vitest + jsdom、`@tauri-apps/api@2.11.1`、`@deepseek-ai/dsh-client-modules@0.1.0-rc.5`（injectBootManifest 根导出）、`@deepseek-ai/dsh-host-apiproxy@0.1.0-rc.5`、`@deepseek-ai/cordis`。
+**Tech Stack:** vite（上游版本，读 fork 后 `frontend/apps/web/package.json`）、React 18、vitest + jsdom、`@tauri-apps/api@2.11.1`、`@deepseek-ai/dsh-client-modules@0.1.0-rc.6`（injectBootManifest 根导出）、`@deepseek-ai/dsh-host-apiproxy@0.1.0-rc.6`、`@deepseek-ai/cordis`。
 
 ## Global Constraints
 
@@ -113,19 +113,23 @@ rm "$DST/connection/src/client/fixture.ts"          # 3188 行测试夹具，删
   "dependencies": {
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "@deepseek-ai/dsh-host-apiproxy": "0.1.0-rc.5",
-    "@deepseek-ai/dsh-client-modules": "0.1.0-rc.5",
+    "@deepseek-ai/dsh-host-apiproxy": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-modules": "0.1.0-rc.6",
     "@deepseek-ai/cordis": "4.0.1",
     "@tauri-apps/api": "2.11.1",
     "@tauri-apps/plugin-notification": "2.3.3",
     "@tauri-apps/plugin-autostart": "2.5.1",
     "@tauri-apps/plugin-opener": "2.5.4",
-    "@deepseek-ai/dsh-client-web": "0.1.0-rc.5",
-    "@deepseek-ai/dsh-client-web-react": "0.1.0-rc.5",
-    "@deepseek-ai/dsh-client-ui-slots": "0.1.0-rc.5",
-    "@deepseek-ai/dsh-client-ui-primitives": "0.1.0-rc.5",
-    "@deepseek-ai/dsh-client-ui-attachment": "0.1.0-rc.5",
-    "@deepseek-ai/dsh-client-schema-form": "0.1.0-rc.5"
+    "@deepseek-ai/dsh-client-web": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-web-react": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-ui-attachment": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-schema-form": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-ui-theme": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-runtime": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-app-shell": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-invariants": "0.1.0-rc.6"
   },
   "devDependencies": {
     "vite": "^6.0.0",
@@ -172,10 +176,11 @@ import { fileURLToPath, URL } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { buildManifest } from './scripts/generate-manifest';
 
-// dev 注入 __DSH_BOOT__ manifest（R1 修正：真实注入，非 stub——读取 composed-entries.json + public/plugins 供给）
+// dev 注入 __DSH_BOOT__ manifest（R1 修正：真实注入，非 stub——读取 composed-entries.json + public/plugins 供给；R5 修正：apply:'serve'——否则 pnpm build 也触发 transformIndexHtml 读不存在的文件）
 function devBootManifest(): Plugin {
   return {
     name: 'dsh-dev-boot-manifest',
+    apply: 'serve', // R5 修正：只 dev 生效；build 由 generate-manifest 注入
     transformIndexHtml: {
       order: 'post',
       handler: (html: string) => {
@@ -224,10 +229,10 @@ for f in $(find . -name package.json -not -path '*/node_modules/*'); do
   fi
 done
 # 对每个 workspace:* 依赖，用 DSH_REPO 对应包的实际版本替换（grep 版本号）
-# 例：sed -i '' 's#"@deepseek-ai/dsh-client-modules": "workspace:\*"#"@deepseek-ai/dsh-client-modules": "0.1.0-rc.5"#g' <files>
+# 例：sed -i '' 's#"@deepseek-ai/dsh-client-modules": "workspace:\*"#"@deepseek-ai/dsh-client-modules": "0.1.0-rc.6"#g' <files>
 ```
 
-> 版本号来源：`grep '"version"' ~/codehub/deepseek-harness/packages/client/<pkg>/package.json`（monorepo 统一 rc 版本线，host-apiproxy 已证 0.1.0-rc.5；其余以实际为准）。替换完成后：
+> 版本号来源：`grep '"version"' ~/codehub/deepseek-harness/packages/client/<pkg>/package.json`（monorepo 统一 rc 版本线，host-apiproxy 已证 0.1.0-rc.6；其余以实际为准）。替换完成后：
 
 ```bash
 cd frontend && pnpm install 2>&1 | tail -5
@@ -268,6 +273,24 @@ chmod +x scripts/sync-frontend.sh && ./scripts/sync-frontend.sh 2>&1 | tail -15
 ```
 
 预期：逐包 diff 输出（首次应只有 fork 侧新增文件 `Only in ...` 被过滤，上游侧无改动）。
+
+- [ ] **Step 8.5: dev 模式插件 bundle 供给（R5 修正：dev 无 dist/plugins——public/plugins 静态供给，否则 tauri dev 下 /plugins/<id>/client.js 404，验收②失败）**
+
+```bash
+# 把派生出的 bundle 拷到 public/plugins（dev 静态供给；与 dist/plugins 同源）
+mkdir -p frontend/public/plugins
+node -e '
+const { readFileSync, copyFileSync, mkdirSync } = require("node:fs");
+const { dirname } = require("node:path");
+const entries = JSON.parse(readFileSync("frontend/composed-entries.json", "utf8"));
+for (const e of entries) {
+  const dest = "frontend/public/plugins/" + e.id + "/client.js";
+  mkdirSync(dirname(dest), { recursive: true });
+  copyFileSync(e.file, dest);
+}
+console.log("dev plugins:", entries.length);
+'
+```
 
 - [ ] **Step 9: 提交**
 
@@ -423,17 +446,22 @@ export class TauriApiClient extends AbstractApiClient implements IApiClient {
       }
     };
 
+    // 挂起的 open_stream invoke 绑定代际 AbortSignal（spec §4.3）——R5 修正：invoke 前注册 abortHandler，
+    // 否则 signal 在 invoke 挂起期间触发时永不处理（generator 卡死）
+    const abortHandler = () => { ended = true; endResolve(); };
+    signal?.addEventListener('abort', abortHandler, { once: true });
+
     let streamId: number;
     try {
       streamId = await invoke<number>('dsh_open_stream', { stream, channel });
     } catch (e) {
+      signal?.removeEventListener('abort', abortHandler);
       // R3 修正：抛带 kind 的 TransportError
       throw new TransportError('transport', `open stream ${stream} failed: ${JSON.stringify(e)}`, e);
     }
 
-    // 挂起的 open_stream invoke 绑定代际 AbortSignal（spec §4.3）
-    const abortHandler = () => { ended = true; endResolve(); };
-    signal?.addEventListener('abort', abortHandler, { once: true });
+    // R5 修正：invoke 返回后检查是否已 abort（signal 在 invoke 期间触发过则直接结束）
+    if (signal?.aborted) { ended = true; endResolve(); }
 
     try {
       while (!ended) {
@@ -894,15 +922,18 @@ git commit -m "feat(frontend): manifest generation + plugin bundle pipeline + CS
 ```
 
 ```bash
-# 先起 sidecar（M1 产物，desktop patch 启动）
+# 先起 sidecar（M1 产物，desktop patch 启动）——R5 修正：捕获 PID 供 Step 7 清理；且 cargo tauri dev 必须在 src-tauri 目录跑（beforeDevCommand 的 ../frontend 相对它解析）
 DSH_HOME=/tmp/dsh-m3-test node ~/codehub/deepseek-harness/apps/cli/lib/bin.js \
   --profile web --port 0 \
   --patch /Users/acfufu/Codehub/dsh-desktop/host-patch/desktop.patch.yml &
-# 再起 tauri dev（src-tauri 侧 DSH_SOCKET 指向 carrier socket）
-DSH_SOCKET=/tmp/dsh-m3-test/run/dsh.sock cargo tauri dev
+M3_SIDE_PID=$!
+# 再起 tauri dev（必须 cwd=src-tauri：beforeDevCommand `pnpm --dir ../frontend dev` 相对 src-tauri 解析）
+cd src-tauri && DSH_SOCKET=/tmp/dsh-m3-test/run/dsh.sock cargo tauri dev
 ```
 
 预期：beforeDevCommand 拉起 vite（端口 1420），WebView 渲染 fork dist。
+
+> R5 修正：Step 7 收尾时 `kill $M3_SIDE_PID 2>/dev/null || true; rm -rf /tmp/dsh-m3-test`（防泄漏/EADDRINUSE）。
 
 - [ ] **Step 2: 验收 ② __DSH_BOOT__ 全条目 load**
 

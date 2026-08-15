@@ -145,11 +145,10 @@ pub async fn shutdown_sequence(_app: tauri::AppHandle) {
 }
 ```
 
-- [ ] **Step 3: tauri.conf.json 追加（exitOnLastWindowClosed + 托盘图标；R3 修正：bundle.icon 必加——default_window_icon() 依赖它）**
+- [ ] **Step 3: tauri.conf.json 追加（exitOnLastWindowClosed + 托盘图标；R3 修正：bundle.icon 必加——default_window_icon() 依赖它；R5 修正：`app.windows` 删除——主窗口由 Task 2 的 WebviewWindowBuilder 创建（conf 窗口无法挂 on_navigation），两者共存会 duplicate label panic）**
 
 ```json
   "app": {
-    "windows": [ ... 同 M2 ... ],
     "security": { ... 同 M2 ... },
     "trayIcon": { "iconPath": "icons/icon.png", "iconAsTemplate": true },
     "exitOnLastWindowClosed": false
@@ -806,9 +805,8 @@ tokio-util = "0.7"
 `src-tauri/src/process_manager.rs`：
 ```rust
 use crate::process::{graceful_shutdown, spawn_sidecar, ProbeResult};
-use crate::process_manager;
 use crate::state_machine::{AppState2, RestartCounter, transition, AppEvent, RestartDecision};
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex}; // R5 修正：Arc 包 ProcessManager（tokio::spawn 需 'static）
 use std::time::Duration;
 use tauri::AppHandle;
 use tokio::process::Child;
@@ -844,7 +842,8 @@ impl ProcessManager {
     }
 
     /// R4 修正：watch 循环完整实现（spawn → 探测 → 事件 → child.wait → on_exit → 退避 sleep 监听 cancel）
-    pub async fn start(&self, app: AppHandle, node_bin: &str, args: Vec<String>, cwd: String, log_file: std::fs::File) -> Result<(), String> {
+    /// R5 修正：self 改 Arc<Self>（tokio::spawn 要求 'static；&self 借用无法跨 spawn）
+    pub async fn start(self: Arc<Self>, app: AppHandle, node_bin: String, args: Vec<String>, cwd: String, log_file: std::fs::File) -> Result<(), String> {
         // 活体探测（spec §4.2 单实例）：Alive → 已在运行；仅 ENOENT/ECONNREFUSED 才 unlink 再 spawn
         let socket = crate::process::default_socket_path();
         match crate::process::probe_socket(&socket).await {
@@ -878,10 +877,17 @@ impl ProcessManager {
         }
 
         // watch 循环：child 退出 → on_exit(alive_secs) → 退避 sleep（监听 cancel）→ respawn
+        // R5 修正：clone Arc 进任务（self 本身 move 进闭包会失去外部引用）
+        let mgr = Arc::clone(&self);
+        let app2 = app.clone();
+        let node_bin2 = node_bin.clone();
+        let args2 = args.clone();
+        let cwd2 = cwd.clone();
+        let log2 = log_file.try_clone().map_err(|e| e.to_string())?;
         tokio::spawn(async move {
             loop {
                 let alive_secs = {
-                    let mut guard = self.child.lock().unwrap();
+                    let mut guard = mgr.child.lock().unwrap();
                     match guard.as_mut() {
                         Some(ch) => {
                             // 存活计时（近似：wait 阻塞前记时）
@@ -892,14 +898,14 @@ impl ProcessManager {
                         None => 0,
                     }
                 };
-                if self.cancel.is_cancelled() { break; }
-                *self.ever_ready.lock().unwrap() = true;
-                let mut c = self.counter.lock().unwrap();
-                let s = transition(*self.state.lock().unwrap(), AppEvent::UnexpectedExit, &mut c, alive_secs);
-                *self.state.lock().unwrap() = s;
+                if mgr.cancel.is_cancelled() { break; }
+                *mgr.ever_ready.lock().unwrap() = true;
+                let mut c = mgr.counter.lock().unwrap();
+                let s = transition(*mgr.state.lock().unwrap(), AppEvent::UnexpectedExit, &mut c, alive_secs);
+                *mgr.state.lock().unwrap() = s;
                 if s == AppState2::RestartStopped {
                     // spec §6：托盘弹窗 + 停止自动重启（UI 层 retry 发 RetryFromTray）
-                    crate::dialogs::show_error_dialog(&app, "dsh-desktop 已停止", "连续 5 次启动失败，已停止自动重启。可在托盘菜单重试。");
+                    crate::dialogs::show_error_dialog(&app2, "dsh-desktop 已停止", "连续 5 次启动失败，已停止自动重启。可在托盘菜单重试。");
                     break;
                 }
                 // 退避 sleep（监听 cancel token；退出序列 ① 期间禁止 spawn）
@@ -907,13 +913,14 @@ impl ProcessManager {
                 drop(c);
                 tokio::select! {
                     _ = tokio::time::sleep(delay) => {}
-                    _ = self.cancel.cancelled() => break,
+                    _ = mgr.cancel.cancelled() => break,
                 }
-                if self.cancel.is_cancelled() { break; }
+                if mgr.cancel.is_cancelled() { break; }
                 // respawn → FirstStarting
-                *self.state.lock().unwrap() = transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut self.counter.lock().unwrap(), 0);
-                match spawn_sidecar(node_bin, &args.iter().map(|s| s.as_str()).collect::<Vec<_>>(), &cwd, &log_file) {
-                    Ok(child) => { *self.child.lock().unwrap() = Some(child); }
+                *mgr.state.lock().unwrap() = transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut mgr.counter.lock().unwrap(), 0);
+                let args_ref = args2.iter().map(|s| s.as_str()).collect::<Vec<_>>();
+                match spawn_sidecar(&node_bin2, &args_ref, &cwd2, &log2) {
+                    Ok(child) => { *mgr.child.lock().unwrap() = Some(child); }
                     Err(_) => { /* 下次循环处理 */ }
                 }
             }
@@ -923,13 +930,26 @@ impl ProcessManager {
 }
 ```
 
-- [ ] **Step 3: lib.rs 接线 + shutdown_sequence 完整版**
+- [ ] **Step 3: lib.rs 接线 + shutdown_sequence 完整版 + run() 调 start（R5 修正：ProcessManager::start 此前从未被调用——app 永不 spawn sidecar；用 Arc manage）**
 
 ```rust
-// run() 内：.manage(ProcessManager::new())
+// run() 内：
+// .manage(Arc::new(ProcessManager::new()))
+// .setup(|app| {
+//     let pm = app.state::<Arc<ProcessManager>>();
+//     let node_bin = app.path().resource_dir()?.join("dsh/bin/node").display().to_string();
+//     let abs_patch = app.path().resource_dir()?.join("dsh/patch/desktop.patch.yml").display().to_string();
+//     let args = vec!["lib/bin.js".into(), "--profile".into(), "web".into(), "--port".into(), "0".into(), "--patch".into(), abs_patch];
+//     let cwd = std::env::var("DSH_HOME").unwrap_or_else(|_| format!("{}/.dsh", std::env::var("HOME").unwrap_or_default()));
+//     let log_file = logging::init_sidecar_log(&logs_dir).expect("init sidecar log");
+//     tauri::async_runtime::spawn(async move {
+//         let _ = pm.start(app.handle().clone(), node_bin, args, cwd, log_file).await;
+//     });
+//     Ok(())
+// })
 // shutdown_sequence 替换 Task 1 stub：
 // pub async fn shutdown_sequence(app: tauri::AppHandle) {
-//     if let Some(mgr) = app.try_state::<ProcessManager>() {
+//     if let Some(mgr) = app.try_state::<Arc<ProcessManager>>() {
 //         mgr.cancel_restart().await;
 //         if let Some(mut child) = mgr.take_child().await {
 //             graceful_shutdown(&mut child, Duration::from_secs(5)).await;
@@ -991,10 +1011,21 @@ cp -r "$REPO/apps/cli/lib/." "$OUT/lib/"             # lib/bin.js + lib/types/
 cp -r "$REPO/apps/cli/config/." "$OUT/config/"       # SHIPPED_PRESET_ROOT（lib/../config/agent-presets）
 cp /Users/acfufu/Codehub/dsh-desktop/host-patch/desktop.patch.yml "$OUT/patch/desktop.patch.yml"
 
-echo "==> node_modules 裁剪（web 闭包：pnpm --filter / deploy 或 npm pack 集合）"
-# v1：从 DSH_REPO 复制 node_modules（大而全），后续用 pnpm deploy 裁剪优化（spec §4.4 提及）
-cp -r "$REPO/node_modules" "$OUT/node_modules" 2>/dev/null || { echo "copying node_modules (large)"; cp -r "$REPO/node_modules" "$OUT/node_modules"; }
-# 装入 uds-carrier 本地包（共享依赖树）——R1 修正：与 patch name 一致（@dsh-desktop/uds-carrier）
+echo "==> node_modules 打包（R5 修正：pnpm workspace 的 root node_modules 不含 @deepseek-ai/*（已在实证确认）——改用 apps/cli 闭包 + 符号链接保留，或 pnpm deploy）"
+# R5 修正：cp 整个 root node_modules 只拿到空 scope。正确做法：pnpm deploy 生成 apps/cli 的封闭 node_modules
+# （含全部 @deepseek-ai/* 与 vendored loader），随后补入 uds-carrier。
+if command -v pnpm >/dev/null 2>&1 && [ -f "$REPO/apps/cli/package.json" ]; then
+  (cd "$REPO/apps/cli" && pnpm deploy --legacy "$ROOT/tmp-cli-deploy" 2>&1 | tail -3) || true
+  if [ -d "$ROOT/tmp-cli-deploy/node_modules" ]; then
+    rm -rf "$OUT/node_modules"
+    cp -r "$ROOT/tmp-cli-deploy/node_modules" "$OUT/node_modules"
+    rm -rf "$ROOT/tmp-cli-deploy"
+  fi
+fi
+# 兜底：deploy 失败则复制 root node_modules（缺 @deepseek-ai 时会在 Step 3 启动验证暴露）
+[ -d "$OUT/node_modules" ] || cp -r "$REPO/node_modules" "$OUT/node_modules"
+# R5 修正：幂等——先清再拷
+rm -rf "$OUT/node_modules/@dsh-desktop"
 mkdir -p "$OUT/node_modules/@dsh-desktop"
 cp -r /Users/acfufu/Codehub/dsh-desktop/host-patch/packages/uds-carrier "$OUT/node_modules/@dsh-desktop/uds-carrier"
 
@@ -1049,7 +1080,7 @@ kill %1
   // lib.rs：
   pub async fn shutdown_sequence(app: tauri::AppHandle) {
       // ① 取消重启定时器/退避 sleep（进程管理器持有的 CancellationToken）
-      if let Some(mgr) = app.try_state::<crate::process_manager::ProcessManager>() {
+      if let Some(mgr) = app.try_state::<std::sync::Arc<crate::process_manager::ProcessManager>>() {
           mgr.cancel_restart().await;
           // ② SIGTERM(组)：graceful_shutdown(child, 5s)
           if let Some(child) = mgr.take_child().await {

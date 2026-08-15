@@ -39,7 +39,7 @@
 
 ## 3. 导出面 / vendor 清单（核查 3、7）
 
-- **`toFetchHandler(api)`**：`@deepseek-ai/dsh-host-apiproxy` **根导出**（src/index.ts:27；定义 fetch/handler.ts:243），v0.1.0-rc.5。`./client` 子路径 → AbstractApiClient/IApiClient/InProcessApiClient。npm files 含 `lib/types/**/*.js` → **可从 npm 引**。
+- **`toFetchHandler(api)`**：`@deepseek-ai/dsh-host-apiproxy` **根导出**（src/index.ts:27；定义 fetch/handler.ts:243），v0.1.0-rc.6。`./client` 子路径 → AbstractApiClient/IApiClient/InProcessApiClient。npm files 含 `lib/types/**/*.js` → **可从 npm 引**。
 - **`bridge` + `DEFAULT_MAX_REQUEST_BODY_BYTES`(160 MiB)**：在 connection `http-bridge.ts`（bridge :32，const :12），但**不在包根导出**（connection/src/index.ts:9 只 import 不 re-export），exports map 只有 `.`、`./invariant`、`./client`、`./src/*`、`./package.json`，而 `./src/*` 不在 npm files（files = lib 3 个 js + lib/types/**/*.d.ts）→ **必须 vendor 拷贝（连同 WebSocketDownlinks）**。
 - **`WebSocketDownlinks`**：`constructor(api: ApiProxy)`（websocket-downlink.ts:51,56），不依赖 webServer，独立可用；不在导出面、不在 files → **vendor**（spec 已说，确认）。
 - webserver：仅 TCP；upgrade 按**精确 pathname** 分发（webserver/src/index.ts:194 `this.upgrades.get(new URL(req.url).pathname)`）；teardown `closeAllConnections()`（:232，Node 不覆盖升级 socket，另有显式 upgradedSockets destroy :226-227）。路径常量在 connection `api-path.ts`：`MUX_EVENTS_PATH='/api/events.mux'`、`HOST_EVENTS_PATH='/api/events.host'`。
@@ -170,7 +170,7 @@ serde_json = "1"
 | 编号 | 位置 | 修正 |
 |---|---|---|
 | R3-1 | facts §6 / M2 Cargo | tokio-tungstenite **0.29.2 不存在**（crates.io 只有 0.29.0/0.30.0）→ pin `0.29.0` |
-| R3-2 | M1/M3 | `@deepseek-ai/cordis` 版本是 **4.0.1**（vendor/cordis/package.json 实证），非 0.1.0-rc.5 → 全部改用 4.0.1 |
+| R3-2 | M1/M3 | `@deepseek-ai/cordis` 版本是 **4.0.1**（vendor/cordis/package.json 实证），非 0.1.0-rc.6 → 全部改用 4.0.1 |
 | R3-3 | M1 Task 2 | 首次 vitest 前必须 `pnpm install`（Task 1 Step 7 补）；`ws @types/ws` 一并安装（tsc 会类型检查 vendored websocket-downlink.ts） |
 | R3-4 | M1 Task 3 | `lib/index.js` 从无构建步骤（tsc --noEmit 只查类型）→ Task 3 Step 6 后加 `pnpm run build`；否则 M1 Task 4 真实启动 ERR_MODULE_NOT_FOUND |
 | R3-5 | M1 Task 3/5 | `vi.mock('node:fs')` 缺 mkdtempSync/rmSync/statSync → mock 补全（M1 Task 3 Step 2 + M5 Task 2 Step 2 调用它们） |
@@ -213,3 +213,25 @@ serde_json = "1"
 | R4-7 | M3 Task 6 | **组合矩阵 UI**（spec §6）：StatusIndicator 组件——启动中/重连>30s banner+诊断/restart-stopped 托盘弹窗（此前零任务） |
 | R4-8 | M5 m6 | 测试改名语义：Running 状态幂等保持（不冒充迁移 6/7/8，后者属前端 ConnectionController） |
 | R4-9 | M4 Task 1 stub | shutdown_sequence 可编译 stub（Task 1）→ Task 4.75/5 换完整版（取消定时器→SIGTERM→5s→SIGKILL→unlink→exit） |
+
+## 12. R5 双审修正记录（2026-08-16，综合终审两审 FAIL——B 审做了实证：npm/pnpm/上游源码）
+
+| 编号 | 位置 | 修正 |
+|---|---|---|
+| R5-1 | facts §6 / M1 / M3 | **`@deepseek-ai/dsh-*` 版本 0.1.0-rc.5 未发布**（npm 实证：0.0.1-rc.5/0.1.0-rc.2/rc.3/rc.6）→ 全部 pin `0.1.0-rc.6`（含 facts §6、M1 Task 2、M3 Task 1/5/6） |
+| R5-2 | M3 Task 5 / M4 Task 5 | **pnpm workspace 的 root node_modules 不含 @deepseek-ai/\***（实证 `~/codehub/deepseek-harness/node_modules/@deepseek-ai` 不存在）→ derive-composed-entries 输入改 `~/codehub/deepseek-harness/node_modules` 仍为空 → 改从 `apps/cli` 闭包/pnpm deploy 取；build-sidecar 用 `pnpm deploy --legacy` 产封闭 node_modules |
+| R5-3 | M1 Task 2 | uds-carrier/tsconfig.json 列了 Files 无步骤创建（tsconfig.build.json extends 失败）→ Step 5 补全内容 |
+| R5-4 | M2 Task 2/3 | AppState 双定义（http_command.rs + lib.rs）E0308 → **AppState 唯一真源在 lib.rs**（Task 2 Step 1 建 mod 声明 + AppState），http_command.rs 只 `use crate::AppState` |
+| R5-5 | M2 Task 2 | mod 声明缺失 → cargo test 静默跑 0 个 → Task 2 Step 1 建 lib.rs mod 声明 |
+| R5-6 | M3 Task 5/1 | devBootManifest 无 `apply:'serve'` → pnpm build 也触发 transformIndexHtml 读不存在文件 → 补 `apply: 'serve'` |
+| R5-7 | M3 Task 5/6 | dev 模式 plugin bundle 无供给（/plugins/<id>/client.js 404）→ Step 8.5 拷 public/plugins |
+| R5-8 | M3 Task 1 | fork 依赖面不全（web/src 还 import ui-theme/runtime/app-shell/invariants）→ 补 4 个 deps |
+| R5-9 | M3 Task 2 | abortHandler 在 invoke 后才注册（signal 挂起期触发永不处理）→ invoke 前注册 + invoke 后查 signal.aborted |
+| R5-10 | M4 Task 4.75 | **ProcessManager::start 从未被调用**（app 永不 spawn sidecar）→ run() 补 .setup 调 start（Arc manage）；`tokio::spawn` 需 'static → self 改 `Arc<Self>`，闭包内 clone Arc |
+| R5-11 | M5 Task 3/4.5 | e2e/dev 脚本预启 sidecar 与 App 自身 ProcessManager 冲突（probe Alive → 退出）→ release/dev 均不再预启；release 断言 app 自产 socket |
+| R5-12 | M2 Task 5 | bench 测试无代码（cargo test bench_big_body 静默 0 测试）→ 补完整 bench_test.rs（bench_150mib_through_pipe）+ bench-big-body.mjs 前置 |
+| R5-13 | M1 Task 4 / M3 Task 6 | sidecar 后台 `&` 未捕获 $!（kill $SIDE_PID 引用未赋值变量）→ 补 `SIDE_PID=$!`/`M3_SIDE_PID=$!` + Step 7 清理；M3 tauri dev 必须 cwd=src-tauri（beforeDevCommand 相对它解析） |
+| R5-14 | M2 Task 1 | `mkdir -p ../frontend/dist` 从 repo 根建到仓库外 → 改 `mkdir -p frontend/dist` |
+| R5-15 | M4 Task 1/2 | conf `app.windows` 与 builder 创建窗口冲突（duplicate label panic）→ Task 1 即删 conf windows |
+| R5-16 | M4 Task 4.75 | shutdown_sequence try_state 类型 → `Arc<ProcessManager>` |
+| R5-17 | M4 Task 5 | build-sidecar 幂等（cp -r 嵌套 node_modules/node_modules）+ node_modules 来源修正（见 R5-2） |
