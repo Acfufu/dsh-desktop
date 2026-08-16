@@ -93,10 +93,29 @@ pub fn run() {
                 tempfiles::age_sweep(&cache, Duration::from_secs(24 * 3600));
             }
 
-            // 启动 sidecar：打包产物经 resource_dir（.app/Contents/Resources/dsh）；dev 用 DSH_SIDECAR_DIR 覆盖
+            // 启动 sidecar：资源 = dsh.tar.gz（tauri-build glob 对 store symlink 环栈溢出→单文件资源）——
+            // 首启解包到 app cache；dev 用 DSH_SIDECAR_DIR 覆盖
             let pm = app.state::<Arc<ProcessManager>>();
-            let bundled = app.path().resource_dir().map(|d| d.join("dsh")).ok().filter(|d| d.join("bin/node").exists());
-            let dsh_dir = std::env::var("DSH_SIDECAR_DIR").unwrap_or_else(|_| bundled.as_ref().map(|d| d.display().to_string()).unwrap_or_default());
+            let dsh_dir = std::env::var("DSH_SIDECAR_DIR").unwrap_or_else(|_| {
+                let cache_dsh = app.path().app_cache_dir().map(|d| d.join("dsh")).unwrap_or_default();
+                if cache_dsh.join("bin/node").exists() {
+                    return cache_dsh.display().to_string();
+                }
+                // 首启解包 dsh.tar.gz → app cache
+                if let Ok(res) = app.path().resource_dir() {
+                    let tarball = res.join("resources/dsh.tar.gz");
+                    let tarball = if tarball.exists() { tarball } else { res.join("dsh.tar.gz") };
+                    if tarball.exists() {
+                        if let Ok(cache) = app.path().app_cache_dir() {
+                            let _ = std::fs::create_dir_all(&cache);
+                            let _ = std::process::Command::new("/usr/bin/tar")
+                                .args(["-xzf", tarball.to_str().unwrap_or(""), "-C", cache.to_str().unwrap_or("")])
+                                .status();
+                        }
+                    }
+                }
+                if cache_dsh.join("bin/node").exists() { cache_dsh.display().to_string() } else { String::new() }
+            });
 
             // carrier 预装：loader 从 $DSH_HOME/profiles/web 起解析裸包名——把 bundled carrier 链入 profile
             // （M1 spike 结论；首次启动 profile 目录尚不存在，必须先建再 spawn）

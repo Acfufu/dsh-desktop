@@ -33,4 +33,8 @@ echo "==> node_modules 打包（实证流程：deploy + 逃逸物化 + 运行时
 echo "==> verify"
 "$OUT/bin/node" -e "console.log('node ok', process.version)"
 ls "$OUT"
+
+echo "==> tarball（tauri-build glob 对 store symlink 环栈溢出——单文件资源 + 首启解包）"
+tar -czf "$ROOT/src-tauri/resources/dsh.tar.gz" -C "$(dirname "$OUT")" "$(basename "$OUT")" 2>/dev/null
+echo "tarball: $(du -sh "$ROOT/src-tauri/resources/dsh.tar.gz" | cut -f1)"
 echo "sidecar assembled (pin $COMMIT). Size: $(du -sh "$OUT" | cut -f1)"
