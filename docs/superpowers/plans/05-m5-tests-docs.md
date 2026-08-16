@@ -172,6 +172,9 @@ import { fileURLToPath } from 'node:url'; // R3 修正：ESM 无 __dirname
 
 // R2 修正：真扫 fork 源码，断言无 plugin-fs/shell/dialog 的 import
 // （§4.5 排除原则的机器可验版本）
+// DeepSec L3 修正：Tauri v2 的 capability ACL **不门控 app 自定义命令**（invoke_handler 注册的命令对全部窗口可调，
+// 官方文档实证）——因此 dsh_* transport 命令的 XSS 闸门不是 ACL，而是 CSP(script-src nonce) + on_navigation +
+// asset scope。本测试保持「源码不引入 fs/shell/dialog 插件」断言（纵深），并新增 CSP nonce 断言见 build-pipeline。
 describe('capability whitelist contract', () => {
   const here = fileURLToPath(new URL('.', import.meta.url));
   const root = join(here, '../../..');

@@ -235,3 +235,33 @@ serde_json = "1"
 | R5-15 | M4 Task 1/2 | conf `app.windows` 与 builder 创建窗口冲突（duplicate label panic）→ Task 1 即删 conf windows |
 | R5-16 | M4 Task 4.75 | shutdown_sequence try_state 类型 → `Arc<ProcessManager>` |
 | R5-17 | M4 Task 5 | build-sidecar 幂等（cp -r 嵌套 node_modules/node_modules）+ node_modules 来源修正（见 R5-2） |
+
+## 13. DeepSec L3 安全审计修正记录（2026-08-16，三轴并行审计：威胁模型 / XSS→IPC 链 / 供应链+构建；B/C 审做了实证）
+
+### CRITICAL
+| 编号 | 位置 | 修正 |
+|---|---|---|
+| DS-1 | M4 ProcessManager watch loop | **持 child Mutex 跨 `wait().await` → `take_child` 死锁 → 退出序列卡死 → sidecar 孤儿常驻**。改为锁内 `take()` 出 child 再 wait（wait 期间不持锁） |
+| DS-2 | M2 capability / spec §4.5 | **Tauri v2 的 capability ACL 不门控 app 自定义命令**（invoke_handler 命令对全部窗口可调，官方文档+GHSA-57fm-592m-34r7 实证）——spec 把 ACL 当 XSS 闸门的前提错误。修正：XSS 闸门 = CSP script-src nonce + on_navigation + asset scope；capability 只挡插件命令。M5 测试注明 |
+
+### HIGH
+| 编号 | 位置 | 修正 |
+|---|---|---|
+| DS-3 | M3 Task 1 | **`@deepseek-ai/dsh-client-app-shell` 是捏造依赖**（npm 404 实证；上游无此包，APP_SHELL_ID 只是 manifest entry id 字符串）——删除；否则 install 失败 + 可被抢注 |
+| DS-4 | M4 Task 5 build-sidecar | **`$ROOT` 未定义**（deploy 落到 /tmp-cli-deploy，`\|\| true` 吞错后回退空 node_modules）——定义 ROOT |
+| DS-5 | M4 Task 5 build-sidecar | **pnpm deploy 对 link: override（cosmokit/schemastery）生成指向构建机 workspace 的绝对符号链接**（实证）——`cp -rL` 解引用 + 符号链接残留校验；否则本机验证通过、用户机 MODULE_NOT_FOUND |
+| DS-6 | M4 Task 4.75 setup | **$DSH_HOME/.env 从不 chmod → DEEPSEEK_API_KEY 多用户可读**——首次启动 chmod 700 $DSH_HOME + 600 .env |
+| DS-7 | M4 Task 2 navigation | **字符串前缀匹配绕过**（tauri://localhost.evil.com / ipc.localhost.evil.com / 127.0.0.1:14200）——改 URL 语义比较（scheme+host 精确 + dev port 精确）+ 对抗测试 |
+| DS-8 | M3 Task 5 | **CSP 自锁**：script-src 'self' 禁内联，而 injectBootManifest 注入内联 __DSH_BOOT__ → boot 失败或被迫加 unsafe-inline。加 `script-src 'self' 'nonce-dshboot'` + boot 脚本带 nonce（或实证外链则移除 nonce；二选一断言进管线测试） |
+| DS-9 | M3 Task 5/1 | **JSON.stringify 不转义 </script>**——manifest 注入脚本转义 `<` 为 \u003c（纵深） |
+| DS-10 | M2 dsh_http / M4 dsh_write_temp | **无 body 上限 → XSS OOM/disk-fill DoS**——两处加 160 MiB 上限 |
+
+### MEDIUM
+| 编号 | 位置 | 修正 |
+|---|---|---|
+| DS-11 | M1 Task 3 | **recursive mkdir 跟随预置 symlink + 无 owner 校验**（共享 /tmp 路径可被其他 uid 预置 → socket 落攻击者目录 → MITM）——mkdir 后 lstat 验证非 symlink 且 uid 匹配 |
+| DS-12 | M1 Task 3 | upgrade 回调 `new URL(req.url)` 无 try/catch → 畸形 URL 崩溃 carrier——try/catch 后 destroy |
+| DS-13 | M2 graceful_shutdown | **kill(-pid) PID 复用竞态**（sidecar 崩溃后 pid 被复用 → 误杀无关进程组）——kill(pid,0) 先探测；SIGKILL 后 wait 加 10s 超时防挂死 |
+| DS-14 | M2 dsh_http | reqwest 默认跟随重定向（可被侧车响应驱动到非 /api 路径）——`redirect::Policy::none()` |
+| DS-15 | M3 rpc.ts | JSON.parse + 下游 Object.assign 经 __proto__ 键原型污染——剥除 __proto__/constructor/prototype 键 |
+| DS-16 | M4 logging | sidecar.log 默认 0644 其他用户可读——OpenOptionsExt::mode(0o600) |

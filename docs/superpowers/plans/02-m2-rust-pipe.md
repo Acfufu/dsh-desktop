@@ -314,6 +314,12 @@ pub async fn dsh_http_impl(
     body: Option<Vec<u8>>,
 ) -> Result<HttpResponse, String> {
     validate_request(&method, &path)?;
+    // DeepSec L3：body 大小上限（与 DEFAULT_MAX_REQUEST_BODY_BYTES 对齐）——XSS 可 invoke 超大 body 造成 OOM DoS
+    if let Some(b) = &body {
+        if b.len() > 160 * 1024 * 1024 {
+            return Err("body exceeds 160 MiB".into());
+        }
+    }
 
     // POST 固定 JSON content-type（spec §4.2）；无 headers 参数
     let mut builder = state
@@ -705,6 +711,7 @@ pub fn run() {
     let uds_path = std::env::var("DSH_SOCKET").unwrap_or_else(|_| http_command::UDS_PATH.to_string());
     let http_client = reqwest::ClientBuilder::new()
         .unix_socket(&uds_path)
+        .redirect(reqwest::redirect::Policy::none()) // DeepSec L3：禁用重定向——防侧车响应驱动 reqwest 到非 /api 路径
         .build()
         .expect("build reqwest client with unix socket");
 
@@ -935,17 +942,20 @@ pub fn spawn_sidecar(
 }
 
 /// 优雅关闭（spec §4.2 退出序列 ②③④）：SIGTERM(组) → grace → SIGKILL(组)
+/// DeepSec L3 修正：先探测 pid 是否仍属于我们（kill(pid,0)），避免 PID 复用后误杀无关进程组；
+/// SIGKILL 后 wait 加超时，防不可中断进程挂死退出序列。
 pub async fn graceful_shutdown(child: &mut Child, grace: Duration) {
     let pid = child.id().unwrap_or(0) as i32;
-    if pid > 0 {
-        unsafe { libc::kill(-pid, libc::SIGTERM); } // 进程组（setpgid/process_group 后安全）
+    if pid > 0 && unsafe { libc::kill(pid, 0) } == 0 {
+        unsafe { libc::kill(-pid, libc::SIGTERM); } // 进程组（process_group 后安全）
     }
     let done = tokio::time::timeout(grace, child.wait()).await;
     if done.is_err() {
-        if pid > 0 {
+        if pid > 0 && unsafe { libc::kill(pid, 0) } == 0 {
             unsafe { libc::kill(-pid, libc::SIGKILL); }
         }
-        let _ = child.wait().await;
+        // DeepSec L3：SIGKILL 后 wait 也加超时（10s），不可中断进程不挂死退出
+        let _ = tokio::time::timeout(Duration::from_secs(10), child.wait()).await;
     }
 }
 

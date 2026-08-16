@@ -525,8 +525,15 @@ export class UdsCarrierService extends Service {
     const socketPath = this.socketPath;
 
     // 目录 0700（防其他 uid 替换 socket 文件 → bind 劫持）
+    // DeepSec L3：recursive mkdir 跟随预置 symlink、无 owner 校验——攻击者可预置共享路径为
+    // 指向己方目录的 symlink，使 socket 落在攻击者目录（chmod 只改 mode 不改 owner）→ 其他 uid MITM。
+    // 修正：mkdir 后 lstat（不跟随）验证非 symlink 且 st_uid == 当前 uid。
     const dir = socketPath.slice(0, socketPath.lastIndexOf('/'));
     fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+    const st = fs.lstatSync(dir); // lstat 不跟随 symlink
+    if (st.isSymbolicLink() || st.uid !== process.getuid?.()) {
+      throw new Error(`socket dir unsafe (symlink or wrong owner): ${dir}`);
+    }
     fs.chmodSync(dir, 0o700);
 
     // 残留 socket 清理：listen 前 connect 探测，无活服务则 unlink（spec §4.1）
@@ -543,7 +550,14 @@ export class UdsCarrierService extends Service {
     });
 
     this.server.on('upgrade', (req, socket, head) => {
-      const pathname = new URL(req.url ?? '/', 'http://dsh').pathname;
+      // DeepSec L3：new URL 对畸形 req.url 抛异常会崩溃 carrier——try/catch 后直接拒绝
+      let pathname: string;
+      try {
+        pathname = new URL(req.url ?? '/', 'http://dsh').pathname;
+      } catch {
+        socket.destroy();
+        return;
+      }
       if (pathname === MUX_PATH) {
         this.downlinks!.handleMux(req, socket as any, head);
       } else if (pathname === HOST_PATH) {

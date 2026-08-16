@@ -128,7 +128,9 @@ rm "$DST/connection/src/client/fixture.ts"          # 3188 行测试夹具，删
     "@deepseek-ai/dsh-client-schema-form": "0.1.0-rc.6",
     "@deepseek-ai/dsh-client-ui-theme": "0.1.0-rc.6",
     "@deepseek-ai/dsh-client-runtime": "0.1.0-rc.6",
-    "@deepseek-ai/dsh-client-app-shell": "0.1.0-rc.6",
+    // DeepSec L3 修正：@deepseek-ai/dsh-client-app-shell 是捏造依赖（npm 404，无任何 import；
+    // 上游只有 @deepseek-ai/dsh-client-web 内含 app-shell.ts，APP_SHELL_ID 是 manifest entry id 字符串常量，
+    // 不是 npm 包名）——已删除，否则 pnpm install 失败且该名字可被抢注
     "@deepseek-ai/dsh-invariants": "0.1.0-rc.6"
   },
   "devDependencies": {
@@ -187,7 +189,9 @@ function devBootManifest(): Plugin {
         // 从 composed-entries.json 读条目（开发期清单；R1 修正：由 derive-composed-entries 脚本生成，非手写）
         const entries = JSON.parse(readFileSync(new URL('./composed-entries.json', import.meta.url), 'utf8'));
         const manifest = buildManifest(entries.map((e: any) => ({ id: e.id, file: '', rev: e.rev })));
-        const script = `<script>window.__DSH_BOOT__=${JSON.stringify(manifest)}</script>`;
+        // DeepSec L3：JSON.stringify 不转义 </script>——作为纵深防御转义 < 为 \u003c
+        const safe = JSON.stringify(manifest).replace(/</g, '\\u003c');
+        const script = `<script>window.__DSH_BOOT__=${safe}</script>`;
         return { html: html.replace('</head>', `${script}</head>`), tags: [] }; // R3 修正：vite IndexHtmlTransformResult 需 tags 字段
       },
     },
@@ -548,7 +552,13 @@ async function postEnvelope(channel: string, endpoint: string, envelope: unknown
   if (resp.status >= 400) {
     throw new Error(`rpc ${channel}/${endpoint} → HTTP ${resp.status}: ${new TextDecoder().decode(new Uint8Array(resp.body))}`);
   }
-  return JSON.parse(new TextDecoder().decode(new Uint8Array(resp.body)));
+  // DeepSec L3：JSON.parse 本身安全（own property），但下游 Object.assign 可经 __proto__ 键污染原型——
+  // 剥掉非法的 __proto__/constructor/prototype 键（server 信封永远不需要它们）
+  const parsed: any = JSON.parse(new TextDecoder().decode(new Uint8Array(resp.body)));
+  for (const k of ['__proto__', 'constructor', 'prototype']) {
+    if (k in parsed) delete parsed[k];
+  }
+  return parsed;
 }
 ```
 
@@ -817,7 +827,10 @@ console.log(`collected ${entries.length} bundles into ${distRoot}/plugins`);
 `frontend/apps/web/index.html` 的 `<head>` 内加（替换 title；R2 修正：注明 dev 变体需额外放行 HMR ws）：
 ```html
 <title>dsh-desktop</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: asset:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost; font-src 'self' data:" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: asset:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost; font-src 'self' data:; script-src 'self' 'nonce-dshboot'" />
+<!-- DeepSec L3：CSP 与 boot 脚本自锁——script-src 显式加 'nonce-dshboot'，boot 脚本（内联 __DSH_BOOT__）带同 nonce 才能执行；
+     非内联攻击脚本无 nonce 仍被封。若实证上游 injectBootManifest 产物为外链 <script src="/boot.js">，
+     则移除 nonce（'self' 放行外链）；二选一必须在构建管线测试中断言。 -->
 <!-- R2 修正：dev 模式（vite HMR）需 connect-src 额外加 ws://localhost:1420——由 vite 插件按 mode 注入
      或接受 dev 下 HMR 受限（改文件自动重载不可用，手动刷新）；release 保持严格串。 -->
 ```

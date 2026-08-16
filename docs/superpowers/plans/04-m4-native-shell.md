@@ -193,15 +193,29 @@ git commit -m "feat(src-tauri): tray show/hide/quit + single-instance + hide-to-
 
 - [ ] **Step 1: 写失败测试（四象限）**
 
-`src-tauri/src/navigation.rs`：
+`src-tauri/src/navigation.rs`（DeepSec L3 修正：字符串前缀匹配可被 `tauri://localhost.evil.com` / `ipc.localhost.evil.com` / `127.0.0.1:14200` 绕过——改为 URL 语义比较：scheme + host 精确匹配）：
 ```rust
+use url::Url;
+
 /// 导航白名单（spec §4.2）：仅放行 tauri://localhost 与 http://ipc.localhost；
 /// dev 构建额外放行 vite dev server（cfg!(debug_assertions) 门控）。
+/// DeepSec L3：前缀匹配 → URL 解析后比较 scheme+host（+dev port），拒绝 host 后缀/端口混淆。
 pub fn allowed_navigation(url: &str, debug: bool) -> bool {
-    if url.starts_with("tauri://localhost") || url.starts_with("http://ipc.localhost") {
+    let Ok(parsed) = Url::parse(url) else { return false; };
+    let host = parsed.host_str().unwrap_or("");
+
+    if (parsed.scheme() == "tauri" && host == "localhost") {
         return true;
     }
-    if debug && (url.starts_with("http://localhost:1420") || url.starts_with("http://127.0.0.1:1420")) {
+    if parsed.scheme() == "http" && host == "ipc.localhost" {
+        return true;
+    }
+    // dev：仅 localhost/127.0.0.1 且端口恰为 1420（防 14200 等混淆）
+    if debug
+        && parsed.scheme() == "http"
+        && (host == "localhost" || host == "127.0.0.1")
+        && parsed.port() == Some(1420)
+    {
         return true;
     }
     false
@@ -229,9 +243,20 @@ mod tests {
     }
 
     #[test]
-    fn dev_url_only_in_debug() {
+    fn rejects_host_suffix_spoofing() {
+        // DeepSec L3：前缀匹配绕过向量
+        assert!(!allowed_navigation("tauri://localhost.evil.com/", false));
+        assert!(!allowed_navigation("http://ipc.localhost.evil.com", false));
+        assert!(!allowed_navigation("tauri://localhost@evil.com/", false)); // userinfo
+    }
+
+    #[test]
+    fn dev_url_only_in_debug_exact_port() {
         assert!(allowed_navigation("http://localhost:1420/", true));
         assert!(!allowed_navigation("http://localhost:1420/", false));
+        // DeepSec L3：端口混淆
+        assert!(!allowed_navigation("http://127.0.0.1:14200/", true));
+        assert!(!allowed_navigation("http://localhost:1420.evil.com/", true));
     }
 
     #[test]
@@ -519,6 +544,10 @@ pub async fn dsh_save_export(app: AppHandle, bytes: Vec<u8>, file_name: String) 
 
 #[tauri::command]
 pub async fn dsh_write_temp(app: AppHandle, bytes: Vec<u8>, ext: String) -> Result<String, String> {
+    // DeepSec L3：大小上限——XSS 可反复 invoke 写超大文件填满磁盘（disk-fill DoS）
+    if bytes.len() > 160 * 1024 * 1024 {
+        return Err("body exceeds 160 MiB".into());
+    }
     // 上传临时文件（spec §4.6）：app 专属临时子目录，0600，随机名
     let cache = app.path().app_cache_dir().map_err(|e| e.to_string())?;
     let dir = cache.join("temp-uploads");
@@ -679,11 +708,18 @@ const ROTATIONS: usize = 3;
 
 /// sidecar stdout/stderr → ~/Library/Logs/dsh-desktop/sidecar.log（1 MiB × 3 轮转）
 /// R2 修正：显式任务（spec §4.2 日志要求全无家）
+/// DeepSec L3 修正：日志文件 0600（OpenOptions create+append 默认 0644，其他用户可读 sidecar 输出）
 pub fn init_sidecar_log(logs_dir: &Path) -> Result<File, String> {
     std::fs::create_dir_all(logs_dir).map_err(|e| e.to_string())?;
     let path = logs_dir.join("sidecar.log");
     rotate_if_needed(&path);
-    OpenOptions::new().create(true).append(true).open(&path).map_err(|e| e.to_string())
+    let f = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .mode(0o600) // DeepSec L3：0600
+        .open(&path)
+        .map_err(|e| e.to_string())?;
+    Ok(f)
 }
 
 fn rotate_if_needed(path: &Path) {
@@ -878,6 +914,8 @@ impl ProcessManager {
 
         // watch 循环：child 退出 → on_exit(alive_secs) → 退避 sleep（监听 cancel）→ respawn
         // R5 修正：clone Arc 进任务（self 本身 move 进闭包会失去外部引用）
+        // DeepSec L3 修正：不得持 child Mutex 跨 await（wait() 期间 take_child 会死锁 → 退出序列卡死 → sidecar 孤儿）。
+        // 改为：锁内 take 出 child 再 wait，wait 期间不持锁；下个 child 用 Option 暂存。
         let mgr = Arc::clone(&self);
         let app2 = app.clone();
         let node_bin2 = node_bin.clone();
@@ -886,17 +924,15 @@ impl ProcessManager {
         let log2 = log_file.try_clone().map_err(|e| e.to_string())?;
         tokio::spawn(async move {
             loop {
-                let alive_secs = {
-                    let mut guard = mgr.child.lock().unwrap();
-                    match guard.as_mut() {
-                        Some(ch) => {
-                            // 存活计时（近似：wait 阻塞前记时）
-                            let t0 = std::time::Instant::now();
-                            let _ = ch.wait().await;
-                            t0.elapsed().as_secs()
-                        }
-                        None => 0,
+                // 锁内取出 child，立即释放锁——wait 期间 take_child 可正常取走（退出序列）
+                let child = mgr.child.lock().unwrap().take();
+                let alive_secs = match child {
+                    Some(mut ch) => {
+                        let t0 = std::time::Instant::now();
+                        let _ = ch.wait().await; // 不持锁
+                        t0.elapsed().as_secs()
                     }
+                    None => 0,
                 };
                 if mgr.cancel.is_cancelled() { break; }
                 *mgr.ever_ready.lock().unwrap() = true;
@@ -941,7 +977,19 @@ impl ProcessManager {
 //     let abs_patch = app.path().resource_dir()?.join("dsh/patch/desktop.patch.yml").display().to_string();
 //     let args = vec!["lib/bin.js".into(), "--profile".into(), "web".into(), "--port".into(), "0".into(), "--patch".into(), abs_patch];
 //     let cwd = std::env::var("DSH_HOME").unwrap_or_else(|_| format!("{}/.dsh", std::env::var("HOME").unwrap_or_default()));
-//     let log_file = logging::init_sidecar_log(&logs_dir).expect("init sidecar log");
+//     // R5 修正：先建 run 目录（0o700）——DeepSec L3：$DSH_HOME 与 .env 权限必须收紧，否则 DEEPSEEK_API_KEY 多用户可读
+    let dsh_home = std::env::var("DSH_HOME").unwrap_or_else(|_| {
+        std::env::var("HOME").map(|h| format!("{h}/.dsh")).unwrap_or_default()
+    });
+    if !dsh_home.is_empty() {
+        let _ = std::fs::create_dir_all(&dsh_home);
+        std::fs::set_permissions(&dsh_home, std::fs::Permissions::from_mode(0o700)).ok();
+        let env_file = std::path::Path::new(&dsh_home).join(".env");
+        if env_file.exists() {
+            std::fs::set_permissions(&env_file, std::fs::Permissions::from_mode(0o600)).ok();
+        }
+    }
+    let log_file = logging::init_sidecar_log(&logs_dir).expect("init sidecar log");
 //     tauri::async_runtime::spawn(async move {
 //         let _ = pm.start(app.handle().clone(), node_bin, args, cwd, log_file).await;
 //     });
@@ -988,8 +1036,9 @@ git commit -m "feat(src-tauri): ProcessManager with cancel-token restart control
 # sidecar 构建（node 运行时 + 包目录布局，spec §4.4 主方案；bun compile 远期，不在本计划）
 set -euo pipefail
 REPO="${DSH_REPO:-$HOME/codehub/deepseek-harness}"
-OUT="src-tauri/resources/dsh"
-PIN="host-patch/UPSTREAM_PIN"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"   # DeepSec L3 修正：此前未定义，$ROOT/tmp-cli-deploy 落到 /tmp-cli-deploy
+OUT="$ROOT/src-tauri/resources/dsh"
+PIN="$ROOT/host-patch/UPSTREAM_PIN"
 COMMIT="$(grep '^COMMIT=' "$PIN" | cut -d= -f2)"
 
 [[ -d "$REPO" ]] || { echo "DSH_REPO not found at $REPO (set DSH_REPO)"; exit 1; }
@@ -1018,7 +1067,15 @@ if command -v pnpm >/dev/null 2>&1 && [ -f "$REPO/apps/cli/package.json" ]; then
   (cd "$REPO/apps/cli" && pnpm deploy --legacy "$ROOT/tmp-cli-deploy" 2>&1 | tail -3) || true
   if [ -d "$ROOT/tmp-cli-deploy/node_modules" ]; then
     rm -rf "$OUT/node_modules"
-    cp -r "$ROOT/tmp-cli-deploy/node_modules" "$OUT/node_modules"
+    # DeepSec L3 修正：pnpm deploy 对 link: override（cosmokit/schemastery）生成指向构建机 workspace 的
+    # 绝对符号链接——cp -r 会原样复制符号链接，用户机 MODULE_NOT_FOUND（本机验证通过但交付件坏）。
+    # 必须 -L 解引用成真实文件。
+    cp -rL "$ROOT/tmp-cli-deploy/node_modules" "$OUT/node_modules"
+    # 解引用后校验无残留绝对符号链接
+    if find "$OUT/node_modules" -type l | grep -q .; then
+      echo "WARN: symlinks remain in bundled node_modules:"
+      find "$OUT/node_modules" -type l | head -5
+    fi
     rm -rf "$ROOT/tmp-cli-deploy"
   fi
 fi
