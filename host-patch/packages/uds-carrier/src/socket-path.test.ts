@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { selectSocketPath } from './socket-path';
+import { selectSocketPath } from './socket-path.js';
 
 describe('selectSocketPath', () => {
   it('prefers $DSH_HOME/run/dsh.sock when short enough', () => {
