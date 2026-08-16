@@ -39,6 +39,7 @@ pub fn run() {
         .expect("build reqwest client with unix socket");
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, None))
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             // 单实例：二次启动 → 显示已有窗口（spec §4.2）
             if let Some(win) = app.get_webview_window("main") {
