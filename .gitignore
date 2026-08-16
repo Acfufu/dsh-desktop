@@ -21,3 +21,8 @@ node_modules/
 .DS_Store
 tmp-cli-deploy/
 tmp-closure-home/
+src-tauri/resources/dsh/
+src-tauri/resources/dsh.tar.gz
+frontend/dist/
+frontend/public/plugins/
+frontend/composed-entries.json
