@@ -1,4 +1,5 @@
 mod http_command;
+mod navigation;
 #[cfg(test)]
 mod bench_test;
 mod streams;
@@ -10,6 +11,7 @@ use http_command::dsh_http;
 use streams::{dsh_cancel, dsh_close_stream, dsh_open_stream, StreamRegistry};
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
+use tauri::webview::WebviewWindowBuilder;
 
 // R5 修正：AppState 唯一真源（Task 2 起）；http_command.rs 只 use crate::AppState
 pub struct AppState {
@@ -50,6 +52,13 @@ pub fn run() {
             registry: Arc::new(Mutex::new(StreamRegistry::new())),
         })
         .setup(|app| {
+            // conf 窗口无法挂 on_navigation → 主窗口由 builder 创建（R5：conf app.windows 已删）
+            let win = WebviewWindowBuilder::new(app, "main", tauri::WebviewUrl::App("index.html".into()))
+                .title("dsh-desktop")
+                .inner_size(1200.0, 800.0)
+                .on_navigation(|url| navigation::allowed_navigation(url.as_str(), cfg!(debug_assertions)))
+                .build()?;
+            let _ = win;
             tray::build_tray(app)?;
             Ok(())
         })
