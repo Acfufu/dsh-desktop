@@ -40,5 +40,19 @@ for (const dir of candidateDirs(bundleRoot)) {
     ...(decl.immediately === true ? { immediately: true } : {}),
   });
 }
+// fork 覆盖：connection 包 transport 必须用 fork 构建（TauriApiClient）
+const FORK_OVERRIDES = {
+  '@deepseek-ai/dsh-client-connection': { root: 'packages/client/connection', file: 'lib/client.js' }, // cwd = frontend
+};
+for (const e of entries) {
+  const o = FORK_OVERRIDES[e.id];
+  if (o !== undefined) {
+    const forkFile = join(process.cwd(), o.root, o.file);
+    if (existsSync(forkFile)) {
+      e.file = forkFile;
+      e.rev = createHash('sha1').update(readFileSync(forkFile)).digest('hex').slice(0, 12);
+    }
+  }
+}
 writeFileSync(outFile, JSON.stringify(entries, null, 2));
 console.log(`derived ${entries.length} entries → ${outFile}`);

@@ -1,7 +1,7 @@
 [
   {
     "id": "@deepseek-ai/dsh-api-gateway",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-api-gateway/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-api-gateway/lib/client.js",
     "rev": "9e83e9d9c076",
     "inject": [
       "@deepseek-ai/dsh-typert-registry",
@@ -11,7 +11,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-api-remotes",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-api-remotes/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-api-remotes/lib/client.js",
     "rev": "e17dd6016653",
     "inject": [
       "@deepseek-ai/dsh-api-gateway"
@@ -20,19 +20,19 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-connection",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-connection/lib/client.js",
-    "rev": "bc3c3fa9d26b",
+    "file": "/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/connection/lib/client.js",
+    "rev": "a2c03f913693",
     "immediately": true
   },
   {
     "id": "@deepseek-ai/dsh-client-hmr",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-hmr/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-hmr/lib/client.js",
     "rev": "774dfcde3162",
     "immediately": true
   },
   {
     "id": "@deepseek-ai/dsh-client-locale",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-locale/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-locale/lib/client.js",
     "rev": "e4fcdbc40a44",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -44,13 +44,13 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-modules",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-modules/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-modules/lib/client.js",
     "rev": "c3a65f7f440a",
     "immediately": true
   },
   {
     "id": "@deepseek-ai/dsh-client-runtime",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-runtime/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-runtime/lib/client.js",
     "rev": "5404bd0408a5",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -61,7 +61,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-agent-preset",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-agent-preset/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-agent-preset/lib/client.js",
     "rev": "1c0ee144f0bc",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -74,7 +74,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-commands",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-commands/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-commands/lib/client.js",
     "rev": "0c69f5b8c93d",
     "inject": [
       "@deepseek-ai/dsh-api-remotes",
@@ -86,7 +86,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-conversation",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/client.js",
     "rev": "2dc11fb2b4fc",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -99,7 +99,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-cordis",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-cordis/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-cordis/lib/client.js",
     "rev": "7349dbb9ec78",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -114,7 +114,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-deliverables",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-deliverables/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-deliverables/lib/client.js",
     "rev": "df5439b77ee6",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -125,7 +125,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-directory-picker-browse",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-directory-picker-browse/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-directory-picker-browse/lib/client.js",
     "rev": "184b9a4641ac",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -135,7 +135,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-directory-picker-native",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-directory-picker-native/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-directory-picker-native/lib/client.js",
     "rev": "94f8f82280f0",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -144,7 +144,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-goal",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-goal/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-goal/lib/client.js",
     "rev": "5b381804f7d6",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -155,7 +155,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-input-trigger",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-input-trigger/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-input-trigger/lib/client.js",
     "rev": "5d4656b249c3",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -164,7 +164,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-jobs",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-jobs/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-jobs/lib/client.js",
     "rev": "61a6dc60b8bf",
     "inject": [
       "@deepseek-ai/dsh-client-locale",
@@ -175,7 +175,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-layout",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-layout/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-layout/lib/client.js",
     "rev": "0fbb362b3996",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -184,7 +184,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-message-feedback",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-message-feedback/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-message-feedback/lib/client.js",
     "rev": "c52be9818f44",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -195,7 +195,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-model-selection",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-model-selection/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-model-selection/lib/client.js",
     "rev": "c3e896e32cf0",
     "inject": [
       "@deepseek-ai/dsh-client-locale",
@@ -206,7 +206,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-permission-presets",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-permission-presets/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-permission-presets/lib/client.js",
     "rev": "659d558f1c00",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -219,7 +219,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-plan",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-plan/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-plan/lib/client.js",
     "rev": "6d87873c1752",
     "inject": [
       "@deepseek-ai/dsh-api-remotes",
@@ -229,7 +229,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-settings",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-settings/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-settings/lib/client.js",
     "rev": "09edeb10e0d0",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -239,7 +239,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-settings-general",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-settings-general/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-settings-general/lib/client.js",
     "rev": "2c88e3daf29b",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -252,7 +252,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-settings-models",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-settings-models/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-settings-models/lib/client.js",
     "rev": "4f26a613f8b6",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -263,7 +263,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-settings-plugin-inventory/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-settings-plugin-inventory/lib/client.js",
     "rev": "65382d8da744",
     "inject": [
       "@deepseek-ai/dsh-api-remotes",
@@ -274,7 +274,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-settings-plugins",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-settings-plugins/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-settings-plugins/lib/client.js",
     "rev": "4a25c3fa201c",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -286,7 +286,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-sidebar",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-sidebar/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-sidebar/lib/client.js",
     "rev": "505307785006",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -296,7 +296,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-skill",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-skill/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-skill/lib/client.js",
     "rev": "dca1926e2503",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -308,7 +308,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-subagent",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-subagent/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-subagent/lib/client.js",
     "rev": "65c1de8d4b6a",
     "inject": [
       "@deepseek-ai/dsh-client-locale",
@@ -320,7 +320,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-theme",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-theme/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-theme/lib/client.js",
     "rev": "8b0986b19b1b",
     "inject": [
       "@deepseek-ai/dsh-client-connection",
@@ -333,7 +333,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-tool",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-tool/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-tool/lib/client.js",
     "rev": "895eec1cde9b",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -343,7 +343,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-trajectory",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-trajectory/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-trajectory/lib/client.js",
     "rev": "7e85c6a43204",
     "inject": [
       "@deepseek-ai/dsh-client-locale",
@@ -353,7 +353,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-user-questions",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-user-questions/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-user-questions/lib/client.js",
     "rev": "98ca456d0fa6",
     "inject": [
       "@deepseek-ai/dsh-client-locale",
@@ -362,7 +362,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-workflow-run",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-workflow-run/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-workflow-run/lib/client.js",
     "rev": "a470a89054b5",
     "inject": [
       "@deepseek-ai/dsh-client-locale",
@@ -372,7 +372,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-client-ui-workspace",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-client-ui-workspace/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-client-ui-workspace/lib/client.js",
     "rev": "411b7eda10ba",
     "inject": [
       "@deepseek-ai/dsh-client-locale",
@@ -383,7 +383,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-cordis-client-runner",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-cordis-client-runner/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-cordis-client-runner/lib/client.js",
     "rev": "53ff5565d917",
     "inject": [
       "@deepseek-ai/dsh-client-runtime",
@@ -394,7 +394,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-session-log-export",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-session-log-export/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-session-log-export/lib/client.js",
     "rev": "e821f080751b",
     "inject": [
       "@deepseek-ai/dsh-client-locale",
@@ -405,7 +405,7 @@
   },
   {
     "id": "@deepseek-ai/dsh-typert-registry",
-    "file": "/tmp/dsh-manifest-src/profiles/node_modules/@deepseek-ai/dsh-typert-registry/lib/client.js",
+    "file": "../src-tauri/resources/dsh/node_modules/@deepseek-ai/dsh-typert-registry/lib/client.js",
     "rev": "f41d56e0b747",
     "immediately": true
   }

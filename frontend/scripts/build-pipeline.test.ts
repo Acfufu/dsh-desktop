@@ -21,7 +21,7 @@ describe('build pipeline output', () => {
     const { createHash } = require('node:crypto');
     const hash = createHash('sha256').update(body, 'utf8').digest('base64');
     // CSP 必须放行该内联脚本，否则 __DSH_BOOT__ 永不执行 → 白屏（回归：2026-08-16 实测）
-    expect(html).toContain(`script-src 'self' 'sha256-${hash}'`);
+    expect(html).toContain(`'sha256-${hash}'`); // unsafe-eval（loader 必需）夹在中间，只断言 hash 令牌
   });
 
   it('manifest carries immediately/inject tiers (runtime row must be immediately for cross-package require edges)', () => {

@@ -4,7 +4,7 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		//#region lib/types/client/connection.js
+		//#region src/client/connection.ts
 		const CONNECTION_DEFAULTS = {
 			backoffBaseMs: 500,
 			backoffFactor: 2,
@@ -96,7 +96,8 @@ window.__ModuleLoader__.load({
 					});
 					try {
 						const timeout = new AbortController();
-						const [description] = await Promise.all([this.api.host.describe({}), Promise.race([streamsOpen, sleep(this.config.streamOpenTimeoutMs, timeout.signal)])]);
+						const describeSignal = AbortSignal.timeout(1e4);
+						const [description] = await Promise.all([this.api.host.describe({}, describeSignal), Promise.race([streamsOpen, sleep(this.config.streamOpenTimeoutMs, timeout.signal)])]);
 						timeout.abort();
 						const descriptionResult = description.result;
 						if (!descriptionResult.ok) throw new Error(`host.describe failed: ${descriptionResult.error.code}: ${descriptionResult.error.message}`);
@@ -145,382 +146,164 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region ../../llm/llm/lib/types/brand.js
-		/**
-		* dsh-llm's owned branded ids: tool-call correlation and provider request
-		* diagnostics.
-		*
-		* The `Branded<B>` primitive itself lives in `@deepseek-ai/dsh-brand` (a
-		* zero-dependency type-only package) so every owner of a cross-boundary id can
-		* brand it without depending on dsh-llm; see that package's README for the
-		* nominal-typing policy.
-		*
-		* @module @deepseek-ai/dsh-llm/brand
-		*/
-		/**
-		* Brand a message identifier.
-		* @param id - the opaque message identifier.
-		* @returns the same string, branded; no validation is performed.
-		*/
-		function MessageId(id) {
-			return id;
+		//#region ../../../node_modules/.pnpm/@tauri-apps+api@2.11.1/node_modules/@tauri-apps/api/external/tslib/tslib.es6.js
+		/******************************************************************************
+		Copyright (c) Microsoft Corporation.
+		
+		Permission to use, copy, modify, and/or distribute this software for any
+		purpose with or without fee is hereby granted.
+		
+		THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+		REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+		AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+		INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+		LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+		OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+		PERFORMANCE OF THIS SOFTWARE.
+		***************************************************************************** */
+		function __classPrivateFieldGet(receiver, state, kind, f) {
+			if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+			if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+			return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 		}
-		/**
-		* Brand a string as a {@link CallId}.
-		* @param id - the provider-issued (or synthesized) call id.
-		* @returns the same string, branded; no validation is performed.
-		*/
-		function CallId(id) {
-			return id;
+		function __classPrivateFieldSet(receiver, state, value, kind, f) {
+			if (kind === "m") throw new TypeError("Private method is not writable");
+			if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+			if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+			return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
 		}
 		//#endregion
-		//#region ../../llm/llm/lib/types/call-config.js
+		//#region ../../../node_modules/.pnpm/@tauri-apps+api@2.11.1/node_modules/@tauri-apps/api/core.js
+		var _Channel_onmessage;
+		var _Channel_nextMessageIndex;
+		var _Channel_pendingMessages;
+		var _Channel_messageEndIndex;
 		/**
-		* Deep-freeze a value in place with an iterative traversal, guarding cycles,
-		* so later mutation throws without imposing a JavaScript call-stack depth cap.
-		* {@link AbortSignal} objects are deliberately skipped because they are the
-		* request's live cancellation channel and freezing them breaks abort.
-		* @param value - the value to freeze in place.
-		* @returns the same value, frozen.
-		*/
-		function deepFreeze(value) {
-			const seen = /* @__PURE__ */ new WeakSet();
-			const pending = [{
-				kind: "visit",
-				node: value
-			}];
-			while (pending.length > 0) {
-				const task = pending.pop();
-				/* v8 ignore next -- the loop condition guarantees one pending task. */
-				if (task === void 0) continue;
-				if (task.kind === "property") {
-					pending.push({
-						kind: "visit",
-						node: task.source[task.key]
-					});
-					continue;
-				}
-				const node = task.node;
-				if (node === null || typeof node !== "object") continue;
-				if (node instanceof AbortSignal) continue;
-				if (seen.has(node)) continue;
-				seen.add(node);
-				Object.freeze(node);
-				const keys = Object.keys(node);
-				for (let index = keys.length - 1; index >= 0; index--) {
-					const key = keys[index];
-					/* v8 ignore next -- the loop is bounded by the captured key count. */
-					if (key === void 0) continue;
-					pending.push({
-						kind: "property",
-						source: node,
-						key
-					});
-				}
-			}
-			return value;
-		}
-		//#endregion
-		//#region ../../llm/llm/lib/types/message.js
-		/** Message value types, identity, and immutable construction helpers. */
-		/**
-		* Detach and deep-freeze a message whose identity already exists.
-		* @param message - complete message, including its stable identity.
-		* @returns an immutable snapshot that preserves the identity.
-		*/
-		function freezeMessage(message) {
-			return deepFreeze(structuredClone(message));
-		}
-		/**
-		* Create one identified message and freeze it before publication.
-		* @param input - complete role, content, and source for a new message.
-		* @returns an immutable message with a fresh stable identity.
-		*/
-		function createMessage(input) {
-			return freezeMessage({
-				...input,
-				id: MessageId(crypto.randomUUID())
-			});
-		}
-		/**
-		* Create one identified user-role message and freeze it before publication.
-		* @param input - complete content and source for a new user message.
-		* @returns an immutable user message with a fresh stable identity.
-		*/
-		function createUserMessage(input) {
-			return createMessage({
-				...input,
-				role: "user"
-			});
-		}
-		/**
-		* Create one identified model-produced assistant message and freeze it before publication.
-		* @param input - complete content plus the provider, model, and optional replay state for a new assistant message.
-		* @returns an immutable assistant message with fixed role/source tags and a fresh stable identity.
-		*/
-		function createAssistantMessage(input) {
-			return createMessage({
-				role: "assistant",
-				content: input.content,
-				source: {
-					kind: "model",
-					...input.source
-				}
-			});
-		}
-		/**
-		* Create and freeze one identified tool-result message.
-		* @param input - call identity, raw result blocks, and outcome.
-		* @returns an immutable user-role tool-result message.
-		*/
-		function createToolResultMessage(input) {
-			return createUserMessage({
-				source: {
-					kind: "tool",
-					callId: input.callId
-				},
-				content: [{
-					type: "tool-result",
-					toolCallId: input.callId,
-					content: input.content,
-					isError: input.isError
-				}]
-			});
-		}
-		/**
-		* Whether a stream chunk carries visible model output (the first-token
-		* boundary shared by client step timing and the whole-log sessionStats
-		* projection). Empty deltas (heartbeats, empty tool-call frames) do not count
-		* as a first token.
-		* @param chunk - the stream chunk to test.
-		* @returns true when the chunk contains a non-empty text/reasoning/tool delta.
-		*/
-		function isTokenDelta(chunk) {
-			switch (chunk.type) {
-				case "text-delta":
-				case "reasoning-delta": return chunk.text !== "";
-				case "tool-call-delta": return chunk.argumentsDelta !== "" || chunk.name !== void 0;
-				default: return false;
-			}
-		}
-		//#endregion
-		//#region ../../core/session/lib/types/surface.js
-		/**
-		* Surface layer on top of the session event log: an ordered view of events
-		* that produce LLM messages. The append-only log remains the source of truth.
+		* Invoke your custom commands.
 		*
-		* Browser-safe: web clients consume this subpath export, so it must stay free
-		* of `node:` imports (they break the vite bundle).
+		* This package is also accessible with `window.__TAURI__.core` when [`app.withGlobalTauri`](https://v2.tauri.app/reference/config/#withglobaltauri) in `tauri.conf.json` is set to `true`.
+		* @module
+		*/
+		/**
+		* A key to be used to implement a special function
+		* on your types that define how your type should be serialized
+		* when passing across the IPC.
+		* @example
+		* Given a type in Rust that looks like this
+		* ```rs
+		* #[derive(serde::Serialize, serde::Deserialize)
+		* enum UserId {
+		*   String(String),
+		*   Number(u32),
+		* }
+		* ```
+		* `UserId::String("id")` would be serialized into `{ String: "id" }`
+		* and so we need to pass the same structure back to Rust
+		* ```ts
+		* import { SERIALIZE_TO_IPC_FN } from "@tauri-apps/api/core"
 		*
-		* @module @deepseek-ai/dsh-session/surface
+		* class UserIdString {
+		*   id
+		*   constructor(id) {
+		*     this.id = id
+		*   }
+		*
+		*   [SERIALIZE_TO_IPC_FN]() {
+		*     return { String: this.id }
+		*   }
+		* }
+		*
+		* class UserIdNumber {
+		*   id
+		*   constructor(id) {
+		*     this.id = id
+		*   }
+		*
+		*   [SERIALIZE_TO_IPC_FN]() {
+		*     return { Number: this.id }
+		*   }
+		* }
+		*
+		* type UserId = UserIdString | UserIdNumber
+		* ```
+		*
 		*/
-		/** Runtime counterpart of the message-producing event union. */
-		const SURFACE_EVENT_TYPES = new Set([
-			"user/message",
-			"assistant/message",
-			"tool/result"
-		]);
+		const SERIALIZE_TO_IPC_FN = "__TAURI_TO_IPC_KEY__";
 		/**
-		* Whether an event type can join the model-visible surface.
-		* @param type - event type to test.
-		* @returns true for one of the three message-producing event types.
+		* Stores the callback in a known location, and returns an identifier that can be passed to the backend.
+		* The backend uses the identifier to `eval()` the callback.
+		*
+		* @return An unique identifier associated with the callback function.
+		*
+		* @since 1.0.0
 		*/
-		function isSurfaceEligibleType(type) {
-			return SURFACE_EVENT_TYPES.has(type);
+		function transformCallback(callback, once = false) {
+			return window.__TAURI_INTERNALS__.transformCallback(callback, once);
 		}
+		var Channel = class {
+			constructor(onmessage) {
+				_Channel_onmessage.set(this, void 0);
+				_Channel_nextMessageIndex.set(this, 0);
+				_Channel_pendingMessages.set(this, []);
+				_Channel_messageEndIndex.set(this, void 0);
+				__classPrivateFieldSet(this, _Channel_onmessage, onmessage || (() => {}), "f");
+				this.id = transformCallback((rawMessage) => {
+					const index = rawMessage.index;
+					if ("end" in rawMessage) {
+						if (index == __classPrivateFieldGet(this, _Channel_nextMessageIndex, "f")) this.cleanupCallback();
+						else __classPrivateFieldSet(this, _Channel_messageEndIndex, index, "f");
+						return;
+					}
+					const message = rawMessage.message;
+					if (index == __classPrivateFieldGet(this, _Channel_nextMessageIndex, "f")) {
+						__classPrivateFieldGet(this, _Channel_onmessage, "f").call(this, message);
+						__classPrivateFieldSet(this, _Channel_nextMessageIndex, __classPrivateFieldGet(this, _Channel_nextMessageIndex, "f") + 1, "f");
+						while (__classPrivateFieldGet(this, _Channel_nextMessageIndex, "f") in __classPrivateFieldGet(this, _Channel_pendingMessages, "f")) {
+							const message = __classPrivateFieldGet(this, _Channel_pendingMessages, "f")[__classPrivateFieldGet(this, _Channel_nextMessageIndex, "f")];
+							__classPrivateFieldGet(this, _Channel_onmessage, "f").call(this, message);
+							delete __classPrivateFieldGet(this, _Channel_pendingMessages, "f")[__classPrivateFieldGet(this, _Channel_nextMessageIndex, "f")];
+							__classPrivateFieldSet(this, _Channel_nextMessageIndex, __classPrivateFieldGet(this, _Channel_nextMessageIndex, "f") + 1, "f");
+						}
+						if (__classPrivateFieldGet(this, _Channel_nextMessageIndex, "f") === __classPrivateFieldGet(this, _Channel_messageEndIndex, "f")) this.cleanupCallback();
+					} else __classPrivateFieldGet(this, _Channel_pendingMessages, "f")[index] = message;
+				});
+			}
+			cleanupCallback() {
+				window.__TAURI_INTERNALS__.unregisterCallback(this.id);
+			}
+			set onmessage(handler) {
+				__classPrivateFieldSet(this, _Channel_onmessage, handler, "f");
+			}
+			get onmessage() {
+				return __classPrivateFieldGet(this, _Channel_onmessage, "f");
+			}
+			[(_Channel_onmessage = /* @__PURE__ */ new WeakMap(), _Channel_nextMessageIndex = /* @__PURE__ */ new WeakMap(), _Channel_pendingMessages = /* @__PURE__ */ new WeakMap(), _Channel_messageEndIndex = /* @__PURE__ */ new WeakMap(), SERIALIZE_TO_IPC_FN)]() {
+				return `__CHANNEL__:${this.id}`;
+			}
+			toJSON() {
+				return this[SERIALIZE_TO_IPC_FN]();
+			}
+		};
 		/**
-		* Project a single event into the LLM message it derives to, or null when it
-		* produces none — a non-surface event (chunk, boundary, log-only record) or an
-		* empty-content assistant/message (which exists only to host usage). This is
-		* THE per-node projection rule: `Session.deriveMessages` folds it over the
-		* live surface, external reconstructors and pure projections fold the same
-		* function over a log prefix's surface to rebuild the exact messages any
-		* request was built from. The returned message is the already frozen message
-		* nested in the event wrapper and shared by delivery, durable history, and
-		* model requests.
-		* @param event - the event to project.
-		* @returns the derived message, or null when the event produces none.
+		* Sends a message to the backend.
+		* @example
+		* ```typescript
+		* import { invoke } from '@tauri-apps/api/core';
+		* await invoke('login', { user: 'tauri', password: 'poiwe3h4r5ip3yrhtew9ty' });
+		* ```
+		*
+		* @param cmd The command name.
+		* @param args The optional arguments to pass to the command.
+		* @param options The request options.
+		* @return A promise resolving or rejecting to the backend response.
+		*
+		* @since 1.0.0
 		*/
-		function deriveEventMessage(event) {
-			switch (event.type) {
-				case "user/message": return event.data;
-				case "assistant/message":
-					if (event.data.message.content.length === 0) return null;
-					return event.data.message;
-				case "tool/result": return event.data.message;
-				default: return null;
-			}
-		}
-		/** Create an empty surface fold state. */
-		function createFoldState() {
-			return {
-				nodes: [],
-				replaceGeneration: 0
-			};
-		}
-		/** Whether a runtime value is a non-negative safe event sequence. */
-		function isEventSeq(value) {
-			return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
-		}
-		/** Whether a runtime value is the exact positional-replacement shape. */
-		function isReplaceOp(value) {
-			const op = value;
-			return Object.keys(op).length === 3 && Object.hasOwn(op, "op") && Object.hasOwn(op, "start") && Object.hasOwn(op, "end") && op["op"] === "replace" && isEventSeq(op["start"]) && isEventSeq(op["end"]);
-		}
-		/** Validate event-local surface eligibility and return its operation. */
-		function surfaceOpOf(event) {
-			const raw = event;
-			if (!isSurfaceEligibleType(event.type)) {
-				if (raw.surfaceOp !== void 0) throw new Error(`session event "${event.type}" is not surface-eligible and cannot carry surfaceOp`);
-				if (raw.sourceEventSeqs !== void 0) throw new Error(`session event "${event.type}" is not surface-eligible and cannot carry sourceEventSeqs`);
-				return;
-			}
-			const op = raw.surfaceOp;
-			if (op === void 0) throw new Error(`session event "${event.type}" is surface-eligible and requires a surfaceOp marker`);
-			if (op === "append") return op;
-			if (op === null || typeof op !== "object" || Array.isArray(op)) throw new Error(`session event "${event.type}" carries an invalid surfaceOp`);
-			if (!isReplaceOp(op)) throw new Error(`session event "${event.type}" carries an invalid replace surfaceOp`);
-			return op;
-		}
-		/** Validate cited source-event seqs against prior log entries and the replacement range. */
-		function assertProvenance(event, shadowedSeqs) {
-			const raw = event.sourceEventSeqs;
-			const sources = /* @__PURE__ */ new Set();
-			if (raw !== void 0) {
-				if (!Array.isArray(raw)) throw new Error(`sourceEventSeqs on event at seq ${event.seq} must be an array when present`);
-				if (raw.length === 0 && event.type !== "assistant/message") throw new Error("sourceEventSeqs must not be empty except on assistant/message");
-				let nonEarlierSource;
-				for (const source of raw) {
-					if (!isEventSeq(source)) throw new Error(`session event "${event.type}" sourceEventSeqs must densely contain non-negative safe integers`);
-					sources.add(source);
-					if (nonEarlierSource === void 0 && source >= event.seq) nonEarlierSource = source;
-				}
-				if (sources.size !== raw.length) throw new Error("sourceEventSeqs must not contain duplicates");
-				if (nonEarlierSource !== void 0) throw new Error(`sourceEventSeqs must reference earlier events: ${nonEarlierSource} >= current seq ${event.seq}`);
-			}
-			const missing = shadowedSeqs.filter((seq) => !sources.has(seq));
-			if (missing.length > 0) throw new Error(`surface replace: sourceEventSeqs must include every shadowed surface node; missing ${missing.join(", ")}`);
-		}
-		/** Locate one replacement range without mutating the current fold state. */
-		function replacementRange(state, op) {
-			const startIdx = state.nodes.indexOf(op.start);
-			if (startIdx === -1) throw new Error(`surface replace: start seq ${op.start} not found in surface`);
-			const endIdx = state.nodes.indexOf(op.end);
-			if (endIdx === -1) throw new Error(`surface replace: end seq ${op.end} not found in surface`);
-			if (startIdx > endIdx) throw new Error(`surface replace: start seq ${op.start} (index ${startIdx}) is after end seq ${op.end} (index ${endIdx})`);
-			return {
-				startIdx,
-				endIdx,
-				shadowedSeqs: state.nodes.slice(startIdx, endIdx + 1)
-			};
-		}
-		/**
-		* Deep structural equality over the session-event JSON value domain
-		* (null/boolean/number/string, arrays, plain objects). Replaces
-		* `node:util`'s isDeepStrictEqual to keep this module browser-safe.
-		*/
-		function isDeepEqualJson(a, b) {
-			if (a === b) return true;
-			if (Array.isArray(a) || Array.isArray(b)) {
-				if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
-				return a.every((item, i) => isDeepEqualJson(item, b[i]));
-			}
-			if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) return false;
-			const aKeys = Object.keys(a);
-			const bRecord = b;
-			if (aKeys.length !== Object.keys(b).length) return false;
-			return aKeys.every((key) => Object.hasOwn(b, key) && isDeepEqualJson(a[key], bRecord[key]));
-		}
-		/** Restrict a tool-result replacement to one current result's content. */
-		function assertToolResultRewrite(event, shadowedSeqs, events, baseSeq) {
-			if (event.type !== "tool/result") return;
-			if (shadowedSeqs.length !== 1) throw new Error("tool/result surface replacement must rewrite exactly one current node");
-			for (const originalSeq of shadowedSeqs) {
-				const original = events[originalSeq - baseSeq];
-				if (original?.type !== "tool/result") throw new Error("tool/result surface replacement must target a current tool/result");
-				const originalRest = { ...original.data };
-				const replacementRest = { ...event.data };
-				const originalResult = original.data.message.content[0];
-				const replacementResult = event.data.message.content[0];
-				originalRest["message"] = {
-					...original.data.message,
-					content: [{
-						...originalResult,
-						content: null
-					}]
-				};
-				replacementRest["message"] = {
-					...event.data.message,
-					content: [{
-						...replacementResult,
-						content: null
-					}]
-				};
-				if (!isDeepEqualJson(originalRest, replacementRest)) throw new Error("tool/result surface replacement may change only content");
-			}
-		}
-		/** Validate one event at its replay boundary and prepare its atomic fold transition. */
-		function planSurfaceEvent(state, event, expectedSeq, events, baseSeq) {
-			if (event.seq !== expectedSeq) throw new Error(`session event seq ${event.seq} is not contiguous; expected ${expectedSeq}`);
-			const surfaceOp = surfaceOpOf(event);
-			if (surfaceOp === void 0) return;
-			if (surfaceOp === "append") {
-				assertProvenance(event, []);
-				return {
-					kind: "append",
-					seq: event.seq
-				};
-			}
-			const range = replacementRange(state, surfaceOp);
-			assertProvenance(event, range.shadowedSeqs);
-			assertToolResultRewrite(event, range.shadowedSeqs, events, baseSeq);
-			return {
-				kind: "replace",
-				seq: event.seq,
-				start: surfaceOp.start,
-				end: surfaceOp.end,
-				...range
-			};
-		}
-		/** Apply one event and return replacement metadata only when one occurred. */
-		function applySurfaceEvent(state, event, expectedSeq, events, baseSeq) {
-			return applySurfacePlan(state, planSurfaceEvent(state, event, expectedSeq, events, baseSeq));
-		}
-		/** Commit one previously validated surface transition. */
-		function applySurfacePlan(state, plan) {
-			if (plan?.kind === "append") state.nodes.push(plan.seq);
-			else if (plan?.kind === "replace") {
-				state.nodes.splice(plan.startIdx, plan.endIdx - plan.startIdx + 1, plan.seq);
-				state.replaceGeneration += 1;
-			}
-			if (plan?.kind !== "replace") return;
-			return {
-				seq: plan.seq,
-				start: plan.start,
-				end: plan.end,
-				shadowedSeqs: plan.shadowedSeqs
-			};
-		}
-		/**
-		* Replay a complete session log through the canonical surface fold.
-		* @param events - session events in contiguous seq order.
-		* @returns detached current sequences and replacement history.
-		* @throws when an event violates surface metadata, source-event references, range, or tool-result rewrite rules.
-		*/
-		function foldSurface(events) {
-			const state = createFoldState();
-			const replacements = [];
-			for (const [index, event] of events.entries()) {
-				const replacement = applySurfaceEvent(state, event, index, events, 0);
-				if (replacement !== void 0) replacements.push(replacement);
-			}
-			return {
-				nodes: [...state.nodes],
-				replacements
-			};
+		async function invoke(cmd, args = {}, options) {
+			return window.__TAURI_INTERNALS__.invoke(cmd, args, options);
 		}
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/rpc.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/rpc.js
 		/**
 		* Four-quadrant RPC message model. Channels and messages are decoupled: HTTP,
 		* WebSocket, and in-process SSE are physical carriers, while logical messages
@@ -630,7 +413,6 @@ window.__ModuleLoader__.load({
 					Object.defineProperty(this, "value", { value });
 					return value;
 				}
-				throw new Error("cached value already set");
 			} };
 		}
 		function nullish(input) {
@@ -676,7 +458,10 @@ window.__ModuleLoader__.load({
 		}
 		function mergeDefs(...defs) {
 			const mergedDescriptors = {};
-			for (const def of defs) Object.assign(mergedDescriptors, Object.getOwnPropertyDescriptors(def));
+			for (const def of defs) {
+				const descriptors = Object.getOwnPropertyDescriptors(def);
+				Object.assign(mergedDescriptors, descriptors);
+			}
 			return Object.defineProperties({}, mergedDescriptors);
 		}
 		function esc(str) {
@@ -1182,8 +967,10 @@ window.__ModuleLoader__.load({
 			inst._zod.onattach.push((inst) => {
 				const bag = inst._zod.bag;
 				const curr = (def.inclusive ? bag.maximum : bag.exclusiveMaximum) ?? Number.POSITIVE_INFINITY;
-				if (def.value < curr) if (def.inclusive) bag.maximum = def.value;
-				else bag.exclusiveMaximum = def.value;
+				if (def.value < curr) {
+					if (def.inclusive) bag.maximum = def.value;
+					else bag.exclusiveMaximum = def.value;
+				}
 			});
 			inst._zod.check = (payload) => {
 				if (def.inclusive ? payload.value <= def.value : payload.value < def.value) return;
@@ -1204,8 +991,10 @@ window.__ModuleLoader__.load({
 			inst._zod.onattach.push((inst) => {
 				const bag = inst._zod.bag;
 				const curr = (def.inclusive ? bag.minimum : bag.exclusiveMinimum) ?? Number.NEGATIVE_INFINITY;
-				if (def.value > curr) if (def.inclusive) bag.minimum = def.value;
-				else bag.exclusiveMinimum = def.value;
+				if (def.value > curr) {
+					if (def.inclusive) bag.minimum = def.value;
+					else bag.exclusiveMinimum = def.value;
+				}
 			});
 			inst._zod.check = (payload) => {
 				if (def.inclusive ? payload.value >= def.value : payload.value > def.value) return;
@@ -2646,7 +2435,7 @@ window.__ModuleLoader__.load({
 			inst._zod.optin = "optional";
 			inst._zod.optout = "optional";
 			defineLazy(inst._zod, "values", () => {
-				return def.innerType._zod.values ? new Set([...def.innerType._zod.values, void 0]) : void 0;
+				return def.innerType._zod.values ? /* @__PURE__ */ new Set([...def.innerType._zod.values, void 0]) : void 0;
 			});
 			defineLazy(inst._zod, "pattern", () => {
 				const pattern = def.innerType._zod.pattern;
@@ -2680,7 +2469,7 @@ window.__ModuleLoader__.load({
 				return pattern ? new RegExp(`^(${cleanRegex(pattern.source)}|null)$`) : void 0;
 			});
 			defineLazy(inst._zod, "values", () => {
-				return def.innerType._zod.values ? new Set([...def.innerType._zod.values, null]) : void 0;
+				return def.innerType._zod.values ? /* @__PURE__ */ new Set([...def.innerType._zod.values, null]) : void 0;
 			});
 			inst._zod.parse = (payload, ctx) => {
 				if (payload.value === null) return payload;
@@ -3640,8 +3429,10 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 					defs[seen.defId] = seen.def;
 				}
 			}
-			if (ctx.external) {} else if (Object.keys(defs).length > 0) if (ctx.target === "draft-2020-12") result.$defs = defs;
-			else result.definitions = defs;
+			if (ctx.external) {} else if (Object.keys(defs).length > 0) {
+				if (ctx.target === "draft-2020-12") result.$defs = defs;
+				else result.definitions = defs;
+			}
 			try {
 				const finalized = JSON.parse(JSON.stringify(result));
 				Object.defineProperty(finalized, "~standard", {
@@ -3754,16 +3545,18 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			const exMin = typeof exclusiveMinimum === "number" && exclusiveMinimum >= (minimum ?? Number.NEGATIVE_INFINITY);
 			const exMax = typeof exclusiveMaximum === "number" && exclusiveMaximum <= (maximum ?? Number.POSITIVE_INFINITY);
 			const legacy = ctx.target === "draft-04" || ctx.target === "openapi-3.0";
-			if (exMin) if (legacy) {
-				json.minimum = exclusiveMinimum;
-				json.exclusiveMinimum = true;
-			} else json.exclusiveMinimum = exclusiveMinimum;
-			else if (typeof minimum === "number") json.minimum = minimum;
-			if (exMax) if (legacy) {
-				json.maximum = exclusiveMaximum;
-				json.exclusiveMaximum = true;
-			} else json.exclusiveMaximum = exclusiveMaximum;
-			else if (typeof maximum === "number") json.maximum = maximum;
+			if (exMin) {
+				if (legacy) {
+					json.minimum = exclusiveMinimum;
+					json.exclusiveMinimum = true;
+				} else json.exclusiveMinimum = exclusiveMinimum;
+			} else if (typeof minimum === "number") json.minimum = minimum;
+			if (exMax) {
+				if (legacy) {
+					json.maximum = exclusiveMaximum;
+					json.exclusiveMaximum = true;
+				} else json.exclusiveMaximum = exclusiveMaximum;
+			} else if (typeof maximum === "number") json.maximum = maximum;
 			if (typeof multipleOf === "number") json.multipleOf = multipleOf;
 		};
 		const booleanProcessor = (_schema, _ctx, json, _params) => {
@@ -3784,9 +3577,10 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			const vals = [];
 			for (const val of def.values) if (val === void 0) {
 				if (ctx.unrepresentable === "throw") throw new Error("Literal `undefined` cannot be represented in JSON Schema");
-			} else if (typeof val === "bigint") if (ctx.unrepresentable === "throw") throw new Error("BigInt literals cannot be represented in JSON Schema");
-			else vals.push(Number(val));
-			else vals.push(val);
+			} else if (typeof val === "bigint") {
+				if (ctx.unrepresentable === "throw") throw new Error("BigInt literals cannot be represented in JSON Schema");
+				else vals.push(Number(val));
+			} else vals.push(val);
 			if (vals.length === 0) {} else if (vals.length === 1) {
 				const val = vals[0];
 				json.type = val === null ? "null" : typeof val;
@@ -4572,11 +4366,12 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			});
 		});
 		function object(shape, params) {
-			return new ZodObject({
+			const def = {
 				type: "object",
 				shape: shape ?? {},
 				...normalizeParams(params)
-			});
+			};
+			return new ZodObject(def);
 		}
 		function looseObject(shape, params) {
 			return new ZodObject({
@@ -4675,9 +4470,10 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			};
 		});
 		function _enum(values, params) {
+			const entries = Array.isArray(values) ? Object.fromEntries(values.map((v) => [v, v])) : values;
 			return new ZodEnum({
 				type: "enum",
-				entries: Array.isArray(values) ? Object.fromEntries(values.map((v) => [v, v])) : values,
+				entries,
 				...normalizeParams(params)
 			});
 		}
@@ -4879,7 +4675,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return /* @__PURE__ */ _superRefine(fn, params);
 		}
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/rpc.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/rpc.schema.js
 		/**
 		* Message-layer zod schemas: the four wire full forms + error body +
 		* carrier receipt. The payload slot is unknown in the full-form schemas — business payloads
@@ -5194,7 +4990,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			reason: union([literal("not-pending"), literal("bad-response")])
 		})]);
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/session-search.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/session-search.js
 		/**
 		* Return the longest prefix containing at most `maximum` Unicode code points.
 		* @param value - text to bound.
@@ -5212,7 +5008,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return value;
 		}
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/sessions.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/sessions.schema.js
 		/**
 		* sessions domain zod schemas (names derived from map keys: sessionListRequestSchema /
 		* sessionListValueSchema). SessionEvent passthrough = strict envelope (type/seq/time) + wide
@@ -5460,7 +5256,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** session.cancel response value. */
 		const sessionCancelValueSchema = object({ accepted: literal(true) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/approvals.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/approvals.schema.js
 		/**
 		* approvals domain zod schemas (respond is a client-response; the payload schema serves
 		* the /api/respond endpoint's second parse after routing via the pending table).
@@ -5494,7 +5290,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			finishedAt: number().int().nonnegative().optional()
 		});
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/workspace.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/workspace.schema.js
 		/**
 		* workspace domain zod schemas (names derived from map keys). The
 		* WorkspaceId brand cast lives in sessions.schema (see the note there) and
@@ -5547,7 +5343,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** workspace.archiveSession response value: the full updated archive set. */
 		const workspaceArchiveSessionValueSchema = object({ archivedSessionIds: array(sessionIdSchema) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/events.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/events.schema.js
 		/**
 		* events domain zod schemas: MuxFrame / HostFrame unions (discriminatedUnion('type')).
 		* A frame is the payload slot of the ServerRequest full form; the SessionEvent inside
@@ -5742,7 +5538,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** host.openPath response value. */
 		const hostOpenPathValueSchema = object({ opened: literal(true) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/skills.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/skills.schema.js
 		/**
 		* skills domain zod schemas (names derived from map keys: skillListRequestSchema /
 		* skillListValueSchema).
@@ -5758,7 +5554,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** skill.list response value. */
 		const skillListValueSchema = object({ skills: array(skillEntrySchema) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/agent-presets.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/agent-presets.schema.js
 		/**
 		* agent-presets domain zod schemas (names derived from map keys:
 		* agentPresetListRequestSchema / agentPresetListValueSchema).
@@ -5811,7 +5607,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** agentPreset.remove response value. */
 		const agentPresetRemoveValueSchema = object({});
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/goals.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/goals.schema.js
 		/**
 		* goals domain zod schemas. Mutation-only shapes: every value schema is a
 		* `{ ref }` acknowledgement (clear: `{ cleared }`) — the current goal state
@@ -5864,7 +5660,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** goal.clear response value. */
 		const goalClearValueSchema = object({ cleared: literal(true) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/settings.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/settings.schema.js
 		/**
 		* settings domain zod schemas (names derived from map keys: settingsDescribeRequestSchema /
 		* settingsDescribeValueSchema / settingsUpdate* / settingsReplace*).
@@ -5926,7 +5722,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** settings.replace response value. */
 		const settingsReplaceValueSchema = settingsNamespaceViewSchema;
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/credentials.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/credentials.schema.js
 		/**
 		* credentials domain zod schemas (names derived from map keys:
 		* credentialsDescribeRequestSchema / credentialsDescribeValueSchema / …).
@@ -5954,7 +5750,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** credentials.unset response value. */
 		const credentialsUnsetValueSchema = object({});
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/llm.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/llm.schema.js
 		/**
 		* llm domain zod schemas (names derived from map keys: llmProvidersRequestSchema /
 		* llmProvidersValueSchema / llmModelsRequestSchema / llmModelsValueSchema).
@@ -5994,7 +5790,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** llm.discoverModels response value. */
 		const llmDiscoverModelsValueSchema = object({ models: array(discoveredModelViewSchema) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/subagents.schema.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/api/subagents.schema.js
 		/** Zod schemas for the browser-safe subagent domain. */
 		/** Healthy and diagnostic durable catalog rows. */
 		const subagentListEntrySchema = union([
@@ -6058,7 +5854,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** subagent.interrupt response value. */
 		const subagentInterruptValueSchema = object({ accepted: literal(true) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/fetch/client.js
+		//#region ../../../node_modules/.pnpm/@deepseek-ai+dsh-host-apiproxy@0.1.0-rc.6_e9efce95e5e57cd2168691beebd30eb1/node_modules/@deepseek-ai/dsh-host-apiproxy/lib/types/fetch/client.js
 		/**
 		* Client side of the fetch carrier. AbstractApiClient holds every protocol invariant: rpcId minting,
 		* four-quadrant envelope wrap/unwrap, zod parsing, in-process SSE frame decoding, and the payload-direct
@@ -6126,7 +5922,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** Default timeout for bounded unary calls (rpc-compare 2026-07-19: a hung host must not leave callers pending forever). */
 		const DEFAULT_TIMEOUT_MS = 3e4;
 		/** URL base for in-process handler injection (fake authority, opencode precedent). */
-		const INTERNAL_BASE$1 = "http://dsh.internal";
+		const INTERNAL_BASE = "http://dsh.internal";
 		/**
 		* Abstract fetch-carrier client. Subclasses supply the transport (doFetch) and may refine the
 		* per-message tap (onEnvelope) — platform aspects stay in subclasses, protocol invariants stay
@@ -6178,7 +5974,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			/** Browser = same-origin (a fake authority would fail DNS on real requests); no-location env (Node) = fake authority. */
 			resolveBase() {
 				const loc = globalThis.location;
-				return loc?.origin !== void 0 && loc.origin !== "null" ? loc.origin : INTERNAL_BASE$1;
+				return loc?.origin !== void 0 && loc.origin !== "null" ? loc.origin : INTERNAL_BASE;
 			}
 			mintRpcId() {
 				return RpcId(crypto.randomUUID());
@@ -6362,14 +6158,122 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/random-uuid.js
+		//#region src/client/tauri-api-client.ts
+		var TransportError = class extends Error {
+			kind;
+			constructor(kind, message, cause) {
+				super(message, { cause });
+				this.kind = kind;
+				this.name = "TransportError";
+			}
+		};
+		var TauriApiClient = class extends AbstractApiClient {
+			constructor() {
+				super(3e4);
+			}
+			async doFetch(input, init) {
+				const method = (init?.method ?? "GET").toUpperCase();
+				const url = new URL(input.toString(), "http://dsh");
+				const path = url.pathname + url.search;
+				const body = init?.body instanceof ArrayBuffer ? new Uint8Array(init.body) : typeof init?.body === "string" ? new TextEncoder().encode(init.body) : void 0;
+				let resp;
+				try {
+					resp = await invoke("dsh_http", {
+						method,
+						path,
+						body: body ? Array.from(body) : null
+					});
+				} catch (e) {
+					throw new TransportError("transport", `dsh_http failed: ${JSON.stringify(e)}`, e);
+				}
+				const bytes = new Uint8Array(resp.body);
+				const responseBody = new Blob([bytes]).arrayBuffer();
+				return new Response(await responseBody, {
+					status: resp.status,
+					headers: new Headers(resp.headers)
+				});
+			}
+			openMux(_payload, signal, onOpen) {
+				return this.openDownlink("mux", signal, onOpen);
+			}
+			openHost(_payload, signal, onOpen) {
+				return this.openDownlink("host", signal, onOpen);
+			}
+			async *openDownlink(stream, signal, onOpen) {
+				const channel = new Channel();
+				const frames = [];
+				let endResolve = () => {};
+				let ended = false;
+				const endPromise = new Promise((r) => {
+					endResolve = r;
+				});
+				let notify = () => {};
+				let pending = false;
+				channel.onmessage = (text) => {
+					if (text === "") {
+						ended = true;
+						endResolve();
+						return;
+					}
+					try {
+						const full = serverRequestSchema.parse(JSON.parse(text));
+						this.onEnvelope?.(full);
+						const req = {
+							rpcId: RpcId(full.rpcId),
+							payload: full.payload
+						};
+						frames.push(req);
+						pending = true;
+						notify();
+					} catch {}
+				};
+				const abortHandler = () => {
+					ended = true;
+					endResolve();
+				};
+				signal.addEventListener("abort", abortHandler, { once: true });
+				let streamId;
+				try {
+					streamId = await invoke("dsh_open_stream", {
+						stream,
+						channel
+					});
+				} catch (e) {
+					signal.removeEventListener("abort", abortHandler);
+					throw new TransportError("transport", `open stream ${stream} failed: ${JSON.stringify(e)}`, e);
+				}
+				onOpen?.();
+				if (signal?.aborted) {
+					ended = true;
+					endResolve();
+				}
+				try {
+					while (!ended) {
+						while (frames.length > 0) {
+							const f = frames.shift();
+							pending = frames.length > 0;
+							yield f;
+						}
+						if (ended) break;
+						if (!pending) await Promise.race([endPromise, new Promise((r) => {
+							notify = r;
+						})]);
+					}
+				} finally {
+					signal.removeEventListener("abort", abortHandler);
+					await invoke("dsh_close_stream", { id: streamId }).catch(() => {});
+				}
+			}
+		};
+		//#endregion
+		//#region src/client/random-uuid.ts
 		/** Browser-safe UUID generation for client-side wire correlation. */
 		/**
 		* Generate an RFC 4122 version 4 UUID without requiring a secure context.
 		* @returns a UUID backed by `crypto.getRandomValues()`, which browsers expose on insecure origins.
 		*/
 		function randomUuid() {
-			const bytes = globalThis.crypto.getRandomValues(new Uint8Array(16));
+			const bytes = globalThis.crypto.getRandomValues(/* @__PURE__ */ new Uint8Array(16));
 			const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
 			view.setUint8(6, view.getUint8(6) & 15 | 64);
 			view.setUint8(8, view.getUint8(8) & 63 | 128);
@@ -6377,3713 +6281,8 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 		}
 		//#endregion
-		//#region lib/types/client/fixture.js
-		/** The fake carrier mints like a real one (business code never mints). */
-		function rpcRequest(payload) {
-			return {
-				rpcId: RpcId(randomUuid()),
-				payload
-			};
-		}
-		function text(t) {
-			return [{
-				type: "text",
-				text: t
-			}];
-		}
-		function userMessage(content, source = { kind: "user" }) {
-			return createUserMessage({
-				content,
-				source
-			});
-		}
-		function assistantMessage(content, model = "fx-1") {
-			return createAssistantMessage({
-				content,
-				source: {
-					provider: "fixture",
-					model
-				}
-			});
-		}
-		function toolResultMessage(callId, content, isError) {
-			return createToolResultMessage({
-				callId: CallId(callId),
-				content,
-				isError
-			});
-		}
-		const MARKDOWN_FIXTURE = [
-			"# Markdown fixture",
-			"",
-			"Assistant output renders **strong text**, *emphasis*, and `inline code`.",
-			"",
-			"- first item",
-			"  - nested item",
-			"",
-			"| Area | State |",
-			"| --- | --- |",
-			"| history | rendered |",
-			"| streaming | stable |",
-			"",
-			"[DeepSeek](https://www.deepseek.com)",
-			"",
-			"```ts",
-			"const markdown = true",
-			"```"
-		].join("\n");
-		const USER_MARKDOWN_LITERAL = "用户字面量：# 不渲染 `code` [link](https://example.com)";
-		/**
-		* SGR wrapper for the terminal output sample below: authoring the escapes as
-		* `\u001b` keeps literal control bytes out of this source file.
-		* @param code - the SGR parameter (an ANSI color or attribute number).
-		* @param body - the text the attribute applies to.
-		* @returns the body wrapped in the attribute and a reset.
-		*/
-		function sgr(code, body) {
-			return `\u001b[${code}m${body}\u001b[0m`;
-		}
-		/**
-		* Terminal output sample for fixture turn 66, authored to carry every feature
-		* the terminal card draws that turn 60's two prompt rows cannot reach:
-		* basic-16 SGR foreground runs (green, red, bright-black) that must resolve to
-		* `--dsw-*` tokens, a bold run, column-aligned table rows that must scroll
-		* rather than fold, more than DEFAULT_TERMINAL_MAX_LINES (16) lines so the
-		* height cap collapses the middle. The exit status is authored separately in
-		* TERMINAL_EXIT_STATUS and deliberately absent from this text: the real bash
-		* presenter CONSUMES its `[exit code: N]` marker out of the body, because a
-		* terminal card shows the exit as its own pill and leaving the marker in would
-		* render it twice (packages/shell/tool-bash/src/render.ts).
-		*/
-		const TERMINAL_OUTPUT_FIXTURE = [
-			sgr(1, "Running 4 checks"),
-			`${sgr(32, "✓")} typecheck                                          1.82s`,
-			`${sgr(32, "✓")} lint                                               0.94s`,
-			`${sgr(32, "✓")} duplication                                        2.10s`,
-			`${sgr(31, "✗")} unit                                               8.41s`,
-			"",
-			sgr(90, "packages/client/ui-primitives/tests/terminal-block.client.spec.tsx"),
-			`  ${sgr(31, "FAIL")} caps output at the configured line budget`,
-			"    expected 16 lines, received 24",
-			"",
-			"NAME                        LINES    BRANCHES    FUNCTIONS    UNCOVERED",
-			"TerminalBlock.tsx           100%     100%        100%         -",
-			"ansi.ts                     100%     100%        100%         -",
-			"clipboard.ts                100%     100%        100%         -",
-			"CodeBlock.tsx               98.4%    96.2%       100%         41-43",
-			"highlight.ts                100%     100%        100%         -",
-			"Pill.tsx                    100%     100%        100%         -",
-			"StateDot.tsx                100%     100%        100%         -",
-			"markdown/Markdown.tsx       100%     100%        100%         -",
-			"",
-			sgr(31, "1 of 4 checks failed")
-		].join("\n");
-		/**
-		* Exit status for each terminal sample, keyed by its output text. Authored
-		* alongside the sample rather than parsed back out of its trailing marker,
-		* which is the bash tool's own job and not something to reimplement here.
-		*/
-		const TERMINAL_EXIT_STATUS = { [TERMINAL_OUTPUT_FIXTURE]: { exitCode: 1 } };
-		/**
-		* Structured grep result for the search sample (turn 67): matches grouped by
-		* file, authored inline because the client-side fixture cannot import the tool
-		* that produces the canonical value. `truncated` with a larger `total` than the
-		* retained match count exercises the search card's capped indicator; the file
-		* with more than CHAT_SEARCH_MAX_LINES rows exercises its head/tail height cap.
-		*/
-		const SEARCH_MATCHES_FIXTURE = [
-			{
-				path: "packages/client/ui-primitives/src/SearchBlock.tsx",
-				matches: [
-					{
-						lineNumber: 16,
-						line: "export const DEFAULT_SEARCH_MAX_LINES = 16"
-					},
-					{
-						lineNumber: 138,
-						line: "export function SearchBlock(props: SearchBlockProps) {"
-					},
-					{
-						lineNumber: 141,
-						line: "  const [collapsed, setCollapsed] = useState<ReadonlySet<number>>(() => new Set())"
-					}
-				]
-			},
-			{
-				path: "packages/client/ui-tool/src/client/tool/models/search-card-model.ts",
-				matches: [{
-					lineNumber: 45,
-					line: "export const CHAT_SEARCH_MAX_LINES = 8"
-				}, {
-					lineNumber: 130,
-					line: "export function searchCardModel(block: ToolCallBlock): SearchCardModel | null {"
-				}]
-			},
-			{
-				path: "packages/client/ui-tool/src/client/tool/toolviews/search-row.tsx",
-				matches: [
-					{
-						lineNumber: 34,
-						line: "export function SearchRow({ toolName, block, inspect, t }: SearchRowProps) {"
-					},
-					{
-						lineNumber: 36,
-						line: "  const search = searchCardModel(block)"
-					},
-					{
-						lineNumber: 56,
-						line: "      search={search}"
-					},
-					{
-						lineNumber: 78,
-						line: "      yield ctx.slots.register({ name: 'tool.call.toolview', key: 'grep', locale: NS }, SearchRow)"
-					}
-				]
-			}
-		];
-		/**
-		* The model-facing grep render text for the sample — what a UI without a search
-		* card shows, attached as the view's `content`. Mirrors the real grep
-		* presenter's shape (see formatGrepOutput in dsh-tool-fs-search): a
-		* `Found X of Y matches` header, the matches grouped under file headers with
-		* `Line N:` rows, then a spill-recovery footer.
-		*/
-		const SEARCH_MATCHES_TEXT = [
-			"Found 9 of 42 matches",
-			"",
-			...SEARCH_MATCHES_FIXTURE.map((file) => [file.path, ...file.matches.map((m) => `Line ${m.lineNumber}: ${m.line}`)].join("\n")),
-			"",
-			"(Full grep result stored at: fixture://spill/grep-66. Read it to see every match.)"
-		].join("\n");
-		/**
-		* Structured glob result for the search sample (turn 68): a flat path list,
-		* truncated with a larger `total` so the path card shows its capped indicator.
-		*/
-		const SEARCH_PATHS_FIXTURE = [
-			"packages/client/ui-primitives/src/SearchBlock.tsx",
-			"packages/client/ui-primitives/src/SearchBlock.module.css",
-			"packages/client/ui-tool/src/client/tool/models/search-card-model.ts",
-			"packages/client/ui-tool/src/client/tool/toolviews/search-row.tsx",
-			"packages/client/ui-tool/tests/search-card.client.spec.tsx"
-		];
-		/**
-		* The model-facing glob render text — the newline-joined path list plus a
-		* spill-recovery footer, mirroring the real glob presenter's shape (see
-		* formatGlobOutput in dsh-tool-fs-search).
-		*/
-		const SEARCH_PATHS_TEXT = [
-			...SEARCH_PATHS_FIXTURE,
-			"",
-			"(Showing 5 of 23 paths. Full sorted result stored at: fixture://spill/glob-67. Read it to see every path.)"
-		].join("\n");
-		/**
-		* Read-card sample for the read turn: a WINDOW past an offset, so the line
-		* numbers start above 1 (the card's gutter keeps the file's own numbering) and
-		* `totalLines` exceeds the window (the card shows a "showing N of M" note). The
-		* fixture is client-side and cannot import the read tool, so the structured
-		* window is authored inline exactly as the tool would project it through
-		* `presentationMeta`. `lang` is a `ts` hint so the shiki path highlights it.
-		*/
-		const READ_SAMPLE_FIRST_LINE = 41;
-		const READ_SAMPLE_SOURCE = [
-			"export interface ReadBlockProps {",
-			"  label?: string | undefined",
-			"  lines: readonly ReadBlockLine[]",
-			"  totalLines: number",
-			"  lang?: string | undefined",
-			"  maxLines?: number | undefined",
-			"  className?: string | undefined",
-			"}",
-			"",
-			"// A windowed read keeps the file line numbers in the gutter.",
-			"const marker = \"fixture read sample\""
-		];
-		const READ_SAMPLE_LINES = READ_SAMPLE_SOURCE.map((text, index) => ({
-			number: READ_SAMPLE_FIRST_LINE + index,
-			text
-		}));
-		const READ_SAMPLE_PATH = "packages/client/ui-primitives/src/ReadBlock.tsx";
-		const READ_SAMPLE_TOTAL = 180;
-		const READ_SAMPLE_TEXT = READ_SAMPLE_SOURCE.map((text, index) => `${READ_SAMPLE_FIRST_LINE + index}: ${text}`).join("\n");
-		/**
-		* The structured `web_search` result view for the web-search turn, authored inline
-		* because this client-side fixture cannot import the web tool that projects it.
-		* The sources exercise the citation list's features: a titled source with a
-		* snippet and a date, a source with no title (its hostname labels the link) and
-		* a snippet but no date, and a source with a title and a date but no snippet.
-		* `truncated` marks the capped indicator. The shape is the contract's own
-		* search view minus its wire discriminants.
-		*/
-		const WEB_SEARCH_RESULT = {
-			answer: "DeepSeek Harness is a plugin-based agent harness on vendored Cordis where **every capability is a plugin**.",
-			sources: [
-				{
-					url: "https://github.com/deepseek-ai/deepseek-harness",
-					title: "DeepSeek Harness — plugin-based agent harness",
-					snippet: "Everything is a plugin: session, tools, agent-loop, and LLM adapters all mount on the same Cordis context.",
-					publishedAt: "2026-07-01"
-				},
-				{
-					url: "https://www.deepseek.com/blog/harness-architecture",
-					snippet: "The capability-seam pattern splits each capability into interface, implementation, and consumer packages."
-				},
-				{
-					url: "https://docs.deepseek.com/harness/plugins",
-					title: "Writing a harness plugin",
-					publishedAt: "2026-06-15"
-				}
-			],
-			truncated: true
-		};
-		/** The `web_fetch` result view for the web-fetch turn, authored inline for the same reason. */
-		const WEB_FETCH_RESULT = {
-			url: "https://www.deepseek.com/blog/harness-architecture",
-			statusCode: 200,
-			truncated: false
-		};
-		const DEEPSEEK_REASONING = {
-			efforts: [
-				{
-					id: "off",
-					name: "Off"
-				},
-				{
-					id: "high",
-					name: "High"
-				},
-				{
-					id: "max",
-					name: "Max"
-				}
-			],
-			defaultEffort: "high"
-		};
-		const OPENAI_REASONING = {
-			efforts: [
-				{
-					id: "off",
-					name: "Off"
-				},
-				{
-					id: "medium",
-					name: "Medium"
-				},
-				{
-					id: "high",
-					name: "High"
-				},
-				{
-					id: "max",
-					name: "Max"
-				}
-			],
-			defaultEffort: "medium"
-		};
-		/** Catalog served by `session.models` and `llm.models` alike (fresh copies per call). */
-		function fixtureModelGroups() {
-			return [{
-				id: "deepseek-official",
-				name: "DeepSeek",
-				models: [{
-					id: "deepseek-v4-flash",
-					name: "DeepSeek-V4-Flash",
-					description: "快速响应",
-					reasoning: DEEPSEEK_REASONING
-				}, {
-					id: "deepseek-v4-pro",
-					name: "DeepSeek-V4-Pro",
-					description: "复杂任务",
-					reasoning: DEEPSEEK_REASONING
-				}]
-			}, {
-				id: "openai",
-				name: "OpenAI",
-				models: [{
-					id: "gpt-5",
-					name: "GPT-5",
-					reasoning: OPENAI_REASONING
-				}]
-			}];
-		}
-		function sid(id) {
-			return id;
-		}
-		const FIXTURE_IMAGE_DATA = "iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA/xl1SAAAAvklEQVR42u3SMQ0AAAjAMIyhELM4AAe8PD1qYFlk9cCXEAEDYkAwIAYEA2JAMCAGBANiQDAgBgQDYkAwIAYEA2JAMCAGBANiQDAgBgQDYkAwIAYEA2JAMCAGxIBCYEAMCAbEgGBADAgGxIBgQAwIBsSAYEAMCAbEgGBADAgGxIBgQAwIBsSAYEAMCAbEgGBADAgGxIAYEAyIAcGAGBAMiAHBgBgQDIgBwYAYEAyIAcGAGBAMiAHBgBgQDIgB4bYWLb6pnOb1xAAAAABJRU5ErkJggg==";
-		const FIXTURE_IMAGE_REF = {
-			attachmentId: "fixture:image",
-			mediaType: "image/png",
-			bytes: 247,
-			width: 160,
-			height: 90,
-			name: "fixture-image.png"
-		};
-		/** Deterministic provider billing attached to fixture assistant messages. */
-		function fixtureUsage(turn, step) {
-			return {
-				inputTokens: 20 + turn % 5,
-				outputTokens: 8 + step,
-				cacheReadTokens: turn === 0 ? 0 : 80,
-				cacheWriteTokens: turn % 10 === 0 ? 4 : 0
-			};
-		}
-		/** fx-alpha history script: 75 turns (~150+ messages -> 4 pages at PAGE_MESSAGES=50),
-		*  mixing reasoning blocks / tool call+result / context. */
-		function buildAlphaLog() {
-			const events = [];
-			let time = Date.now() - 36e5;
-			const push = (e) => {
-				const seq = events.length;
-				const data = e["data"];
-				const authored = e["type"] === "assistant/message" && data !== void 0 ? {
-					...e,
-					data: {
-						...data,
-						usage: fixtureUsage(data["turn"], data["step"])
-					}
-				} : e;
-				events.push({
-					seq,
-					time: time += 800,
-					...authored
-				});
-				return seq;
-			};
-			push({
-				type: "request/context",
-				data: {
-					provider: "deepseek-official",
-					model: "deepseek-v4-flash",
-					contextWindow: 128e3
-				}
-			});
-			for (let turn = 0; turn < 60; turn++) {
-				push({
-					type: "turn/start",
-					data: { turn }
-				});
-				const userSeq = push({
-					type: "user/message",
-					surfaceOp: "append",
-					data: userMessage(text(turn === 59 ? USER_MARKDOWN_LITERAL : `问题 ${turn}：fixture 历史消息，用于翻页与渲染验收。`))
-				});
-				if (turn === 0) push({
-					type: "session/title",
-					data: {
-						title: "Fixture 历史会话",
-						messageSeqs: [userSeq],
-						source: { kind: "fallback" }
-					}
-				});
-				if (turn % 9 === 4) push({
-					type: "user/message",
-					surfaceOp: "append",
-					data: userMessage(text(`[fixture] 上下文注入（turn ${turn}）`), {
-						kind: "plugin",
-						plugin: "fixture"
-					})
-				});
-				push({
-					type: "step/start",
-					data: {
-						turn,
-						step: 0
-					}
-				});
-				const withTool = turn % 5 === 2;
-				const withReasoning = turn % 3 === 1;
-				const blocks = [];
-				if (withReasoning) blocks.push({
-					type: "reasoning",
-					text: `思考过程 ${turn}：这是一段可折叠的 reasoning 内容。`
-				});
-				blocks.push({
-					type: "text",
-					text: turn === 59 ? MARKDOWN_FIXTURE : `回答 ${turn}：这是 fixture 生成的历史回复正文。`
-				});
-				if (withTool) {
-					const callId = `fx-call-${turn}`;
-					blocks.push({
-						type: "tool-call",
-						id: callId,
-						name: "echo",
-						arguments: `{"text":"turn ${turn}"}`
-					});
-					push({
-						type: "assistant/message",
-						surfaceOp: "append",
-						data: {
-							turn,
-							step: 0,
-							message: assistantMessage(blocks)
-						}
-					});
-					push({
-						type: "tool/call",
-						data: {
-							turn,
-							step: 0,
-							callId,
-							name: "echo",
-							arguments: `{"text":"turn ${turn}"}`
-						}
-					});
-					push({
-						type: "tool/result",
-						surfaceOp: "append",
-						data: {
-							turn,
-							step: 0,
-							message: toolResultMessage(callId, text(`ECHO: TURN ${turn}`), turn % 25 === 12)
-						}
-					});
-					push({
-						type: "step/end",
-						data: {
-							turn,
-							step: 0
-						}
-					});
-					push({
-						type: "step/start",
-						data: {
-							turn,
-							step: 1
-						}
-					});
-					push({
-						type: "assistant/message",
-						surfaceOp: "append",
-						data: {
-							turn,
-							step: 1,
-							message: assistantMessage(text(`工具结果已消化（turn ${turn}）。`))
-						}
-					});
-					push({
-						type: "step/end",
-						data: {
-							turn,
-							step: 1
-						}
-					});
-				} else {
-					push({
-						type: "assistant/message",
-						surfaceOp: "append",
-						data: {
-							turn,
-							step: 0,
-							message: assistantMessage(blocks)
-						}
-					});
-					push({
-						type: "step/end",
-						data: {
-							turn,
-							step: 0
-						}
-					});
-				}
-				push({
-					type: "turn/end",
-					data: {
-						turn,
-						reason: { kind: "completed" }
-					}
-				});
-			}
-			const toolTurn = (turn, name, args, resultText) => {
-				const callId = `fx-call-${turn}`;
-				push({
-					type: "turn/start",
-					data: { turn }
-				});
-				push({
-					type: "user/message",
-					surfaceOp: "append",
-					data: userMessage(text(`问题 ${turn}：${name} 样本。`))
-				});
-				push({
-					type: "step/start",
-					data: {
-						turn,
-						step: 0
-					}
-				});
-				push({
-					type: "assistant/message",
-					surfaceOp: "append",
-					data: {
-						turn,
-						step: 0,
-						message: assistantMessage([{
-							type: "tool-call",
-							id: callId,
-							name,
-							arguments: args
-						}])
-					}
-				});
-				push({
-					type: "tool/call",
-					data: {
-						turn,
-						step: 0,
-						callId,
-						name,
-						arguments: args
-					}
-				});
-				push({
-					type: "tool/result",
-					surfaceOp: "append",
-					data: {
-						turn,
-						step: 0,
-						message: toolResultMessage(callId, text(resultText), false)
-					}
-				});
-				push({
-					type: "step/end",
-					data: {
-						turn,
-						step: 0
-					}
-				});
-				push({
-					type: "turn/end",
-					data: {
-						turn,
-						reason: { kind: "completed" }
-					}
-				});
-			};
-			toolTurn(60, "fx-bash", "{\"command\":\"ls -la\\necho done\",\"cwd\":\"/tmp/fixture\"}", "total 2\ndrwxr-xr-x fixture\n-rw-r--r-- demo.txt");
-			toolTurn(61, "fx-write", "{\"path\":\"notes/demo.txt\",\"content\":\"hello fixture\\n\"}", "wrote notes/demo.txt");
-			toolTurn(62, "edit", "{\"file_path\":\"notes/demo.txt\",\"old_string\":\"hello\",\"new_string\":\"hello fixture\"}", "已编辑");
-			toolTurn(63, "write", "{\"file_path\":\"notes/new-demo.txt\",\"content\":\"hello fixture\\n\"}", "已写入");
-			toolTurn(64, "edit", "{\"file_path\":\"src/config.ts\",\"old_string\":\"const timeout = 30\",\"new_string\":\"const timeout = 60\"}", "已编辑");
-			{
-				const turn = 65;
-				const callId = `fx-call-${turn}`;
-				const args = JSON.stringify({
-					code: "const listing = await tools.bash({ command: \"ls notes\", description: \"List notes\" })\nconst demo = await tools.read({ file_path: \"notes/demo.txt\" })\nawait tools.read({ file_path: \"notes/missing.txt\" }).catch(() => \"tolerated\")\nreturn { listing, demo }",
-					description: "Read the notes files and summarize"
-				});
-				push({
-					type: "turn/start",
-					data: { turn }
-				});
-				push({
-					type: "user/message",
-					surfaceOp: "append",
-					data: userMessage(text(`问题 ${turn}：run_code 样本。`))
-				});
-				push({
-					type: "step/start",
-					data: {
-						turn,
-						step: 0
-					}
-				});
-				push({
-					type: "assistant/message",
-					surfaceOp: "append",
-					data: {
-						turn,
-						step: 0,
-						message: assistantMessage([{
-							type: "tool-call",
-							id: callId,
-							name: "run_code",
-							arguments: args
-						}])
-					}
-				});
-				push({
-					type: "tool/call",
-					data: {
-						turn,
-						step: 0,
-						callId,
-						name: "run_code",
-						arguments: args
-					}
-				});
-				const dispatchPair = (n, name, dispatchArgs, resultText, isError = false) => {
-					push({
-						type: "tool/code-dispatch-start",
-						data: {
-							rootCallId: callId,
-							parentCallId: callId,
-							subCallId: `${callId}:code:${n}`,
-							name,
-							arguments: dispatchArgs
-						}
-					});
-					push({
-						type: "tool/code-dispatch",
-						data: {
-							rootCallId: callId,
-							parentCallId: callId,
-							subCallId: `${callId}:code:${n}`,
-							name,
-							arguments: dispatchArgs,
-							isError,
-							content: [{
-								type: "text",
-								text: resultText
-							}]
-						}
-					});
-				};
-				dispatchPair(1, "bash", {
-					command: "ls notes",
-					description: "List notes"
-				}, "demo.txt\nnew-demo.txt");
-				dispatchPair(2, "read", { file_path: "notes/demo.txt" }, "hello fixture\n");
-				dispatchPair(3, "read", { file_path: "notes/missing.txt" }, "Error: ENOENT: notes/missing.txt not found", true);
-				push({
-					type: "tool/result",
-					surfaceOp: "append",
-					data: {
-						turn,
-						step: 0,
-						message: toolResultMessage(callId, text("{\"listing\":\"demo.txt\\nnew-demo.txt\",\"demo\":\"hello fixture\\n\"}"), false)
-					}
-				});
-				push({
-					type: "step/end",
-					data: {
-						turn,
-						step: 0
-					}
-				});
-				push({
-					type: "turn/end",
-					data: {
-						turn,
-						reason: { kind: "completed" }
-					}
-				});
-			}
-			const fixtureTodos = [
-				{
-					content: "梳理需求",
-					status: "completed"
-				},
-				{
-					content: "实现 fixture 样本",
-					status: "in_progress"
-				},
-				{
-					content: "跑后台构建",
-					status: "in_progress"
-				},
-				{
-					content: "浏览器验收",
-					status: "pending"
-				}
-			];
-			toolTurn(66, "bash", "{\"command\":\"pnpm run check\",\"cwd\":\"/tmp/fixture/deep/nested\"}", TERMINAL_OUTPUT_FIXTURE);
-			toolTurn(67, "grep", "{\"pattern\":\"SEARCH_MAX_LINES\",\"path\":\"packages/client\"}", SEARCH_MATCHES_TEXT);
-			toolTurn(68, "glob", "{\"pattern\":\"**/SearchBlock*\",\"path\":\"packages/client\"}", SEARCH_PATHS_TEXT);
-			toolTurn(69, "read", `{"file_path":${JSON.stringify(READ_SAMPLE_PATH)},"offset":${READ_SAMPLE_FIRST_LINE}}`, READ_SAMPLE_TEXT);
-			toolTurn(70, "web_search", "{\"query\":\"deepseek harness architecture\"}", "Search results for deepseek harness architecture.");
-			toolTurn(71, "web_fetch", "{\"url\":\"https://www.deepseek.com/blog/harness-architecture\"}", "# Harness architecture\n\nEverything is a plugin.");
-			push({
-				type: "turn/start",
-				data: { turn: 72 }
-			});
-			push({
-				type: "user/message",
-				surfaceOp: "append",
-				data: userMessage(text("问题 72：请完整列出全部一百条条目。"))
-			});
-			push({
-				type: "step/start",
-				data: {
-					turn: 72,
-					step: 0
-				}
-			});
-			push({
-				type: "assistant/message",
-				surfaceOp: "append",
-				data: {
-					turn: 72,
-					step: 0,
-					message: assistantMessage(text("条目 1：第一条。条目 2：第二条。条目 3：这一条写到一半被"))
-				}
-			});
-			push({
-				type: "step/end",
-				data: {
-					turn: 72,
-					step: 0
-				}
-			});
-			push({
-				type: "turn/end",
-				data: {
-					turn: 72,
-					reason: { kind: "max-tokens" }
-				}
-			});
-			push({
-				type: "turn/start",
-				data: { turn: 73 }
-			});
-			push({
-				type: "user/message",
-				surfaceOp: "append",
-				data: userMessage([{
-					type: "image",
-					attachment: FIXTURE_IMAGE_REF
-				}, ...text("历史用户图片")])
-			});
-			push({
-				type: "step/start",
-				data: {
-					turn: 73,
-					step: 0
-				}
-			});
-			push({
-				type: "assistant/message",
-				surfaceOp: "append",
-				data: {
-					turn: 73,
-					step: 0,
-					message: assistantMessage([...text("结构化模型图片："), {
-						type: "image",
-						attachment: FIXTURE_IMAGE_REF
-					}], "fx-vision")
-				}
-			});
-			push({
-				type: "step/end",
-				data: {
-					turn: 73,
-					step: 0
-				}
-			});
-			push({
-				type: "turn/end",
-				data: {
-					turn: 73,
-					reason: { kind: "completed" }
-				}
-			});
-			toolTurn(74, "todo_write", JSON.stringify({ todos: fixtureTodos }), "Updated todo list: 1 pending, 2 in progress, 1 completed.");
-			const callIndex = events.length - 4;
-			const callTime = events[callIndex]?.time;
-			events.splice(callIndex + 1, 0, {
-				type: "todo/write",
-				time: callTime + 400,
-				data: { todos: fixtureTodos }
-			});
-			events.forEach((e, i) => {
-				e.seq = i;
-			});
-			return events;
-		}
-		/** Narrows a parsed-JSON field to string; fixture args are authored in-file, so non-strings only mean a typo here. */
-		/* v8 ignore next -- the fallback arm is the same in-file-typo guard as the JSON.parse catch above. */
-		const str = (value, fallback = "") => typeof value === "string" ? value : fallback;
-		/** Fixture presenter registry (mirrors host viewFor): pure derivation, undefined = no view. */
-		function presentCall(name, argsRaw) {
-			let args;
-			try {
-				args = JSON.parse(argsRaw);
-			} catch {
-				/* v8 ignore next 2 -- defensive: fixture args are authored in-file as valid JSON; only an in-file typo could reach the catch. */
-				return;
-			}
-			switch (name) {
-				case "fx-bash":
-				case "bash": return {
-					card: "terminal",
-					title: str(args.command),
-					cwd: str(args.cwd, "/tmp/fixture"),
-					description: "fixture 终端样本"
-				};
-				case "fx-write": return {
-					card: "diff",
-					title: `Write ${str(args.path)}`,
-					diffs: [{
-						path: str(args.path),
-						oldText: null,
-						newText: str(args.content)
-					}]
-				};
-				case "read": return {
-					card: "generic",
-					title: `Read ${str(args.file_path)}`,
-					kind: "read",
-					locations: [{ path: str(args.file_path) }]
-				};
-				case "edit":
-					if (str(args.file_path) === "src/config.ts") return {
-						card: "diff",
-						title: `Edit ${str(args.file_path)}`,
-						diffs: [{
-							path: str(args.file_path),
-							oldText: "const timeout = 30",
-							newText: "const timeout = 60"
-						}, {
-							path: str(args.file_path),
-							oldText: "retries: 1",
-							newText: "retries: 3"
-						}]
-					};
-					return {
-						card: "diff",
-						title: `Edit ${str(args.file_path)}`,
-						diffs: [{
-							path: str(args.file_path),
-							oldText: str(args.old_string),
-							newText: str(args.new_string)
-						}]
-					};
-				case "write": return {
-					card: "diff",
-					title: `Write ${str(args.file_path)}`,
-					diffs: [{
-						path: str(args.file_path),
-						oldText: null,
-						newText: str(args.content)
-					}]
-				};
-				case "grep": return {
-					card: "generic",
-					title: `Grep ${str(args.pattern)}`,
-					kind: "search",
-					rawInput: args
-				};
-				case "glob": return {
-					card: "generic",
-					title: `Glob ${str(args.pattern)}`,
-					kind: "search",
-					rawInput: args
-				};
-				case "web_search": return {
-					card: "generic",
-					title: `Search ${str(args.query)}`,
-					kind: "search",
-					rawInput: args
-				};
-				case "web_fetch": return {
-					card: "generic",
-					title: `Fetch ${str(args.url)}`,
-					kind: "fetch",
-					rawInput: args
-				};
-				default: return;
-			}
-		}
-		function presentResult(name, argsRaw, resultText) {
-			const call = presentCall(name, argsRaw);
-			if (call === void 0) return void 0;
-			if (name === "grep") return {
-				card: "search",
-				shape: "matches",
-				files: SEARCH_MATCHES_FIXTURE,
-				truncated: true,
-				total: 42
-			};
-			if (name === "glob") return {
-				card: "search",
-				shape: "paths",
-				paths: SEARCH_PATHS_FIXTURE,
-				truncated: true,
-				total: 23
-			};
-			if (name === "read") return {
-				card: "read",
-				path: READ_SAMPLE_PATH,
-				offset: READ_SAMPLE_FIRST_LINE,
-				lines: READ_SAMPLE_LINES,
-				totalLines: READ_SAMPLE_TOTAL,
-				lang: "ts",
-				content: text(resultText)
-			};
-			if (name === "web_search") return {
-				card: "web",
-				kind: "search",
-				...WEB_SEARCH_RESULT
-			};
-			if (name === "web_fetch") return {
-				card: "web",
-				kind: "fetch",
-				...WEB_FETCH_RESULT
-			};
-			switch (call.card) {
-				case "terminal": return {
-					card: "terminal",
-					output: resultText,
-					...TERMINAL_EXIT_STATUS[resultText] ?? { exitCode: 0 }
-				};
-				case "diff": return {
-					card: "diff",
-					diffs: call.diffs
-				};
-				case "generic": return {
-					card: "generic",
-					content: text(resultText)
-				};
-			}
-		}
-		/** Host-side viewFor mirror: tool/call presents from its own args; tool/result back-scans the log for the paired call. */
-		function viewFor(event, log) {
-			if (event.type === "tool/call") {
-				const view = presentCall(event.data.name, event.data.arguments);
-				return view === void 0 ? void 0 : {
-					for: "call",
-					view
-				};
-			}
-			if (event.type === "tool/result") {
-				const callId = String(event.data.message.source.callId);
-				for (let i = log.length - 1; i >= 0; i--) {
-					const candidate = log[i];
-					/* v8 ignore next -- dense-array guard: i stays within [0, log.length),
-					so the undefined arm needs a sparse log no code path builds. */
-					if (candidate !== void 0 && candidate.type === "tool/call" && String(candidate.data.callId) === callId) {
-						const resultText = event.data.message.content[0].content.map((b) => b.type === "text" ? b.text : "").join("");
-						const view = presentResult(candidate.data.name, candidate.data.arguments, resultText);
-						return view === void 0 ? void 0 : {
-							for: "result",
-							view
-						};
-					}
-				}
-				return;
-			}
-		}
-		/**
-		* Fixture parallel of the plan unit's double-event fold: `command/run`
-		* records named `plan` with recorded input set the wanted target (`off` →
-		* false, else true); `plan/mode` commits and clears it. `wanted` is exposed
-		* for the prompt boundary (the fixture's step/start parallel).
-		*/
-		function foldPlan(log) {
-			let active = false;
-			let wanted = null;
-			for (const event of log) {
-				const item = event;
-				if (item.type === "command/run" && item.data?.["name"] === "plan") {
-					const args = item.data["args"];
-					if (typeof args !== "string") continue;
-					wanted = args.trim() !== "off";
-				} else if (item.type === "plan/mode") {
-					active = item.data?.["active"] === true;
-					wanted = null;
-				}
-			}
-			return {
-				active,
-				pending: wanted !== null && wanted !== active,
-				wanted
-			};
-		}
-		/** The plan projection's wire view over the full log. */
-		function planViewOf(log) {
-			const plan = foldPlan(log);
-			return {
-				active: plan.active,
-				pending: plan.pending
-			};
-		}
-		/** Fixture parallel of the host's projection units: whole current values per key over the full log. */
-		/** Fixture preset table (the host PermissionPresetService defaults). */
-		const PERMISSION_PRESETS = {
-			"workspace-write": {
-				sandbox: "workspace-write",
-				approval: "ask",
-				description: "Write inside the workspace and permitted temporary directories; wider retries require approval."
-			},
-			"danger-full-access": {
-				sandbox: "danger-full-access",
-				approval: "never",
-				description: "Full file access without approval prompts."
-			}
-		};
-		/** Host permissions-unit parallel: fold the three knob events, derive the select over the fixture defaults. */
-		function permissionSelectOf(log) {
-			let preset = null;
-			let sandbox = "workspace-write";
-			let approval = "ask";
-			for (const event of log) {
-				const item = event;
-				if (item.type === "permission/preset") preset = item.data["preset"];
-				else if (item.type === "sandbox/mode") sandbox = item.data["mode"];
-				else if (item.type === "approval/policy") approval = item.data["policy"];
-			}
-			const matches = (spec) => spec.sandbox === sandbox && spec.approval === approval;
-			let currentValue = "custom";
-			const folded = preset === null ? void 0 : PERMISSION_PRESETS[preset];
-			if (preset !== null && folded !== void 0 && matches(folded)) currentValue = preset;
-			else for (const [name, spec] of Object.entries(PERMISSION_PRESETS)) if (matches(spec)) {
-				currentValue = name;
-				break;
-			}
-			return {
-				options: [...Object.entries(PERMISSION_PRESETS).map(([value, spec]) => ({
-					value,
-					name: value,
-					description: spec.description
-				})), ...currentValue === "custom" ? [{
-					value: "custom",
-					name: "Custom",
-					description: "Current sandbox and approval settings do not match a preset."
-				}] : []],
-				currentValue
-			};
-		}
-		/** Read one provider usage sample from either durable carrier. */
-		function usageSampleOf(event) {
-			const item = event;
-			const usage = item.type === "assistant/chunk" && item.data.chunk?.type === "usage" ? item.data.chunk.usage : item.type === "assistant/message" ? item.data.usage : void 0;
-			return usage === void 0 || item.data.turn === void 0 || item.data.step === void 0 ? void 0 : {
-				turn: item.data.turn,
-				step: item.data.step,
-				usage
-			};
-		}
-		/** Fixture parallel of token-meter's last-sample-replacing usage projection. */
-		function tokenUsageOf(log) {
-			const totals = {
-				uncachedInputTokens: 0,
-				outputTokens: 0,
-				cacheReadTokens: 0,
-				cacheWriteTokens: 0
-			};
-			let last = null;
-			for (const event of log) {
-				const sample = usageSampleOf(event);
-				if (sample === void 0) continue;
-				const buckets = {
-					uncachedInputTokens: sample.usage.inputTokens,
-					outputTokens: sample.usage.outputTokens,
-					cacheReadTokens: sample.usage.cacheReadTokens ?? 0,
-					cacheWriteTokens: sample.usage.cacheWriteTokens ?? 0
-				};
-				const previous = last?.turn === sample.turn && last.step === sample.step ? last.buckets : void 0;
-				totals.uncachedInputTokens += buckets.uncachedInputTokens - (previous?.uncachedInputTokens ?? 0);
-				totals.outputTokens += buckets.outputTokens - (previous?.outputTokens ?? 0);
-				totals.cacheReadTokens += buckets.cacheReadTokens - (previous?.cacheReadTokens ?? 0);
-				totals.cacheWriteTokens += buckets.cacheWriteTokens - (previous?.cacheWriteTokens ?? 0);
-				last = {
-					turn: sample.turn,
-					step: sample.step,
-					buckets
-				};
-			}
-			return totals;
-		}
-		/** Fixture parallel of session-stats' whole-log counting and wall-time fold. */
-		function sessionStatsOf(log) {
-			const value = {
-				turns: 0,
-				steps: 0,
-				llmMs: 0,
-				toolMs: 0,
-				ttftMs: 0,
-				ttftSteps: 0,
-				decodeMs: 0,
-				decodeTokens: 0
-			};
-			let lastTurn = null;
-			let openStep = null;
-			const pendingCalls = /* @__PURE__ */ new Map();
-			for (const event of log) switch (event.type) {
-				case "step/start":
-					openStep = {
-						turn: event.data.turn,
-						step: event.data.step,
-						startTime: event.time,
-						firstTokenTime: null
-					};
-					break;
-				case "assistant/chunk":
-					if (openStep !== null && openStep.turn === event.data.turn && openStep.step === event.data.step && openStep.firstTokenTime === null && isTokenDelta(event.data.chunk)) openStep.firstTokenTime = event.time;
-					break;
-				case "assistant/message":
-					if (openStep === null || openStep.turn !== event.data.turn || openStep.step !== event.data.step) break;
-					value.llmMs += Math.max(0, event.time - openStep.startTime);
-					if (openStep.firstTokenTime !== null) {
-						value.ttftMs += Math.max(0, openStep.firstTokenTime - openStep.startTime);
-						value.ttftSteps += 1;
-						const outputTokens = event.data.usage?.outputTokens;
-						if (typeof outputTokens === "number" && Number.isFinite(outputTokens) && outputTokens >= 0) {
-							value.decodeMs += Math.max(0, event.time - openStep.firstTokenTime);
-							value.decodeTokens += outputTokens;
-						}
-					}
-					openStep = null;
-					break;
-				case "tool/call":
-					pendingCalls.set(event.data.callId, event.time);
-					break;
-				case "tool/result": {
-					const callId = event.data.message.source.callId;
-					const dispatched = pendingCalls.get(callId);
-					if (dispatched === void 0) break;
-					pendingCalls.delete(callId);
-					value.toolMs += Math.max(0, event.time - dispatched);
-					break;
-				}
-				case "step/end":
-					if (event.data.turn !== lastTurn) {
-						value.turns += 1;
-						lastTurn = event.data.turn;
-					}
-					value.steps += 1;
-					openStep = null;
-					break;
-				case "turn/end":
-					pendingCalls.clear();
-					break;
-				default: break;
-			}
-			return value;
-		}
-		/** Fixed token-meter heuristic constants mirrored by this client-only fixture. */
-		const CHARS_PER_TOKEN = 4;
-		const BLOCK_OVERHEAD = 4;
-		const ROLE_OVERHEAD = 4;
-		/** Price fixture content with token-meter's fixed-density heuristic. */
-		function estimateFixtureContent(blocks) {
-			const densityPrice = (value) => Math.ceil(value.length / CHARS_PER_TOKEN);
-			return blocks.reduce((tokens, block) => {
-				if (block.type === "text" || block.type === "reasoning") return tokens + densityPrice(block.text) + BLOCK_OVERHEAD;
-				if (block.type === "tool-call") return tokens + densityPrice(block.name) + densityPrice(block.arguments) + BLOCK_OVERHEAD;
-				if (block.type === "tool-result") return tokens + estimateFixtureContent(block.content) + BLOCK_OVERHEAD;
-				return tokens + densityPrice(JSON.stringify(block)) + BLOCK_OVERHEAD;
-			}, 0);
-		}
-		/** Fixture parallel of token-meter's heuristic context-composition projection. */
-		function contextBreakdownOf(log) {
-			const headerEvent = log.findLast((event) => event.type === "request/header");
-			const header = headerEvent === void 0 ? void 0 : headerEvent.data.header;
-			let messageTokens = 0;
-			for (const seq of foldSurface(log).nodes) {
-				const event = log[seq];
-				if (event === void 0) continue;
-				const message = deriveEventMessage(event);
-				if (message !== null) messageTokens += estimateFixtureContent(message.content) + ROLE_OVERHEAD;
-			}
-			return {
-				systemTokens: header?.system === void 0 ? 0 : Math.ceil(header.system.length / CHARS_PER_TOKEN) + ROLE_OVERHEAD,
-				toolsTokens: header?.tools === void 0 || header.tools.length === 0 ? 0 : Math.ceil(JSON.stringify(header.tools).length / CHARS_PER_TOKEN) + BLOCK_OVERHEAD,
-				messageTokens
-			};
-		}
-		/** Latest log-only route context, or undefined before any request ran. */
-		function lastRequestContext(log) {
-			const event = log.findLast((item) => item.type === "request/context");
-			return event === void 0 ? void 0 : event.data;
-		}
-		/**
-		* Fixture parallel of token-meter's request-pressure projection: the last
-		* provider-reported prompt size paired with the last recorded capacity. The
-		* two need not come from one request — see the token-meter README. The host's
-		* `projectedTokens` is deliberately absent: reproducing it would mean
-		* reimplementing the estimator client-side, and every consumer falls back to
-		* the bare sample, so a fixture-driven view simply lags a compaction the way
-		* the projection did before that field existed.
-		*/
-		function contextPressureOf(log) {
-			let pressureTokens;
-			for (const event of log) {
-				const sample = usageSampleOf(event);
-				if (sample === void 0) continue;
-				pressureTokens = sample.usage.inputTokens + (sample.usage.cacheReadTokens ?? 0) + (sample.usage.cacheWriteTokens ?? 0);
-			}
-			const contextWindow = lastRequestContext(log)?.contextWindow;
-			return {
-				...pressureTokens === void 0 ? {} : { pressureTokens },
-				...contextWindow === void 0 ? {} : { contextWindow }
-			};
-		}
-		function projectionValuesOf(log) {
-			const values = {};
-			const titleEvent = log.findLast((item) => item.type === "session/title");
-			if (titleEvent !== void 0) values["title"] = titleEvent.data.title;
-			values["todos"] = backscanTodos(log) ?? null;
-			values["permissions"] = permissionSelectOf(log);
-			values["plan"] = planViewOf(log);
-			values["goal"] = backscanGoal(log);
-			values["tokenUsage"] = tokenUsageOf(log);
-			values["contextPressure"] = contextPressureOf(log);
-			values["contextBreakdown"] = contextBreakdownOf(log);
-			values["sessionStats"] = sessionStatsOf(log);
-			values["imageLimits"] = {
-				maxImageBytes: 5 * 1024 * 1024,
-				maxImagesPerMessage: 20,
-				maxMessageImageBytes: 100 * 1024 * 1024,
-				maxImagePixels: 4e7,
-				mediaTypes: [
-					"image/png",
-					"image/jpeg",
-					"image/webp",
-					"image/gif"
-				]
-			};
-			return values;
-		}
-		/** Host push-frame parallel: emit one session/projection frame per key the given event advanced. */
-		function projectionFramesOf(id, log, event) {
-			const type = event.type;
-			const frames = [];
-			if (usageSampleOf(event) !== void 0) frames.push({
-				type: "session/projection",
-				sessionId: id,
-				key: "tokenUsage",
-				value: tokenUsageOf(log),
-				seq: event.seq
-			}, {
-				type: "session/projection",
-				sessionId: id,
-				key: "contextPressure",
-				value: contextPressureOf(log),
-				seq: event.seq
-			});
-			if (type === "request/context") frames.push({
-				type: "session/projection",
-				sessionId: id,
-				key: "contextPressure",
-				value: contextPressureOf(log),
-				seq: event.seq
-			});
-			if (type === "request/header" || type === "user/message" || type === "assistant/message" || type === "tool/result") frames.push({
-				type: "session/projection",
-				sessionId: id,
-				key: "contextBreakdown",
-				value: contextBreakdownOf(log),
-				seq: event.seq
-			});
-			if (type === "assistant/message" || type === "tool/result" || type === "step/end") frames.push({
-				type: "session/projection",
-				sessionId: id,
-				key: "sessionStats",
-				value: sessionStatsOf(log),
-				seq: event.seq
-			});
-			if (frames.length > 0) return frames;
-			if (type === "session/title") {
-				const values = projectionValuesOf(log);
-				/* v8 ignore next -- the advancing title event is in the log, so the key is present. */
-				if (!Object.hasOwn(values, "title")) return [];
-				return [{
-					type: "session/projection",
-					sessionId: id,
-					key: "title",
-					value: values["title"],
-					seq: event.seq
-				}];
-			}
-			if (type === "goal/change") return [{
-				type: "session/projection",
-				sessionId: id,
-				key: "goal",
-				value: backscanGoal(log),
-				seq: event.seq
-			}];
-			if (type === "todo/write" || type === "turn/start") return [{
-				type: "session/projection",
-				sessionId: id,
-				key: "todos",
-				value: backscanTodos(log) ?? null,
-				seq: event.seq
-			}];
-			if (type === "permission/preset" || type === "sandbox/mode" || type === "approval/policy") return [{
-				type: "session/projection",
-				sessionId: id,
-				key: "permissions",
-				value: permissionSelectOf(log),
-				seq: event.seq
-			}];
-			const commandData = event;
-			if (type === "plan/mode" || type === "command/run" && commandData.data.name === "plan" && typeof commandData.data.args === "string") return [{
-				type: "session/projection",
-				sessionId: id,
-				key: "plan",
-				value: planViewOf(log),
-				seq: event.seq
-			}];
-			return [];
-		}
-		/**
-		* Message-boundary paging (mirrors the host's paging contract): count
-		* maxMessages messages
-		*  backwards from end, cut at a turn/start boundary.
-		Entries carry pagination-time views
-		*  (the host analogue computes viewFor per entry at page time). */
-		function pageOf(log, beforeSeq, maxMessages) {
-			const end = beforeSeq === void 0 ? log.length : Math.max(0, Math.min(beforeSeq, log.length));
-			let start = 0;
-			let messages = 0;
-			for (let i = end - 1; i >= 0; i--) {
-				const event = log[i];
-				/* v8 ignore next -- dense-array guard: log seqs are array indexes, i stays within [0, end). */
-				if (event === void 0) break;
-				if (event.type === "user/message" || event.type === "assistant/message") messages++;
-				if (event.type === "turn/start" && messages >= maxMessages) {
-					start = i;
-					break;
-				}
-			}
-			return {
-				events: log.slice(start, end).map((event) => {
-					const view = viewFor(event, log);
-					return view === void 0 ? { event } : {
-						event,
-						view
-					};
-				}),
-				hasMore: start > 0
-			};
-		}
-		/** Fixture mirror of host session-scoped attachment authorization. */
-		function logReferencesAttachment(log, attachmentId) {
-			const visit = (value) => {
-				if (Array.isArray(value)) return value.some(visit);
-				if (typeof value !== "object" || value === null) return false;
-				const record = value;
-				if (record.attachmentId === attachmentId) return true;
-				return Object.values(record).some(visit);
-			};
-			return log.some((event) => visit(event.data));
-		}
-		/** Fixture mirror of first-party message extraction used by session-query. */
-		function searchBlockText(block) {
-			switch (block.type) {
-				case "text": return [block.text];
-				case "reasoning": return [];
-				case "tool-call": return [block.name, block.arguments];
-				case "tool-result": return block.content.flatMap(searchBlockText);
-				default: return [];
-			}
-		}
-		/** One current-surface user/assistant document, if searchable. */
-		function searchEventText(event) {
-			const content = event.type === "user/message" ? event.data.content : event.type === "assistant/message" ? event.data.message.content : void 0;
-			if (content === void 0) return "";
-			return content.flatMap(searchBlockText).map((part) => part.trim()).filter(Boolean).join("\n");
-		}
-		/**
-		* Browser-safe approximation of SQLite FTS5 unicode61 token boundaries.
-		* Keeping phrase matching token-based prevents the development fixture from
-		* promising arbitrary within-token substring behavior that production lacks.
-		*/
-		function searchTokenSpans(value) {
-			const text = value.replace(/\s+/gu, " ").trim();
-			const characters = Array.from(text);
-			const tokens = [];
-			let start;
-			let raw = "";
-			const flush = (end) => {
-				if (start !== void 0) {
-					const folded = raw.normalize("NFD").replace(/\p{M}+/gu, "").toLowerCase();
-					if (folded !== "") tokens.push({
-						value: folded,
-						start,
-						end
-					});
-				}
-				start = void 0;
-				raw = "";
-			};
-			for (let index = 0; index < characters.length; index++) {
-				const character = characters[index];
-				const tokenBase = character.normalize("NFD").replace(/\p{M}+/gu, "");
-				if (tokenBase === "") {
-					if (start !== void 0) raw += character;
-					continue;
-				}
-				if (/^[\p{L}\p{N}\p{Co}]+$/u.test(tokenBase)) {
-					start ??= index;
-					raw += character;
-				} else flush(index);
-			}
-			flush(characters.length);
-			return {
-				text,
-				tokens
-			};
-		}
-		/** Count exact contiguous token-phrase occurrences and retain the first display span. */
-		function phraseMatch(document, phrase) {
-			if (phrase.length === 0 || phrase.length > document.length) return {
-				count: 0,
-				start: 0,
-				end: 0
-			};
-			let count = 0;
-			let firstStart = 0;
-			let firstEnd = 0;
-			for (let start = 0; start <= document.length - phrase.length; start++) {
-				if (!phrase.every((token, offset) => document[start + offset]?.value === token)) continue;
-				count++;
-				if (count === 1) {
-					firstStart = document[start]?.start ?? 0;
-					firstEnd = document[start + phrase.length - 1]?.end ?? firstStart;
-				}
-			}
-			return {
-				count,
-				start: firstStart,
-				end: firstEnd
-			};
-		}
-		/** Match-centered fixture excerpt, bounded by Unicode code points for the sidebar. */
-		function searchSnippet(value, matchStart, matchEnd) {
-			const characters = Array.from(value);
-			if (characters.length <= 120) return value;
-			const boundedStart = Math.min(Math.max(0, matchStart), characters.length - 1);
-			const boundedEnd = Math.min(characters.length, Math.max(boundedStart + 1, matchEnd));
-			const center = Math.floor((boundedStart + boundedEnd) / 2);
-			let start = Math.min(characters.length - 118, Math.max(0, center - Math.floor(118 / 2)));
-			let end = start + 118;
-			if (start === 0) end = 119;
-			else if (end === characters.length) start = characters.length - 119;
-			return `${start > 0 ? "…" : ""}${characters.slice(start, end).join("")}${end < characters.length ? "…" : ""}`;
-		}
-		/** Mirrors `packages/session-query/session-query-sqlite/src/index.ts`; update both together. */
-		function compareSearchCandidates(a, b) {
-			if (a.matchCount !== b.matchCount) return b.matchCount - a.matchCount;
-			if (a.documentLength !== b.documentLength) return a.documentLength - b.documentLength;
-			if (a.time !== b.time) return b.time - a.time;
-			if (a.sessionId !== b.sessionId) return a.sessionId < b.sessionId ? -1 : 1;
-			return b.seq - a.seq;
-		}
-		/**
-		* Current plan projection over the full log (host parallel: latest todo/write
-		* with no later turn/start; a new turn retires the previous plan).
-		*/
-		function backscanTodos(log) {
-			for (let i = log.length - 1; i >= 0; i--) {
-				const event = log[i];
-				if (event === void 0) continue;
-				if (event.type === "turn/start") return void 0;
-				if (event.type === "todo/write") return event.data.todos;
-			}
-		}
-		/**
-		* Current goal projection over the full log (host parallel: the GoalService
-		* unit's last-wins fold of goal/change whole values; clear returns null).
-		*/
-		function backscanGoal(log) {
-			for (let i = log.length - 1; i >= 0; i--) {
-				const event = log[i];
-				if (event === void 0 || event.type !== "goal/change" || event.data === void 0) continue;
-				const change = event.data;
-				if (change.operation === "clear") return null;
-				return {
-					goal: change.goal,
-					roundsStarted: change.roundsStarted,
-					createdAt: change.createdAt,
-					updatedAt: change.updatedAt
-				};
-			}
-			return null;
-		}
-		/** Inbox pump shared by both stream generators (FrameQueue pattern: ONE abort listener hung
-		*  outside the loop — a per-iteration {once:true} listener never fires for non-final rounds and
-		*  piles up for the stream's lifetime). breakNow force-ends the stream without the
-		*  client's signal (timing hook: simulated connection loss). */
-		var FxInbox = class {
-			inbox = [];
-			wake = null;
-			broken = false;
-			push(envelope) {
-				this.inbox.push(envelope);
-				this.wake?.();
-			}
-			breakNow() {
-				this.broken = true;
-				this.wake?.();
-			}
-			/** Read through a method: breakNow()/abort flip state across yields, so narrowing from the loop condition must not stick. */
-			isLive(signal) {
-				return !signal.aborted && !this.broken;
-			}
-			async *drain(signal) {
-				const onAbort = () => this.wake?.();
-				signal.addEventListener("abort", onAbort);
-				try {
-					while (this.isLive(signal)) {
-						while (this.inbox.length > 0) yield this.inbox.shift();
-						if (!this.isLive(signal)) break;
-						await new Promise((resolve) => {
-							this.wake = resolve;
-						});
-						this.wake = null;
-					}
-				} finally {
-					signal.removeEventListener("abort", onAbort);
-				}
-			}
-		};
-		/** Build the fixture's legacy API and Remote RPC faces over one state graph. */
-		function createFixtureWorld(options) {
-			const sessions = options.empty ? [] : [
-				{
-					sessionId: sid("fx-alpha"),
-					updatedAt: Date.now(),
-					running: true,
-					blank: false,
-					cwd: "/tmp/fixture"
-				},
-				{
-					sessionId: sid("fx-beta"),
-					updatedAt: Date.now() - 6e4,
-					running: false,
-					blank: false,
-					parentSessionId: sid("fx-alpha"),
-					cwd: "/tmp/fixture"
-				},
-				{
-					sessionId: sid("fx-gamma"),
-					updatedAt: Date.now() - 12e4,
-					running: false,
-					blank: false,
-					cwd: "/tmp/fixture"
-				}
-			];
-			const logs = new Map([[sid("fx-alpha"), buildAlphaLog()]]);
-			const modelSelections = new Map(sessions.map((session) => [session.sessionId, {
-				provider: "deepseek-official",
-				model: "deepseek-v4-flash"
-			}]));
-			const attachments = new Map([[String(FIXTURE_IMAGE_REF.attachmentId), {
-				attachment: FIXTURE_IMAGE_REF,
-				data: FIXTURE_IMAGE_DATA
-			}]]);
-			/** Credential store double: set/unset flip the describe badge, values never read back. */
-			const fixtureCredentials = new Map([["DEEPSEEK_API_KEY", true]]);
-			/**
-			* Preset compositions the fixture serves. Held as state rather than
-			* constants so the settings editor's save and delete are exercisable: the
-			* roster a GUI journey sees after writing is the text it wrote.
-			*/
-			const fixturePresets = new Map([
-				["standard", {
-					trust: "system",
-					content: "- id: tool-bash\n  name: '@deepseek-ai/dsh-tool-bash'\n"
-				}],
-				["minimal", {
-					trust: "system",
-					content: "- id: tool-web-search\n  name: '@deepseek-ai/dsh-tool-web-search'\n"
-				}],
-				["my-agent", {
-					trust: "user",
-					content: "- id: tool-read\n  name: '@deepseek-ai/dsh-tool-read'\n"
-				}]
-			]);
-			let fixtureDefaultPreset = "standard";
-			const nextTurn = new Map([[sid("fx-alpha"), 75]]);
-			let nextSession = 1;
-			let nextRpc = 1;
-			let attachedSessions = options.empty ? 0 : 1;
-			const wid = (raw) => raw;
-			const fixtureEpoch = (/* @__PURE__ */ new Date(Date.now() - 3e5)).toISOString();
-			const workspaces = options.empty ? [] : [{
-				workspaceId: wid("fx-ws-fixture"),
-				path: "/tmp/fixture",
-				title: "fixture",
-				sessionIds: [
-					sid("fx-alpha"),
-					sid("fx-beta"),
-					sid("fx-gamma")
-				],
-				createdAt: fixtureEpoch,
-				updatedAt: fixtureEpoch
-			}];
-			let nextWorkspace = 1;
-			const archivedSessionIds = [];
-			const FIXTURE_HOME = "/home/fixture";
-			const directoryTree = new Map([
-				["/", ["home"]],
-				["/home", ["fixture"]],
-				[FIXTURE_HOME, [
-					"Documents",
-					"Downloads",
-					".config"
-				]],
-				[`${FIXTURE_HOME}/Documents`, [
-					"project",
-					"deepseek-iOS",
-					"deepseek-android",
-					"deepseek-platform",
-					"deepseek-web",
-					"deepseek-harness",
-					"deepseek-app",
-					"deepseek-landing-blog"
-				]]
-			]);
-			const childrenOf = (path) => {
-				const known = directoryTree.get(path);
-				if (known !== void 0) return known;
-				const parent = path.slice(0, path.lastIndexOf("/")) || "/";
-				const name = path.slice(path.lastIndexOf("/") + 1);
-				return directoryTree.get(parent)?.includes(name) === true ? [] : void 0;
-			};
-			const crumbsOf = (path) => {
-				const crumbs = [{
-					name: "/",
-					path: "/",
-					hidden: false
-				}];
-				let acc = "";
-				for (const segment of path.split("/").filter(Boolean)) {
-					acc += `/${segment}`;
-					crumbs.push({
-						name: segment,
-						path: acc,
-						hidden: false
-					});
-				}
-				return crumbs;
-			};
-			const mint = () => RpcId(`fx-rpc-${nextRpc++}`);
-			/** Resident pending approval (stable rpcId: every mux open replays the same id while unanswered, matching host replay semantics). */
-			const pendingApprovalRpcId = mint();
-			const pendingApprovalId = "fx-approval-1";
-			/** Cleared once answered through respond; replay stops and approval/resolved is broadcast. */
-			let approvalPending = true;
-			const pendingQuestionRpcId = mint();
-			let questionPending = true;
-			const fixtureQuestions = [
-				{
-					id: "harness-profile",
-					header: "偏好",
-					question: "你现在更想招哪类 Agent/Harness 候选人？",
-					options: [
-						{
-							label: "工程落地型 (Recommended)",
-							description: "更看重能直接做 runtime、tool executor、sandbox、trace 和线上问题排查。"
-						},
-						{
-							label: "研究潜力型",
-							description: "更看重 Agent 理解、训练评测思路和长期成长空间。"
-						},
-						{
-							label: "均衡型",
-							description: "同时要求工程能力和 Agent 认知，但可能筛选门槛更高。"
-						}
-					]
-				},
-				{
-					id: "work-mode",
-					header: "方式",
-					question: "你希望候选人优先展示哪种工作方式？",
-					options: [{
-						label: "先做小型原型 (Recommended)",
-						description: "用可运行结果尽快验证关键假设。"
-					}, {
-						label: "先写完整设计",
-						description: "先收敛边界、协议和风险，再开始实现。"
-					}]
-				},
-				{
-					id: "signals",
-					header: "信号",
-					question: "哪些面试信号最重要？",
-					detail: "按当前招聘目标选择；跳过则视为不设偏好。",
-					multiSelect: true,
-					options: [
-						{ label: "系统设计" },
-						{ label: "代码质量" },
-						{ label: "Agent 产品判断" }
-					]
-				}
-			];
-			const muxConns = /* @__PURE__ */ new Set();
-			const hostConns = /* @__PURE__ */ new Set();
-			const emitMux = (frame) => {
-				for (const conn of muxConns) conn.push({
-					rpcId: mint(),
-					payload: frame
-				});
-			};
-			const emitHost = (frame) => {
-				for (const conn of hostConns) conn.push({
-					rpcId: mint(),
-					payload: frame
-				});
-			};
-			/** OK response echoing the caller's rpcId (contract: responses always backfill, never mint). */
-			function ok(request, value) {
-				return Promise.resolve({
-					rpcId: request.rpcId,
-					result: {
-						ok: true,
-						value
-					}
-				});
-			}
-			function err(request, error) {
-				return Promise.resolve({
-					rpcId: request.rpcId,
-					result: {
-						ok: false,
-						error
-					}
-				});
-			}
-			const summaryOf = (id) => sessions.find((s) => s.sessionId === id);
-			/** Shared session guard for sessionId-addressed catalog routes: the error
-			*  response when the session is unknown, undefined when it exists. */
-			const requireSession = (request) => {
-				if (summaryOf(request.payload.sessionId) !== void 0) return void 0;
-				return err(request, {
-					code: "session-not-found",
-					message: `no session ${request.payload.sessionId}`,
-					details: { sessionId: request.payload.sessionId }
-				});
-			};
-			const setRunning = (id, running) => {
-				const summary = summaryOf(id);
-				if (summary === void 0 || summary.running === running) return;
-				summary.running = running;
-				emitHost({
-					type: "host/session-status",
-					sessionId: id,
-					running
-				});
-			};
-			const logOf = (id) => {
-				let log = logs.get(id);
-				if (log === void 0) {
-					log = [];
-					logs.set(id, log);
-				}
-				return log;
-			};
-			const append = (id, e) => {
-				const log = logOf(id);
-				const event = {
-					seq: log.length,
-					time: Date.now(),
-					...e
-				};
-				log.push(event);
-				const view = viewFor(event, log);
-				/* v8 ignore next 3 -- the view-present arm needs a live tool/call emission,
-				but the fixture replay produces text-only turns; view vocabulary is
-				exercised through the history samples (turns 60-62). */
-				emitMux(view === void 0 ? {
-					type: "session/event",
-					sessionId: id,
-					event
-				} : {
-					type: "session/event",
-					sessionId: id,
-					event,
-					view
-				});
-				for (const frame of projectionFramesOf(id, log, event)) emitMux(frame);
-			};
-			/** Append one durable goal/change (host GoalService parallel). */
-			const appendGoalChange = (id, change) => {
-				const log = logOf(id);
-				append(id, {
-					type: "goal/change",
-					data: change
-				});
-				return backscanGoal(log);
-			};
-			const goalFailure = (message) => ({
-				ok: false,
-				error: {
-					code: "internal",
-					message,
-					details: {}
-				}
-			});
-			const requireGoalSession = (id) => summaryOf(id) === void 0 ? {
-				ok: false,
-				error: {
-					code: "session-not-found",
-					message: `no session ${id}`,
-					details: { sessionId: id }
-				}
-			} : void 0;
-			/** Canonical fixture implementation of the generated Commands Remote contract. */
-			const commandRemotes = {
-				list(id) {
-					const missing = requireGoalSession(id);
-					if (missing !== void 0) return missing;
-					return {
-						ok: true,
-						value: [
-							{
-								name: "compact",
-								description: "fixture：压缩当前会话上下文"
-							},
-							{
-								name: "echo",
-								description: "fixture：回显参数",
-								input: { hint: "text to echo" }
-							},
-							{
-								name: "goal",
-								description: "set or view the goal for a long-running task",
-								input: { hint: "<objective>" }
-							},
-							{
-								name: "permission",
-								description: "Switch the permission preset (sandbox mode + approval policy)",
-								input: { hint: "<preset>" }
-							},
-							{
-								name: "plan",
-								description: "Enter or leave plan mode",
-								input: { hint: "[off|message]" }
-							}
-						]
-					};
-				},
-				execute(id, line) {
-					const missing = requireGoalSession(id);
-					if (missing !== void 0) return missing;
-					const match = /^\/(\S+)((?:\s.*)?)$/.exec(line.trim());
-					const name = match?.[1];
-					const args = match?.[2] ?? "";
-					if (name === "permission") {
-						const preset = args.trim();
-						const commandId = `fx-cmd-${logOf(id).length}`;
-						append(id, {
-							type: "command/run",
-							data: {
-								commandId,
-								name,
-								args,
-								source: { kind: "user" }
-							}
-						});
-						const spec = PERMISSION_PRESETS[preset];
-						let result;
-						if (preset === "") result = {
-							kind: "success",
-							text: `current preset ${permissionSelectOf(logOf(id)).currentValue} (available: ${Object.keys(PERMISSION_PRESETS).join(", ")})`
-						};
-						else if (spec === void 0) result = {
-							kind: "error",
-							text: `unknown preset "${preset}" (available: ${Object.keys(PERMISSION_PRESETS).join(", ")})`
-						};
-						else {
-							if (permissionSelectOf(logOf(id)).currentValue !== preset) append(id, {
-								type: "permission/preset",
-								data: { preset }
-							});
-							append(id, {
-								type: "sandbox/mode",
-								data: { mode: spec.sandbox }
-							});
-							append(id, {
-								type: "approval/policy",
-								data: { policy: spec.approval }
-							});
-							result = {
-								kind: "success",
-								text: `preset ${preset}`
-							};
-						}
-						append(id, {
-							type: "command/done",
-							data: {
-								commandId,
-								...result
-							}
-						});
-						return {
-							ok: true,
-							value: {
-								commandId,
-								result
-							}
-						};
-					}
-					if (name === "goal") {
-						const commandId = `fx-cmd-${logOf(id).length}`;
-						append(id, {
-							type: "command/run",
-							data: {
-								commandId,
-								name,
-								args,
-								source: { kind: "user" }
-							}
-						});
-						const objective = args.trim();
-						const current = backscanGoal(logOf(id));
-						let text;
-						if (objective === "") text = current === null ? "No goal is set. Usage: /goal <objective>" : `Current goal: ${current.goal.objective}`;
-						else if (current !== null && current.goal.phase !== "complete") text = `A goal already exists (${current.goal.objective}). Clear it first.`;
-						else text = `Goal created: ${appendGoalChange(id, {
-							kind: "goal/change",
-							version: 1,
-							operation: "create",
-							goal: {
-								id: `fx-goal-${logOf(id).length}`,
-								revision: 1,
-								objective,
-								phase: "active",
-								maxGoalRounds: 256
-							},
-							roundsStarted: 0,
-							createdAt: Date.now(),
-							updatedAt: Date.now()
-						}).goal.objective}`;
-						const result = {
-							kind: "success",
-							text
-						};
-						append(id, {
-							type: "command/done",
-							data: {
-								commandId,
-								...result
-							}
-						});
-						return {
-							ok: true,
-							value: {
-								commandId,
-								result
-							}
-						};
-					}
-					const running = summaryOf(id)?.running === true;
-					const outcomes = {
-						compact: "fixture：已压缩（假动作）",
-						echo: args.trim(),
-						plan: args.trim() === "off" ? running ? "Leaving plan mode (applies from the next step)." : "Plan mode off." : running ? "Entering plan mode (applies from the next step). Use /plan off to leave." : "Plan mode on. Use /plan off to leave."
-					};
-					const text = name === void 0 ? void 0 : outcomes[name];
-					if (name === void 0 || text === void 0) return {
-						ok: true,
-						value: void 0
-					};
-					const commandId = `fx-cmd-${logOf(id).length}`;
-					append(id, {
-						type: "command/run",
-						data: {
-							commandId,
-							name,
-							args,
-							source: { kind: "user" }
-						}
-					});
-					if (name === "plan" && !running) {
-						const plan = foldPlan(logOf(id));
-						if (plan.wanted !== null && plan.wanted !== plan.active) append(id, {
-							type: "plan/mode",
-							data: { active: plan.wanted }
-						});
-					}
-					const result = {
-						kind: "success",
-						...text === "" ? {} : { text }
-					};
-					append(id, {
-						type: "command/done",
-						data: {
-							commandId,
-							...result
-						}
-					});
-					return {
-						ok: true,
-						value: {
-							commandId,
-							result
-						}
-					};
-				}
-			};
-			const goalView = (projection) => ({
-				...projection.goal,
-				roundsStarted: projection.roundsStarted,
-				createdAt: projection.createdAt,
-				updatedAt: projection.updatedAt,
-				activation: projection.goal.phase === "active" ? "armed" : "disarmed"
-			});
-			/** Canonical fixture implementation of the generated Goal Remote contract. */
-			const goalRemotes = {
-				create(id, request) {
-					const missing = requireGoalSession(id);
-					if (missing !== void 0) return missing;
-					const current = backscanGoal(logOf(id));
-					if (current !== null && current.goal.phase !== "complete") return goalFailure(`goal "${current.goal.id}" already exists`);
-					const now = Date.now();
-					const projection = appendGoalChange(id, {
-						kind: "goal/change",
-						version: 1,
-						operation: "create",
-						goal: {
-							id: `fx-goal-${logOf(id).length}`,
-							revision: 1,
-							objective: request.objective,
-							phase: "active",
-							maxGoalRounds: request.maxGoalRounds ?? 256
-						},
-						roundsStarted: 0,
-						createdAt: now,
-						updatedAt: now
-					});
-					return {
-						ok: true,
-						value: { ref: {
-							id: projection.goal.id,
-							revision: projection.goal.revision
-						} }
-					};
-				},
-				edit(id, ref, request) {
-					return mutateGoal(id, ref, (current) => ({
-						...current.goal,
-						revision: current.goal.revision + 1,
-						...request.objective === void 0 ? {} : { objective: request.objective },
-						...request.maxGoalRounds === void 0 ? {} : { maxGoalRounds: request.maxGoalRounds }
-					}));
-				},
-				pause(id, ref) {
-					return mutateGoal(id, ref, (current) => current.goal.phase === "active" ? {
-						...current.goal,
-						revision: current.goal.revision + 1,
-						phase: "paused"
-					} : void 0);
-				},
-				resume(id, ref) {
-					return mutateGoal(id, ref, (current) => current.goal.phase === "paused" || current.goal.phase === "blocked" || current.goal.phase === "active" ? {
-						...current.goal,
-						revision: current.goal.revision + 1,
-						phase: "active"
-					} : void 0);
-				},
-				complete(id, ref) {
-					return mutateGoal(id, ref, (current) => current.goal.phase === "complete" ? void 0 : {
-						...current.goal,
-						revision: current.goal.revision + 1,
-						phase: "complete"
-					});
-				},
-				clear(id, ref) {
-					const resolved = resolveGoal(id, ref);
-					if (!resolved.ok) return resolved;
-					const current = resolved.value;
-					const tombstone = {
-						id: current.goal.id,
-						revision: current.goal.revision + 1
-					};
-					appendGoalChange(id, {
-						kind: "goal/change",
-						version: 1,
-						operation: "clear",
-						cleared: tombstone,
-						clearedAt: Date.now()
-					});
-					return {
-						ok: true,
-						value: tombstone
-					};
-				}
-			};
-			/** Resolve one current goal revision for a canonical Remote mutation. */
-			function resolveGoal(id, ref) {
-				const missing = requireGoalSession(id);
-				if (missing !== void 0) return missing;
-				const current = backscanGoal(logOf(id));
-				if (current === null || current.goal.id !== ref.id || current.goal.revision !== ref.revision) return goalFailure("stale or missing goal revision");
-				return {
-					ok: true,
-					value: current
-				};
-			}
-			/** Shared CAS mutation path behind the canonical Remote verbs. */
-			function mutateGoal(id, ref, next) {
-				const resolved = resolveGoal(id, ref);
-				if (!resolved.ok) return resolved;
-				const current = resolved.value;
-				const goal = next(current);
-				if (goal === void 0) return goalFailure(`invalid goal transition from "${current.goal.phase}"`);
-				return {
-					ok: true,
-					value: goalView(appendGoalChange(id, {
-						kind: "goal/change",
-						version: 1,
-						operation: goal.phase === current.goal.phase ? "edit" : goal.phase === "paused" ? "pause" : goal.phase === "active" ? "resume" : "complete",
-						goal,
-						roundsStarted: current.roundsStarted,
-						createdAt: current.createdAt,
-						updatedAt: Date.now()
-					}))
-				};
-			}
-			const mapGoalResult = (result, map) => result.ok ? {
-				ok: true,
-				value: map(result.value)
-			} : result;
-			const goalRefResult = (result) => mapGoalResult(result, (view) => ({ ref: {
-				id: view.id,
-				revision: view.revision
-			} }));
-			const legacyGoalResponse = (request, result) => Promise.resolve({
-				rpcId: request.rpcId,
-				result
-			});
-			/** At most one in-flight replay per session; cancel clears it. */
-			const replays = /* @__PURE__ */ new Map();
-			/** history transit delay (timing hooks below); the page snapshot is taken at request time, like a real host. */
-			let historyDelayMs = 0;
-			/** One-shot history failure (timing hook: a pre-disconnect history request already doomed when reconnect lands). */
-			let failNextHistory = false;
-			/** Force-enders for currently open stream generators (timing hook: simulated connection loss). */
-			const streamBreakers = /* @__PURE__ */ new Set();
-			/** Retry scenarios opened by timing hooks and completed in a later browser assertion phase. */
-			const retryScenarios = /* @__PURE__ */ new Map();
-			/** The single opt-in browser stress producer; normal fixture journeys never start it. */
-			let activeReasoningChunkStorm = null;
-			globalThis.__fxTiming = {
-				setHistoryDelay(ms) {
-					historyDelayMs = ms;
-				},
-				/** Fail the NEXT history call (after its transit delay) with a transport-level throw. */
-				failNextHistory() {
-					failNextHistory = true;
-				},
-				/** Log append + mux emit (the normal live path). */
-				appendUser(id, msg) {
-					append(sid(id), {
-						type: "user/message",
-						surfaceOp: "append",
-						data: userMessage(text(msg))
-					});
-				},
-				/** Append a later durable title revision through the normal raw-event + control-frame path. */
-				appendTitle(id, title) {
-					const messageSeqs = logOf(sid(id)).filter((event) => event.type === "user/message").map((event) => event.seq);
-					append(sid(id), {
-						type: "session/title",
-						data: {
-							title,
-							messageSeqs,
-							source: {
-								kind: "provider",
-								provider: "fixture"
-							}
-						}
-					});
-				},
-				/** Start an externally paced reasoning stream for the opt-in browser stress lane. */
-				startReasoningChunkStorm(id, chunkCount, chunksPerInterval, intervalMs) {
-					if (!Number.isSafeInteger(chunkCount) || chunkCount < 1) throw new Error("fixture: reasoning chunk count must be a positive safe integer");
-					if (!Number.isSafeInteger(chunksPerInterval) || chunksPerInterval < 1) throw new Error("fixture: reasoning chunks per interval must be a positive safe integer");
-					if (!Number.isSafeInteger(intervalMs) || intervalMs < 1) throw new Error("fixture: reasoning interval must be a positive safe integer");
-					if (activeReasoningChunkStorm?.emitting === true) throw new Error("fixture: reasoning chunk storm already running");
-					const sessionId = sid(id);
-					const log = logOf(sessionId);
-					let turn = nextTurn.get(sessionId) ?? 0;
-					for (const event of log) {
-						const candidate = event.data?.turn;
-						if (typeof candidate === "number") turn = Math.max(turn, candidate + 1);
-					}
-					nextTurn.set(sessionId, turn + 1);
-					const marker = `REASONING_STRESS_COMPLETE:${String(turn)}:${String(chunkCount)}`;
-					const state = {
-						sessionId: id,
-						chunkCount,
-						chunksPerInterval,
-						intervalMs,
-						emitted: 0,
-						marker,
-						emitting: true
-					};
-					activeReasoningChunkStorm = state;
-					setRunning(sessionId, true);
-					append(sessionId, {
-						type: "turn/start",
-						data: {
-							turn,
-							trigger: {
-								kind: "message",
-								source: { kind: "user" }
-							}
-						}
-					});
-					append(sessionId, {
-						type: "user/message",
-						surfaceOp: "append",
-						data: userMessage(text(`Reasoning chunk stress: ${String(chunkCount)} chunks.`))
-					});
-					append(sessionId, {
-						type: "step/start",
-						data: {
-							turn,
-							step: 0
-						}
-					});
-					append(sessionId, {
-						type: "assistant/chunk",
-						data: {
-							turn,
-							step: 0,
-							chunk: {
-								type: "block-start",
-								index: 0,
-								blockType: "reasoning"
-							}
-						}
-					});
-					const startedAt = Date.now();
-					const pump = () => {
-						const elapsedIntervals = Math.floor((Date.now() - startedAt) / intervalMs) + 1;
-						const due = Math.max(state.emitted + chunksPerInterval, elapsedIntervals * chunksPerInterval);
-						const end = Math.min(due, chunkCount);
-						for (let index = state.emitted; index < end; index++) {
-							const chunkText = index === chunkCount - 1 ? `\n${marker}` : index % 64 === 63 ? "推理\n" : "推理";
-							append(sessionId, {
-								type: "assistant/chunk",
-								data: {
-									turn,
-									step: 0,
-									chunk: {
-										type: "reasoning-delta",
-										index: 0,
-										text: chunkText
-									}
-								}
-							});
-						}
-						state.emitted = end;
-						if (end < chunkCount) setTimeout(pump, intervalMs);
-						else state.emitting = false;
-					};
-					setTimeout(pump, 0);
-					return marker;
-				},
-				/** Return a copy so browser probes cannot mutate the active producer. */
-				reasoningChunkStormState() {
-					return activeReasoningChunkStorm === null ? null : { ...activeReasoningChunkStorm };
-				},
-				/** Open one failed model step whose partial remains visible until llm/retry arrives. */
-				beginModelRetry(id) {
-					const sessionId = sid(id);
-					const turn = nextTurn.get(sessionId) ?? 0;
-					nextTurn.set(sessionId, turn + 1);
-					retryScenarios.set(sessionId, {
-						turn,
-						stepStarted: true
-					});
-					setRunning(sessionId, true);
-					append(sessionId, {
-						type: "turn/start",
-						data: { turn }
-					});
-					append(sessionId, {
-						type: "user/message",
-						surfaceOp: "append",
-						data: {
-							content: text("请重试这个请求"),
-							source: { kind: "user" }
-						}
-					});
-					append(sessionId, {
-						type: "step/start",
-						data: {
-							turn,
-							step: 1
-						}
-					});
-					append(sessionId, {
-						type: "assistant/chunk",
-						data: {
-							turn,
-							step: 1,
-							chunk: {
-								type: "block-start",
-								index: 0,
-								blockType: "text"
-							}
-						}
-					});
-					append(sessionId, {
-						type: "assistant/chunk",
-						data: {
-							turn,
-							step: 1,
-							chunk: {
-								type: "text-delta",
-								index: 0,
-								text: "应撤回的半截回复"
-							}
-						}
-					});
-				},
-				/** Record one retry decision; the next attempt remains in the same step. */
-				scheduleModelRetry(id, retry = 1, delayMs = 450) {
-					const sessionId = sid(id);
-					const scenario = retryScenarios.get(sessionId);
-					if (scenario === void 0) throw new Error(`fixture: no model retry scenario for ${id}`);
-					if (!scenario.stepStarted) {
-						append(sessionId, {
-							type: "assistant/chunk",
-							data: {
-								turn: scenario.turn,
-								step: 1,
-								chunk: {
-									type: "block-start",
-									index: 0,
-									blockType: "text"
-								}
-							}
-						});
-						append(sessionId, {
-							type: "assistant/chunk",
-							data: {
-								turn: scenario.turn,
-								step: 1,
-								chunk: {
-									type: "text-delta",
-									index: 0,
-									text: `第 ${String(retry)} 次应撤回的回复`
-								}
-							}
-						});
-						scenario.stepStarted = true;
-					}
-					append(sessionId, {
-						type: "llm/retry",
-						data: {
-							turn: scenario.turn,
-							step: 1,
-							provider: "fixture",
-							mode: "normal",
-							policyKey: "fixture-normal",
-							retry,
-							maxRetries: 2,
-							delayMs,
-							failure: {
-								code: "TRANSPORT",
-								message: "连接被重置"
-							}
-						}
-					});
-					scenario.stepStarted = false;
-				},
-				/** Record one retry decision, then cancel its source turn before the retry starts. */
-				cancelModelRetryDuringBackoff(id, delayMs = 450) {
-					const sessionId = sid(id);
-					const scenario = retryScenarios.get(sessionId);
-					if (scenario === void 0) throw new Error(`fixture: no model retry scenario for ${id}`);
-					append(sessionId, {
-						type: "llm/retry",
-						data: {
-							turn: scenario.turn,
-							step: 1,
-							provider: "fixture",
-							mode: "normal",
-							policyKey: "fixture-normal",
-							retry: 1,
-							maxRetries: 2,
-							delayMs,
-							failure: {
-								code: "TRANSPORT",
-								message: "连接被重置"
-							}
-						}
-					});
-					append(sessionId, {
-						type: "step/end",
-						data: {
-							turn: scenario.turn,
-							step: 1
-						}
-					});
-					append(sessionId, {
-						type: "turn/end",
-						data: {
-							turn: scenario.turn,
-							reason: {
-								kind: "aborted",
-								reason: { kind: "user" }
-							}
-						}
-					});
-					retryScenarios.delete(sessionId);
-					setRunning(sessionId, false);
-				},
-				/** Finish the timing-hook retry with a finalized response in the open step. */
-				completeModelRetry(id) {
-					const sessionId = sid(id);
-					const scenario = retryScenarios.get(sessionId);
-					if (scenario === void 0) throw new Error(`fixture: no model retry scenario for ${id}`);
-					retryScenarios.delete(sessionId);
-					append(sessionId, {
-						type: "assistant/chunk",
-						data: {
-							turn: scenario.turn,
-							step: 1,
-							chunk: {
-								type: "block-start",
-								index: 0,
-								blockType: "text"
-							}
-						}
-					});
-					append(sessionId, {
-						type: "assistant/message",
-						surfaceOp: "append",
-						data: {
-							turn: scenario.turn,
-							step: 1,
-							message: assistantMessage(text("重试后的完整回复"))
-						}
-					});
-					append(sessionId, {
-						type: "step/end",
-						data: {
-							turn: scenario.turn,
-							step: 1
-						}
-					});
-					append(sessionId, {
-						type: "turn/end",
-						data: {
-							turn: scenario.turn,
-							reason: { kind: "completed" }
-						}
-					});
-					setRunning(sessionId, false);
-				},
-				/** Log append WITHOUT the mux emit: a frame lost in transit — history still serves it, the client must repull. */
-				appendSilent(id, msg) {
-					const log = logOf(sid(id));
-					log.push({
-						type: "user/message",
-						surfaceOp: "append",
-						seq: log.length,
-						time: Date.now(),
-						data: userMessage(text(msg))
-					});
-				},
-				/** End every open stream generator (client sees both streams close -> reconnect + resync path). */
-				breakStreams() {
-					for (const breakNow of [...streamBreakers]) breakNow();
-				}
-			};
-			/** Prompt replay: chunk typewriter (80ms/frame) -> assistant/message finalize -> turn/end + running flip. */
-			const startReply = (id, turn, replyText) => {
-				const step = 0;
-				append(id, {
-					type: "step/start",
-					data: {
-						turn,
-						step
-					}
-				});
-				append(id, {
-					type: "assistant/chunk",
-					data: {
-						turn,
-						step,
-						chunk: {
-							type: "block-start",
-							index: 0,
-							blockType: "text"
-						}
-					}
-				});
-				/* v8 ignore next -- the ?? arm needs a null match, but every fixture reply is non-empty. */
-				const pieces = replyText.match(/[\s\S]{1,6}/gu) ?? [replyText];
-				let i = 0;
-				const finish = (aborted) => {
-					replays.delete(id);
-					const done = pieces.slice(0, i).join("");
-					append(id, {
-						type: "assistant/chunk",
-						data: {
-							turn,
-							step,
-							chunk: {
-								type: "block-end",
-								index: 0,
-								block: {
-									type: "text",
-									text: done
-								}
-							}
-						}
-					});
-					append(id, {
-						type: "assistant/message",
-						surfaceOp: "append",
-						data: {
-							turn,
-							step,
-							message: assistantMessage(text(aborted ? `${done}（已中断）` : done)),
-							usage: fixtureUsage(turn, step)
-						}
-					});
-					append(id, {
-						type: "step/end",
-						data: {
-							turn,
-							step
-						}
-					});
-					append(id, {
-						type: "turn/end",
-						data: {
-							turn,
-							reason: { kind: aborted ? "cancelled" : "completed" }
-						}
-					});
-					setRunning(id, false);
-				};
-				const tick = () => {
-					const piece = pieces[i];
-					if (piece === void 0) {
-						finish(false);
-						return;
-					}
-					i++;
-					append(id, {
-						type: "assistant/chunk",
-						data: {
-							turn,
-							step,
-							chunk: {
-								type: "text-delta",
-								index: 0,
-								text: piece
-							}
-						}
-					});
-					replays.set(id, {
-						timer: setTimeout(tick, 80),
-						finish
-					});
-				};
-				replays.set(id, {
-					timer: setTimeout(tick, 80),
-					finish
-				});
-			};
-			return {
-				api: {
-					sessions: {
-						list: (request) => ok(request, { items: [...sessions].sort((a, b) => b.updatedAt - a.updatedAt) }),
-						search: (request, signal) => {
-							if (signal.aborted) return err(request, {
-								code: "cancelled",
-								message: "fixture session search was aborted",
-								details: {}
-							});
-							const query = searchTokenSpans(request.payload.query).tokens.map((token) => token.value);
-							const matches = sessions.flatMap((summary) => {
-								const log = logs.get(summary.sessionId) ?? [];
-								const current = new Set(foldSurface(log).nodes);
-								const best = log.flatMap((event) => {
-									if (!current.has(event.seq)) return [];
-									const eventText = searchEventText(event);
-									const document = searchTokenSpans(eventText);
-									const match = phraseMatch(document.tokens, query);
-									if (match.count === 0) return [];
-									return [{
-										sessionId: summary.sessionId,
-										seq: event.seq,
-										time: event.time,
-										text: document.text,
-										matchCount: match.count,
-										matchStart: match.start,
-										matchEnd: match.end,
-										documentLength: Array.from(eventText).length
-									}];
-								}).sort(compareSearchCandidates)[0];
-								return best === void 0 ? [] : [best];
-							}).sort(compareSearchCandidates);
-							return ok(request, {
-								items: matches.slice(0, 20).map((match) => ({
-									sessionId: match.sessionId,
-									snippet: searchSnippet(match.text, match.matchStart, match.matchEnd)
-								})),
-								hasMore: matches.length > 20
-							});
-						},
-						create: async (request) => {
-							const workspace = request.payload.workspaceId === void 0 ? void 0 : workspaces.find((w) => w.workspaceId === request.payload.workspaceId);
-							if (request.payload.workspaceId !== void 0 && workspace === void 0) return err(request, {
-								code: "workspace-not-found",
-								message: `no workspace ${request.payload.workspaceId}`,
-								details: { workspaceId: request.payload.workspaceId }
-							});
-							const cwd = workspace?.path ?? request.payload.cwd ?? "/tmp/fixture";
-							const requestedId = request.payload.sessionId;
-							const attachWorkspace = (sessionId) => {
-								/* v8 ignore next -- callers enter only when a target Workspace exists. */
-								if (workspace === void 0 || workspace.sessionIds.includes(sessionId)) return;
-								workspace.sessionIds = [sessionId, ...workspace.sessionIds];
-								workspace.updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-								emitHost({
-									type: "host/workspace-changed",
-									workspace: { ...workspace }
-								});
-							};
-							const attachFailure = (sessionId, workspaceId) => err(request, {
-								code: "workspace-attach-failed",
-								message: `fixture rejected Workspace attachment for ${sessionId}`,
-								details: {
-									sessionId,
-									workspaceId
-								}
-							});
-							if (requestedId !== void 0) {
-								const existing = summaryOf(requestedId);
-								if (existing !== void 0) {
-									if (existing.cwd !== cwd) return err(request, {
-										code: "session-conflict",
-										message: `session ${requestedId} already uses ${existing.cwd ?? "no cwd"}`,
-										details: {
-											sessionId: requestedId,
-											requestedCwd: cwd,
-											...existing.cwd === void 0 ? {} : { existingCwd: existing.cwd }
-										}
-									});
-									if (workspace !== void 0 && !workspace.sessionIds.includes(requestedId)) {
-										if (options.failWorkspaceAttach) return attachFailure(requestedId, workspace.workspaceId);
-										attachWorkspace(requestedId);
-									}
-									return ok(request, { sessionId: requestedId });
-								}
-							}
-							const created = {
-								sessionId: requestedId ?? sid(`fx-${nextSession++}`),
-								updatedAt: Date.now(),
-								running: false,
-								blank: true,
-								cwd
-							};
-							sessions.push(created);
-							modelSelections.set(created.sessionId, {
-								provider: "deepseek-official",
-								model: "deepseek-v4-flash"
-							});
-							attachedSessions += 1;
-							const emitSession = () => {
-								emitHost({
-									type: "host/session-added",
-									sessionId: created.sessionId,
-									blank: true,
-									cwd
-								});
-							};
-							if (workspace !== void 0 && options.failWorkspaceAttach) {
-								emitSession();
-								return attachFailure(created.sessionId, workspace.workspaceId);
-							}
-							if (workspace !== void 0 && options.createFrameOrder === "workspace-first") {
-								attachWorkspace(created.sessionId);
-								emitSession();
-							} else {
-								emitSession();
-								if (workspace !== void 0) attachWorkspace(created.sessionId);
-							}
-							if (options.dropSessionCreateResponse) throw new Error("fixture: dropped session.create response after publication");
-							return ok(request, { sessionId: created.sessionId });
-						},
-						rename: (request) => {
-							const missing = requireSession(request);
-							if (missing !== void 0) return missing;
-							const { sessionId, title } = request.payload;
-							const normalized = title.trim().replace(/\s+/g, " ");
-							if (normalized.length === 0) return err(request, {
-								code: "title-invalid",
-								message: "session title must contain visible characters",
-								details: { sessionId }
-							});
-							append(sessionId, {
-								type: "session/title",
-								data: {
-									title: normalized,
-									messageSeqs: [],
-									source: { kind: "user" }
-								}
-							});
-							return ok(request, {
-								title: normalized,
-								seq: logOf(sessionId).at(-1).seq
-							});
-						},
-						fork: (request) => {
-							const { sessionId, atSeq } = request.payload;
-							const source = summaryOf(sessionId);
-							if (source === void 0) return err(request, {
-								code: "session-not-found",
-								message: `no session ${sessionId}`,
-								details: { sessionId }
-							});
-							const log = logs.get(sessionId) ?? [];
-							const lastSeq = log.at(-1)?.seq ?? -1;
-							const boundary = (atSeq === void 0 ? void 0 : log.find((e) => e.type === "turn/end" && e.seq >= atSeq)) ?? (atSeq === void 0 || atSeq > lastSeq ? log.findLast((e) => e.type === "turn/end") : void 0);
-							if (boundary === void 0) return err(request, {
-								code: "fork-unavailable",
-								message: atSeq !== void 0 && atSeq <= lastSeq ? `session ${sessionId} has not completed the turn containing event ${String(atSeq)}` : `session ${sessionId} has no completed turn`,
-								details: { sessionId }
-							});
-							let cut = boundary.seq + 1;
-							while (cut < log.length && log[cut]?.type !== "turn/start") cut++;
-							const child = {
-								sessionId: sid(`fx-${nextSession++}`),
-								updatedAt: Date.now(),
-								running: false,
-								blank: false,
-								parentSessionId: sessionId,
-								...source.cwd === void 0 ? {} : { cwd: source.cwd }
-							};
-							logs.set(child.sessionId, log.slice(0, cut));
-							sessions.push(child);
-							emitHost({
-								type: "host/session-added",
-								sessionId: child.sessionId,
-								blank: false,
-								parentSessionId: sessionId,
-								...source.cwd === void 0 ? {} : { cwd: source.cwd }
-							});
-							const workspace = workspaces.find((w) => w.sessionIds.includes(sessionId));
-							if (workspace !== void 0) {
-								workspace.sessionIds = [child.sessionId, ...workspace.sessionIds];
-								workspace.updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-								emitHost({
-									type: "host/workspace-changed",
-									workspace: { ...workspace }
-								});
-							}
-							return ok(request, { sessionId: child.sessionId });
-						},
-						history: async (request) => {
-							const log = logs.get(request.payload.sessionId) ?? [];
-							const page = pageOf(log, request.payload.beforeSeq, request.payload.maxMessages ?? 50);
-							const projections = request.payload.beforeSeq === void 0 ? {
-								asOfSeq: log.length - 1,
-								values: projectionValuesOf(log)
-							} : void 0;
-							const doomed = failNextHistory;
-							failNextHistory = false;
-							const delay = historyDelayMs;
-							if (delay > 0) await new Promise((resolve) => setTimeout(resolve, delay));
-							if (doomed) throw new Error("fixture: simulated history transport failure");
-							return ok(request, {
-								...page,
-								...projections === void 0 ? {} : { projections }
-							});
-						},
-						models: (request) => ok(request, {
-							current: modelSelections.get(request.payload.sessionId) ?? {
-								provider: "deepseek-official",
-								model: "deepseek-v4-flash"
-							},
-							routable: true,
-							groups: fixtureModelGroups(),
-							failures: []
-						}),
-						selectModel: (request) => {
-							const selected = {
-								provider: request.payload.provider,
-								model: request.payload.model,
-								...request.payload.reasoningEffort === void 0 ? {} : { reasoningEffort: request.payload.reasoningEffort }
-							};
-							modelSelections.set(request.payload.sessionId, selected);
-							return ok(request, { selected });
-						},
-						prompt: (request) => {
-							const { sessionId: id, mode, content } = request.payload;
-							const summary = summaryOf(id);
-							if (summary === void 0) return err(request, {
-								code: "session-not-found",
-								message: `no session ${id}`,
-								details: { sessionId: id }
-							});
-							if (options.rejectPrompt) return err(request, {
-								code: "agent-busy",
-								message: "fixture: prompt rejected before acceptance",
-								details: { reason: "fixture-prompt-rejection" }
-							});
-							summary.updatedAt = Date.now();
-							summary.blank = false;
-							const userText = content.map((b) => b.type === "text" ? b.text : "").join("");
-							const durable = content.map((block) => {
-								if (block.type === "text") return block;
-								const attachment = {
-									attachmentId: `fixture:${randomUuid()}`,
-									mediaType: block.mediaType,
-									bytes: Math.max(1, Math.floor(block.data.length * 3 / 4) - (block.data.endsWith("==") ? 2 : block.data.endsWith("=") ? 1 : 0)),
-									width: 160,
-									height: 90,
-									...block.name === void 0 ? {} : { name: block.name }
-								};
-								attachments.set(String(attachment.attachmentId), {
-									attachment,
-									data: block.data
-								});
-								return {
-									type: "image",
-									attachment
-								};
-							});
-							if (mode === "steer" && replays.has(id)) {
-								append(id, {
-									type: "user/message",
-									surfaceOp: "append",
-									data: userMessage(durable)
-								});
-								return ok(request, { accepted: true });
-							}
-							const turn = nextTurn.get(id) ?? 0;
-							nextTurn.set(id, turn + 1);
-							setRunning(id, true);
-							append(id, {
-								type: "turn/start",
-								data: { turn }
-							});
-							const plan = foldPlan(logOf(id));
-							if (plan.wanted !== null && plan.wanted !== plan.active) append(id, {
-								type: "plan/mode",
-								data: { active: plan.wanted }
-							});
-							append(id, {
-								type: "user/message",
-								surfaceOp: "append",
-								data: userMessage(durable)
-							});
-							const selection = modelSelections.get(id) ?? {
-								provider: "deepseek",
-								model: "deepseek-v4-flash"
-							};
-							if (lastRequestContext(logOf(id))?.model !== selection.model) append(id, {
-								type: "request/context",
-								data: {
-									provider: selection.provider,
-									model: selection.model,
-									contextWindow: 128e3
-								}
-							});
-							startReply(id, turn, userText === "render markdown" ? MARKDOWN_FIXTURE : userText === "report model" ? (() => {
-								const selection = modelSelections.get(id);
-								return `当前模型：${selection?.provider ?? "unknown"}/${selection?.model ?? "unknown"}` + (selection?.reasoningEffort === void 0 ? "" : ` · 推理等级：${selection.reasoningEffort}`);
-							})() : `回声：${userText}。这是 fixture 的流式回复，用于验证打字机增长与定稿切换。`);
-							return ok(request, { accepted: true });
-						},
-						attachment: (request) => {
-							const stored = attachments.get(String(request.payload.attachmentId));
-							if (stored === void 0) return err(request, {
-								code: "attachment-error",
-								message: "fixture attachment missing",
-								details: { reason: "ATTACHMENT_NOT_FOUND" }
-							});
-							if (!logReferencesAttachment(logs.get(request.payload.sessionId) ?? [], String(request.payload.attachmentId))) return err(request, {
-								code: "attachment-error",
-								message: "fixture attachment is not referenced by this session",
-								details: { reason: "ATTACHMENT_NOT_REFERENCED" }
-							});
-							return ok(request, stored);
-						},
-						updateQueue: (request) => err(request, {
-							code: "queue-item-not-found",
-							message: "fixture has no pending queue item",
-							details: { itemId: request.payload.itemId }
-						}),
-						cancel: (request) => {
-							const replay = replays.get(request.payload.sessionId);
-							if (replay !== void 0) {
-								clearTimeout(replay.timer);
-								replay.finish(true);
-							} else setRunning(request.payload.sessionId, false);
-							return ok(request, { accepted: true });
-						}
-					},
-					subagents: {
-						list: (request) => ok(request, {
-							entries: [],
-							parentAvailable: true
-						}),
-						history: (request) => {
-							const log = logs.get(request.payload.childSessionId) ?? [];
-							return Promise.resolve(ok(request, pageOf(log, request.payload.beforeSeq, request.payload.maxMessages ?? 50)));
-						},
-						prompt: (request) => Promise.resolve(ok(request, { messageId: `fixture-message-${request.payload.childSessionId}` })),
-						interrupt: (request) => Promise.resolve(ok(request, { accepted: true }))
-					},
-					host: {
-						describe: (request) => ok(request, {
-							version: "0.0.0-fixture",
-							cwd: "/tmp/fixture",
-							attachedSessions,
-							canOpenPath: true
-						}),
-						pickDirectory: (request) => ok(request, { path: `${FIXTURE_HOME}/Documents/project` }),
-						listDirectory: (request) => {
-							const target = request.payload.path ?? FIXTURE_HOME;
-							const children = childrenOf(target);
-							if (children === void 0) return err(request, {
-								code: "directory-unreadable",
-								message: `cannot list ${target}: not in the fixture tree`,
-								details: { path: target }
-							});
-							return ok(request, {
-								path: target,
-								home: FIXTURE_HOME,
-								crumbs: crumbsOf(target),
-								entries: [...children].sort((a, b) => a.localeCompare(b)).map((name) => ({
-									name,
-									path: target === "/" ? `/${name}` : `${target}/${name}`,
-									hidden: name.startsWith(".")
-								})),
-								truncated: false
-							});
-						},
-						createDirectory: (request) => {
-							const parent = request.payload.path;
-							const children = childrenOf(parent);
-							if (children === void 0) return err(request, {
-								code: "directory-create-failed",
-								message: `missing parent ${parent}`,
-								details: { path: parent }
-							});
-							const target = parent === "/" ? `/${request.payload.name}` : `${parent}/${request.payload.name}`;
-							if (children.includes(request.payload.name)) return err(request, {
-								code: "directory-exists",
-								message: `${target} already exists`,
-								details: { path: target }
-							});
-							directoryTree.set(parent, [...children, request.payload.name]);
-							directoryTree.set(target, []);
-							return ok(request, { path: target });
-						},
-						openPath: (request) => ok(request, { opened: true })
-					},
-					workspace: {
-						list: (request) => ok(request, {
-							items: workspaces.map((w) => ({ ...w })),
-							archivedSessionIds: [...archivedSessionIds]
-						}),
-						create: (request) => {
-							const { path } = request.payload;
-							const existing = workspaces.find((w) => w.path === path);
-							if (existing !== void 0) return ok(request, {
-								workspace: { ...existing },
-								created: false
-							});
-							const now = (/* @__PURE__ */ new Date()).toISOString();
-							const created = {
-								workspaceId: wid(`fx-ws-${nextWorkspace++}`),
-								path,
-								title: path.split("/").filter(Boolean).at(-1) ?? path,
-								sessionIds: [],
-								createdAt: now,
-								updatedAt: now
-							};
-							workspaces.unshift(created);
-							emitHost({
-								type: "host/workspace-changed",
-								workspace: { ...created }
-							});
-							return ok(request, {
-								workspace: { ...created },
-								created: true
-							});
-						},
-						rename: (request) => {
-							const { workspaceId, title } = request.payload;
-							const workspace = workspaces.find((w) => w.workspaceId === workspaceId);
-							if (workspace === void 0) return err(request, {
-								code: "workspace-not-found",
-								message: `no workspace ${workspaceId}`,
-								details: { workspaceId }
-							});
-							const trimmed = title.trim();
-							if (trimmed !== workspace.title) {
-								if (workspaces.some((w) => w.workspaceId !== workspaceId && w.title === trimmed)) return err(request, {
-									code: "workspace-name-conflict",
-									message: `workspace name '${trimmed}' is already in use`,
-									details: { name: trimmed }
-								});
-								workspace.title = trimmed;
-								workspace.updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-								emitHost({
-									type: "host/workspace-changed",
-									workspace: { ...workspace }
-								});
-							}
-							return ok(request, { workspace: { ...workspace } });
-						},
-						delete: (request) => {
-							const { workspaceId } = request.payload;
-							const index = workspaces.findIndex((workspace) => workspace.workspaceId === workspaceId);
-							if (index === -1) return err(request, {
-								code: "workspace-not-found",
-								message: `no workspace ${workspaceId}`,
-								details: { workspaceId }
-							});
-							workspaces.splice(index, 1);
-							emitHost({
-								type: "host/workspace-removed",
-								workspaceId
-							});
-							return ok(request, { deleted: true });
-						},
-						insertBefore: (request) => {
-							const { workspaceId, beforeWorkspaceId } = request.payload;
-							const source = workspaces.findIndex((workspace) => workspace.workspaceId === workspaceId);
-							const anchor = beforeWorkspaceId === void 0 ? workspaces.length : workspaces.findIndex((workspace) => workspace.workspaceId === beforeWorkspaceId);
-							const missing = source === -1 ? workspaceId : anchor === -1 ? beforeWorkspaceId : void 0;
-							if (missing !== void 0) return err(request, {
-								code: "workspace-not-found",
-								message: `no workspace ${missing}`,
-								details: { workspaceId: missing }
-							});
-							if (beforeWorkspaceId !== workspaceId) {
-								const previousOrder = workspaces.map((candidate) => candidate.workspaceId);
-								const [workspace] = workspaces.splice(source, 1);
-								/* v8 ignore next -- source was resolved from the same array immediately above. */
-								if (workspace === void 0) throw new Error(`fixture lost workspace ${workspaceId}`);
-								const at = beforeWorkspaceId === void 0 ? workspaces.length : workspaces.findIndex((candidate) => candidate.workspaceId === beforeWorkspaceId);
-								workspaces.splice(at, 0, workspace);
-								if (workspaces.some((candidate, index) => candidate.workspaceId !== previousOrder[index])) emitHost({
-									type: "host/workspace-order-changed",
-									workspaceIds: workspaces.map((candidate) => candidate.workspaceId)
-								});
-							}
-							return ok(request, { workspaceIds: workspaces.map((candidate) => candidate.workspaceId) });
-						},
-						insertSessionBefore: (request) => {
-							const { workspaceId, sessionId, beforeSessionId } = request.payload;
-							const workspace = workspaces.find((w) => w.workspaceId === workspaceId);
-							if (workspace === void 0) return err(request, {
-								code: "workspace-not-found",
-								message: `no workspace ${workspaceId}`,
-								details: { workspaceId }
-							});
-							if (!workspace.sessionIds.includes(sessionId) || beforeSessionId !== void 0 && !workspace.sessionIds.includes(beforeSessionId)) return err(request, {
-								code: "workspace-move-invalid",
-								message: `session or anchor is not accounted by workspace ${workspaceId}`,
-								details: {
-									workspaceId,
-									sessionId,
-									...beforeSessionId === void 0 ? {} : { beforeSessionId }
-								}
-							});
-							const without = workspace.sessionIds.filter((id) => id !== sessionId);
-							const at = beforeSessionId === void 0 ? without.length : without.indexOf(beforeSessionId);
-							const sessionIds = [
-								...without.slice(0, at),
-								sessionId,
-								...without.slice(at)
-							];
-							if (!sessionIds.every((id, index) => id === workspace.sessionIds[index])) {
-								workspace.sessionIds = sessionIds;
-								workspace.updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-								emitHost({
-									type: "host/workspace-changed",
-									workspace: { ...workspace }
-								});
-							}
-							return ok(request, { workspace: { ...workspace } });
-						},
-						archiveSession: (request) => {
-							const missing = requireSession(request);
-							if (missing !== void 0) return missing;
-							const { sessionId } = request.payload;
-							if (!archivedSessionIds.includes(sessionId)) {
-								archivedSessionIds.push(sessionId);
-								emitHost({
-									type: "host/archived-sessions-changed",
-									archivedSessionIds: [...archivedSessionIds]
-								});
-							}
-							return ok(request, { archivedSessionIds: [...archivedSessionIds] });
-						}
-					},
-					agentPresets: {
-						list: (request) => ok(request, {
-							presets: [...fixturePresets].map(([id, preset]) => ({
-								id,
-								trust: preset.trust,
-								isDefault: id === fixtureDefaultPreset
-							})),
-							authorable: true,
-							hasDocument: true
-						}),
-						select: (request) => {
-							fixtureDefaultPreset = request.payload.agentPreset;
-							return ok(request, { agentPreset: request.payload.agentPreset });
-						},
-						read: (request) => {
-							const { agentPreset } = request.payload;
-							const preset = fixturePresets.get(agentPreset);
-							if (preset === void 0) return err(request, {
-								code: "agent-preset-not-found",
-								message: `unknown agent preset "${agentPreset}"`,
-								details: {
-									agentPreset,
-									available: [...fixturePresets.keys()]
-								}
-							});
-							return ok(request, {
-								agentPreset,
-								trust: preset.trust,
-								content: preset.content
-							});
-						},
-						copy: (request) => {
-							const { from, agentPreset } = request.payload;
-							const source = fixturePresets.get(from);
-							if (source === void 0) return err(request, {
-								code: "agent-preset-not-found",
-								message: `unknown agent preset "${from}"`,
-								details: {
-									agentPreset: from,
-									available: [...fixturePresets.keys()]
-								}
-							});
-							if (fixturePresets.has(agentPreset)) return err(request, {
-								code: "agent-preset-invalid",
-								message: `agent preset "${agentPreset}" already exists`,
-								details: {
-									agentPreset,
-									reason: "already exists"
-								}
-							});
-							fixturePresets.set(agentPreset, {
-								trust: "user",
-								content: source.content
-							});
-							return ok(request, { agentPreset });
-						},
-						openDocument: (request) => {
-							const { agentPreset } = request.payload;
-							const existing = fixturePresets.get(agentPreset);
-							if (existing === void 0 || existing.trust === "system") return err(request, {
-								code: "agent-preset-read-only",
-								message: `agent preset "${agentPreset}" ships with the deployment`,
-								details: {
-									agentPreset,
-									reason: "it ships with the deployment"
-								}
-							});
-							return ok(request, { opened: true });
-						},
-						remove: (request) => {
-							const { agentPreset } = request.payload;
-							if (fixturePresets.get(agentPreset)?.trust === "system") return err(request, {
-								code: "agent-preset-read-only",
-								message: `agent preset "${agentPreset}" ships with the deployment`,
-								details: {
-									agentPreset,
-									reason: "it ships with the deployment"
-								}
-							});
-							fixturePresets.delete(agentPreset);
-							return ok(request, {});
-						}
-					},
-					skills: { list: (request) => {
-						const missing = requireSession(request);
-						if (missing !== void 0) return missing;
-						return ok(request, { skills: [{
-							name: "fixture-demo",
-							description: "fixture 技能样本",
-							whenToUse: "仅供 UI 目录渲染验收",
-							modelInvocable: true
-						}, {
-							name: "fixture-user-only",
-							description: "fixture 仅用户技能样本",
-							modelInvocable: false
-						}] });
-					} },
-					goals: {
-						create: (request) => legacyGoalResponse(request, mapGoalResult(goalRemotes.create(request.payload.sessionId, {
-							objective: request.payload.objective,
-							...request.payload.maxGoalRounds === void 0 ? {} : { maxGoalRounds: request.payload.maxGoalRounds }
-						}), (value) => ({ ref: {
-							id: value.ref.id,
-							revision: value.ref.revision
-						} }))),
-						edit: (request) => legacyGoalResponse(request, goalRefResult(goalRemotes.edit(request.payload.sessionId, request.payload.ref, {
-							...request.payload.objective === void 0 ? {} : { objective: request.payload.objective },
-							...request.payload.maxGoalRounds === void 0 ? {} : { maxGoalRounds: request.payload.maxGoalRounds }
-						}))),
-						pause: (request) => legacyGoalResponse(request, goalRefResult(goalRemotes.pause(request.payload.sessionId, request.payload.ref))),
-						resume: (request) => legacyGoalResponse(request, goalRefResult(goalRemotes.resume(request.payload.sessionId, request.payload.ref))),
-						complete: (request) => legacyGoalResponse(request, goalRefResult(goalRemotes.complete(request.payload.sessionId, request.payload.ref))),
-						clear: (request) => legacyGoalResponse(request, mapGoalResult(goalRemotes.clear(request.payload.sessionId, request.payload.ref), () => ({ cleared: true })))
-					},
-					events: {
-						async *mux(_request, signal) {
-							const conn = new FxInbox();
-							muxConns.add(conn);
-							const breakNow = () => {
-								conn.breakNow();
-							};
-							streamBreakers.add(breakNow);
-							for (const s of sessions) {
-								if (!s.running) continue;
-								const log = logs.get(s.sessionId) ?? [];
-								conn.push({
-									rpcId: mint(),
-									payload: {
-										type: "session/subscribed",
-										sessionId: s.sessionId,
-										lastSeq: log.length - 1
-									}
-								});
-								const values = projectionValuesOf(log);
-								for (const key of Object.keys(values)) conn.push({
-									rpcId: mint(),
-									payload: {
-										type: "session/projection",
-										sessionId: s.sessionId,
-										key,
-										value: values[key],
-										seq: log.length - 1
-									}
-								});
-							}
-							if (approvalPending) conn.push({
-								rpcId: pendingApprovalRpcId,
-								payload: {
-									type: "approval/requested",
-									sessionId: sid("fx-alpha"),
-									approvalId: pendingApprovalId,
-									toolName: "dangerous_tool",
-									reason: "fixture 常驻审批（可答：批准/拒绝后消失）"
-								}
-							});
-							if (questionPending) conn.push({
-								rpcId: pendingQuestionRpcId,
-								payload: {
-									type: "question/requested",
-									sessionId: sid("fx-alpha"),
-									questions: fixtureQuestions
-								}
-							});
-							try {
-								yield* conn.drain(signal);
-							} finally {
-								streamBreakers.delete(breakNow);
-								muxConns.delete(conn);
-							}
-						},
-						async *host(_request, signal) {
-							const conn = new FxInbox();
-							hostConns.add(conn);
-							const breakNow = () => {
-								conn.breakNow();
-							};
-							streamBreakers.add(breakNow);
-							const timer = setInterval(() => {
-								const gamma = summaryOf(sid("fx-gamma"));
-								/* v8 ignore next -- the undefined arm needs fx-gamma deleted, but the fixture never removes sessions. */
-								if (gamma !== void 0) setRunning(gamma.sessionId, !gamma.running);
-							}, 5e3);
-							try {
-								yield* conn.drain(signal);
-							} finally {
-								clearInterval(timer);
-								streamBreakers.delete(breakNow);
-								hostConns.delete(conn);
-							}
-						}
-					},
-					settings: {
-						describe: (request) => ok(request, {
-							writable: true,
-							hasDocument: true,
-							namespaces: [{
-								ns: "llm-deepseek",
-								schema: {},
-								value: { apiKeyEnv: "DEEPSEEK_API_KEY" },
-								applies: "live",
-								secrets: [{
-									path: ["apiKey"],
-									set: false
-								}],
-								revision: 0
-							}]
-						}),
-						openDocument: (request) => ok(request, { opened: true }),
-						update: (request) => err(request, {
-							code: "settings-rejected",
-							message: "fixture: the minimal readiness settings descriptor is read-only",
-							details: { ns: request.payload.ns }
-						}),
-						replace: (request) => err(request, {
-							code: "settings-rejected",
-							message: "fixture: the minimal readiness settings descriptor is read-only",
-							details: { ns: request.payload.ns }
-						}),
-						mutate: (request) => err(request, {
-							code: "settings-rejected",
-							message: "fixture: no settings namespaces are registered",
-							details: { ns: request.payload.ns }
-						})
-					},
-					credentials: {
-						describe: (request) => ok(request, { credentials: Object.fromEntries(request.payload.refs.map((ref) => [ref, {
-							configured: fixtureCredentials.has(ref),
-							...fixtureCredentials.has(ref) ? { source: "file" } : {},
-							writable: true
-						}])) }),
-						set: (request) => {
-							fixtureCredentials.set(request.payload.ref, true);
-							return ok(request, {});
-						},
-						unset: (request) => {
-							fixtureCredentials.delete(request.payload.ref);
-							return ok(request, {});
-						}
-					},
-					llm: {
-						providers: (request) => ok(request, { providers: [
-							{
-								provider: "deepseek-official",
-								displayName: "DeepSeek",
-								settingsNs: "llm-deepseek",
-								settingsPath: [],
-								active: true
-							},
-							{
-								provider: "openai",
-								displayName: "openai",
-								settingsNs: "llm-pi-ai",
-								settingsPath: ["providers", "openai"],
-								active: true,
-								declared: false
-							},
-							{
-								provider: "anthropic",
-								displayName: "anthropic",
-								settingsNs: "llm-pi-ai",
-								settingsPath: ["providers", "anthropic"],
-								active: false,
-								declared: false
-							},
-							{
-								provider: "acme-gateway",
-								displayName: "Acme Gateway",
-								settingsNs: "llm-pi-ai",
-								settingsPath: ["providers", "acme-gateway"],
-								active: true,
-								declared: true
-							}
-						] }),
-						models: (request) => ok(request, {
-							groups: fixtureModelGroups(),
-							failures: []
-						}),
-						discoverModels: (request) => ok(request, { models: fixtureModelGroups().flatMap((group) => group.models.map((model) => ({
-							id: model.id,
-							name: model.name
-						}))) })
-					},
-					respond(message) {
-						if (message.rpcId === pendingApprovalRpcId) {
-							if (!approvalPending) return Promise.resolve({
-								accepted: false,
-								reason: "not-pending"
-							});
-							if (!message.result.ok) return Promise.resolve({
-								accepted: false,
-								reason: "bad-response"
-							});
-							const value = message.result.value;
-							if (value.approvalId !== pendingApprovalId || value.outcome !== "allowed-once" && value.outcome !== "rejected") return Promise.resolve({
-								accepted: false,
-								reason: "bad-response"
-							});
-							approvalPending = false;
-							emitMux({
-								type: "approval/resolved",
-								sessionId: sid("fx-alpha"),
-								approvalId: pendingApprovalId,
-								outcome: value.outcome
-							});
-							return Promise.resolve({ accepted: true });
-						}
-						if (!questionPending || message.rpcId !== pendingQuestionRpcId) return Promise.resolve({
-							accepted: false,
-							reason: "not-pending"
-						});
-						questionPending = false;
-						emitMux({
-							type: "question/resolved",
-							sessionId: sid("fx-alpha"),
-							questionRpcId: pendingQuestionRpcId,
-							outcome: message.result.ok ? "answered" : "cancelled"
-						});
-						return Promise.resolve({ accepted: true });
-					},
-					downloads: { sessionLog: () => Promise.resolve(new Response("fixture mode does not serve session export", { status: 404 })) }
-				},
-				rpc: { call(channel, endpoint, payload) {
-					if (channel !== "/api") return Promise.reject(/* @__PURE__ */ new Error(`fixture connection RPC channel ${JSON.stringify(channel)} is unavailable`));
-					const args = payload.args;
-					const sessionId = args.agentId;
-					switch (endpoint) {
-						case "commands/list": return Promise.resolve(commandRemotes.list(sessionId));
-						case "commands/execute": return Promise.resolve(commandRemotes.execute(sessionId, args.line));
-						case "goals/create": return Promise.resolve(goalRemotes.create(sessionId, {
-							objective: args.request?.objective,
-							...args.request?.maxGoalRounds === void 0 ? {} : { maxGoalRounds: args.request.maxGoalRounds }
-						}));
-						case "goals/edit": return Promise.resolve(goalRemotes.edit(sessionId, args.ref, args.request ?? {}));
-						case "goals/pause": return Promise.resolve(goalRemotes.pause(sessionId, args.ref));
-						case "goals/resume": return Promise.resolve(goalRemotes.resume(sessionId, args.ref));
-						case "goals/complete": return Promise.resolve(goalRemotes.complete(sessionId, args.ref));
-						case "goals/clear": return Promise.resolve(goalRemotes.clear(sessionId, args.ref));
-						default: return Promise.reject(/* @__PURE__ */ new Error(`fixture connection RPC endpoint ${JSON.stringify(endpoint)} is unavailable`));
-					}
-				} }
-			};
-		}
-		/**
-		* Fixture platform subclass: there is no HTTP at all, so instead of a doFetch transport it
-		* overrides the protocol-level virtuals (callUnary/openMux/openHost/respond) to dispatch
-		* straight into the in-memory ApiProxy — while still minting rpcIds, fabricating the four
-		* named full forms, and feeding the same tap as a real carrier. TODO: delete when the fixture
-		* moves to the isomorphic pipeline (InProcessApiClient over toFetchHandler(fixtureImpl)).
-		*/
-		var FixtureApiClient = class extends AbstractApiClient {
-			api;
-			/** Generic Remote caller backed by the same in-memory state as the legacy fixture API. */
-			rpc;
-			constructor() {
-				super();
-				const world = createFixtureWorld(fixtureOptionsFromLocation());
-				this.api = world.api;
-				this.rpc = world.rpc;
-			}
-			doFetch() {
-				throw new Error("FixtureApiClient overrides all protocol paths; doFetch must be unreachable");
-			}
-			async callUnary(method, payload, signal) {
-				const request = rpcRequest(payload);
-				const full = {
-					type: "client-request",
-					rpcId: request.rpcId,
-					method,
-					payload
-				};
-				this.onEnvelope(full);
-				const response = await this.dispatch(method, request, signal ?? new AbortController().signal);
-				const fullResponse = {
-					type: "server-response",
-					rpcId: response.rpcId,
-					result: response.result
-				};
-				this.onEnvelope(fullResponse);
-				return response;
-			}
-			/** Method-key dispatch into the in-memory contract impl (a real carrier routes by URL path instead). */
-			dispatch(method, request, signal) {
-				switch (method) {
-					case "session.list": return this.api.sessions.list(request);
-					case "session.search": return this.api.sessions.search(request, signal);
-					case "session.create": return this.api.sessions.create(request);
-					case "session.history": return this.api.sessions.history(request);
-					case "session.models": return this.api.sessions.models(request);
-					case "session.selectModel": return this.api.sessions.selectModel(request);
-					case "session.rename": return this.api.sessions.rename(request);
-					case "session.fork": return this.api.sessions.fork(request);
-					case "session.prompt": return this.api.sessions.prompt(request);
-					case "session.attachment": return this.api.sessions.attachment(request);
-					case "session.updateQueue": return this.api.sessions.updateQueue(request);
-					case "session.cancel": return this.api.sessions.cancel(request);
-					case "subagent.list": return this.api.subagents.list(request);
-					case "subagent.history": return this.api.subagents.history(request);
-					case "subagent.prompt": return this.api.subagents.prompt(request, signal);
-					case "subagent.interrupt": return this.api.subagents.interrupt(request);
-					case "host.describe": return this.api.host.describe(request);
-					case "host.pickDirectory": return this.api.host.pickDirectory(request, new AbortController().signal);
-					case "host.listDirectory": return this.api.host.listDirectory(request, new AbortController().signal);
-					case "host.createDirectory": return this.api.host.createDirectory(request);
-					case "host.openPath": return this.api.host.openPath(request, new AbortController().signal);
-					case "workspace.list": return this.api.workspace.list(request);
-					case "workspace.create": return this.api.workspace.create(request);
-					case "workspace.rename": return this.api.workspace.rename(request);
-					case "workspace.delete": return this.api.workspace.delete(request);
-					case "workspace.insertBefore": return this.api.workspace.insertBefore(request);
-					case "workspace.insertSessionBefore": return this.api.workspace.insertSessionBefore(request);
-					case "workspace.archiveSession": return this.api.workspace.archiveSession(request);
-					case "skill.list": return this.api.skills.list(request);
-					case "agentPreset.list": return this.api.agentPresets.list(request);
-					case "agentPreset.select": return this.api.agentPresets.select(request);
-					case "agentPreset.read": return this.api.agentPresets.read(request);
-					case "agentPreset.copy": return this.api.agentPresets.copy(request);
-					case "agentPreset.openDocument": return this.api.agentPresets.openDocument(request, new AbortController().signal);
-					case "agentPreset.remove": return this.api.agentPresets.remove(request);
-					case "goal.create": return this.api.goals.create(request);
-					case "goal.edit": return this.api.goals.edit(request);
-					case "goal.pause": return this.api.goals.pause(request);
-					case "goal.resume": return this.api.goals.resume(request);
-					case "goal.complete": return this.api.goals.complete(request);
-					case "goal.clear": return this.api.goals.clear(request);
-					case "settings.describe": return this.api.settings.describe(request);
-					case "settings.openDocument": return this.api.settings.openDocument(request, signal);
-					case "settings.update": return this.api.settings.update(request);
-					case "settings.replace": return this.api.settings.replace(request);
-					case "settings.mutate": return this.api.settings.mutate(request);
-					case "credentials.describe": return this.api.credentials.describe(request);
-					case "credentials.set": return this.api.credentials.set(request);
-					case "credentials.unset": return this.api.credentials.unset(request);
-					case "llm.providers": return this.api.llm.providers(request);
-					case "llm.models": return this.api.llm.models(request);
-					case "llm.discoverModels": return this.api.llm.discoverModels(request, signal);
-				}
-			}
-			openMux(payload, signal, onOpen) {
-				return this.tapStream(this.api.events.mux(rpcRequest(payload), signal), onOpen);
-			}
-			openHost(payload, signal, onOpen) {
-				return this.tapStream(this.api.events.host(rpcRequest(payload), signal), onOpen);
-			}
-			async *tapStream(stream, onOpen) {
-				onOpen?.();
-				for await (const envelope of stream) {
-					const full = {
-						type: "server-request",
-						rpcId: envelope.rpcId,
-						method: envelope.payload.type,
-						payload: envelope.payload
-					};
-					this.onEnvelope(full);
-					yield envelope;
-				}
-			}
-			/**
-			* Deliver a client response to the in-memory contract impl (no HTTP POST),
-			* echoing the envelope to the observation tap like every other path.
-			* @param message - the client-response envelope answering a server request.
-			* @returns the carrier receipt from the fixture impl.
-			*/
-			async respond(message) {
-				this.onEnvelope(message);
-				return this.api.respond(message);
-			}
-		};
-		/** Browser query mapping; direct unit callers pass FixtureOptions explicitly. */
-		function fixtureOptionsFromLocation() {
-			if (typeof location === "undefined") return {};
-			const query = new URLSearchParams(location.search);
-			return {
-				empty: query.get("fixture") === "empty",
-				rejectPrompt: query.get("fixturePrompt") === "reject",
-				failWorkspaceAttach: query.get("fixtureAttach") === "fail",
-				dropSessionCreateResponse: query.get("fixtureSessionCreate") === "drop-response",
-				createFrameOrder: query.get("fixtureFrames") === "workspace-first" ? "workspace-first" : "session-first"
-			};
-		}
-		//#endregion
-		//#region lib/types/api-path.js
-		/**
-		* The /api URL prefix — single source for both halves of the web transport.
-		* The node half registers this prefix on the web server; both halves share the
-		* event paths below for the browser WebSocket downlinks.
-		*/
-		/** Route prefix owning every api request (`/api` and `/api/<anything>`). */
-		const API_PATH = "/api";
-		/** Browser mux-frame WebSocket pathname. */
-		const MUX_EVENTS_PATH = `${API_PATH}/events.mux`;
-		/** Browser host-frame WebSocket pathname. */
-		const HOST_EVENTS_PATH = `${API_PATH}/events.host`;
-		//#endregion
-		//#region lib/types/client/web-api-client.js
-		/** Browser API carrier: HTTP upstream plus one WebSocket per downstream event stream. */
-		/** Browser platform subclass: unary/respond use fetch; mux/host use downlink-only WebSockets. */
-		var WebApiClient = class extends AbstractApiClient {
-			doFetch(input, init) {
-				return globalThis.fetch(input, init);
-			}
-			openMux(_payload, signal, onOpen) {
-				return this.readWebSocket(MUX_EVENTS_PATH, signal, muxFrameSchema, onOpen);
-			}
-			openHost(_payload, signal, onOpen) {
-				return this.readWebSocket(HOST_EVENTS_PATH, signal, hostFrameSchema, onOpen);
-			}
-			async *readWebSocket(path, signal, frameSchema, onOpen) {
-				const url = new URL(path, this.resolveBase());
-				url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
-				const socket = new WebSocket(url);
-				const inbox = [];
-				let wake;
-				const enqueue = (item) => {
-					inbox.push(item);
-					wake?.();
-					wake = void 0;
-				};
-				const handleOpen = () => {
-					onOpen?.();
-				};
-				const handleMessage = (event) => {
-					let full;
-					let frame;
-					try {
-						if (typeof event.data !== "string") throw new Error("binary WebSocket frame");
-						full = serverRequestSchema.parse(JSON.parse(event.data));
-						frame = frameSchema.parse(full.payload);
-					} catch (error) {
-						console.error(`[client-connection] dropping malformed WebSocket frame on ${path}:`, error);
-						return;
-					}
-					this.onEnvelope(full);
-					enqueue({
-						kind: "frame",
-						envelope: {
-							rpcId: full.rpcId,
-							payload: frame
-						}
-					});
-				};
-				const handleClose = () => {
-					enqueue({ kind: "end" });
-				};
-				const handleAbort = () => {
-					if (socket.readyState === WebSocket.CONNECTING || socket.readyState === WebSocket.OPEN) socket.close();
-				};
-				socket.addEventListener("open", handleOpen);
-				socket.addEventListener("message", handleMessage);
-				socket.addEventListener("close", handleClose, { once: true });
-				signal.addEventListener("abort", handleAbort, { once: true });
-				if (signal.aborted) handleAbort();
-				try {
-					while (true) {
-						while (inbox.length > 0) {
-							const item = inbox.shift();
-							if (item.kind === "end") return;
-							yield item.envelope;
-						}
-						await new Promise((resolve) => {
-							wake = resolve;
-						});
-					}
-				} finally {
-					signal.removeEventListener("abort", handleAbort);
-					socket.removeEventListener("open", handleOpen);
-					socket.removeEventListener("message", handleMessage);
-					socket.removeEventListener("close", handleClose);
-					handleAbort();
-				}
-			}
-		};
-		//#endregion
-		//#region lib/types/client/rpc.js
-		/** Browser caller for generic Connection unary RPC channels. */
-		const INTERNAL_BASE = "http://dsh.internal";
+		//#region src/client/rpc.ts
+		/** Desktop caller for generic Connection unary RPC channels (invoke 经 Rust 哑管道). */
 		const CHANNEL_PATTERN = /^\/[A-Za-z0-9._~-]+$/;
 		const ENDPOINT_SEGMENT_PATTERN = /^[A-Za-z0-9_$.-]+$/;
 		/**
@@ -10094,51 +6293,39 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return { async call(channel, endpoint, payload, signal) {
 				assertTarget(channel, endpoint);
 				const rpcId = RpcId(randomUuid());
-				const message = {
+				const resp = await postEnvelope(channel, endpoint, {
 					type: "client-request",
 					rpcId,
 					method: endpoint,
 					payload
-				};
-				const response = await globalThis.fetch(new URL(`${channel}/${endpoint}`, resolveBase()), {
-					method: "POST",
-					headers: { "content-type": "application/json" },
-					body: JSON.stringify(message),
-					...signal === void 0 ? {} : { signal }
-				});
-				if (!response.ok) throw new Error(`transport failure for ${channel}/${endpoint}: HTTP ${response.status}`);
-				const full = serverResponseSchema.parse(await response.json());
+				}, signal);
+				const full = serverResponseSchema.parse(resp);
 				if (full.rpcId !== rpcId) throw new Error(`rpcId mismatch for ${endpoint}: sent ${rpcId}, got ${full.rpcId}`);
 				return full.result;
 			} };
 		}
-		function resolveBase() {
-			const location = globalThis.location;
-			return location?.origin !== void 0 && location.origin !== "null" ? location.origin : INTERNAL_BASE;
+		async function postEnvelope(channel, endpoint, envelope, signal) {
+			if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+			const resp = await invoke("dsh_http", {
+				method: "POST",
+				path: `${channel}/${endpoint}`,
+				body: Array.from(new TextEncoder().encode(JSON.stringify(envelope)))
+			});
+			if (resp.status >= 400) throw new Error(`rpc ${channel}/${endpoint} → HTTP ${resp.status}: ${new TextDecoder().decode(new Uint8Array(resp.body))}`);
+			const parsed = JSON.parse(new TextDecoder().decode(new Uint8Array(resp.body)));
+			for (const k of [
+				"__proto__",
+				"constructor",
+				"prototype"
+			]) if (k in parsed) delete parsed[k];
+			return parsed;
 		}
 		function assertTarget(channel, endpoint) {
 			const segments = endpoint.split("/");
 			if (!CHANNEL_PATTERN.test(channel) || segments.some((segment) => segment === "" || segment === "." || segment === ".." || !ENDPOINT_SEGMENT_PATTERN.test(segment))) throw new Error(`connection: invalid RPC target ${JSON.stringify(`${channel}/${endpoint}`)}`);
 		}
 		//#endregion
-		//#region lib/types/loopback-hostname.js
-		/**
-		* Browser-safe, zero-dependency loopback classification shared by the `/api`
-		* Host fence and the package's `ctx.connection` state. The predicate stays
-		* package-internal; client plugins consume the derived state through Cordis.
-		*/
-		/**
-		* Whether a normalized URL hostname names the local loopback authority.
-		* @param hostname - WHATWG URL hostname (IPv6 literals retain brackets).
-		* @returns true for localhost, IPv6 loopback, or any IPv4 address in 127/8.
-		*/
-		function isLoopbackHostname(hostname) {
-			if (hostname === "localhost" || hostname === "[::1]") return true;
-			const parts = hostname.split(".");
-			return parts.length === 4 && parts[0] === "127" && parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255);
-		}
-		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services (none — this is the wire root). */
 		const inject = [];
 		/**
@@ -10146,10 +6333,8 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		* @param ctx - client cordis context.
 		*/
 		function apply(ctx) {
-			const pageLocation = typeof location === "undefined" ? void 0 : location;
-			const fixtureClient = pageLocation !== void 0 && new URLSearchParams(pageLocation.search).has("fixture") ? new FixtureApiClient() : void 0;
-			const api = fixtureClient ?? new WebApiClient();
-			const rpc = fixtureClient?.rpc ?? createWebConnectionRpc();
+			const api = new TauriApiClient();
+			const rpc = createWebConnectionRpc();
 			let started = false;
 			let description;
 			const descriptionListeners = /* @__PURE__ */ new Set();
@@ -10164,7 +6349,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			};
 			const handle = {
 				api,
-				isLoopback: pageLocation === void 0 || isLoopbackHostname(pageLocation.hostname),
+				isLoopback: true,
 				hostDescription: {
 					getSnapshot: () => description,
 					subscribe: (listener) => {

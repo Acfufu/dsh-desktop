@@ -8,10 +8,11 @@ describe('capability whitelist contract', () => {
   // vitest 下 import.meta.url 非 file scheme——cwd 即 frontend 根
   const root = process.cwd();
 
+  // 扫描面 = fork 源码（bundle 产物含内联第三方死代码，如测试凭据串——非本仓库 invoke 面）
   function walk(dir: string, acc: string[] = []): string[] {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
       const p = join(dir, e.name);
-      if (e.isDirectory() && !['node_modules', 'dist'].includes(e.name)) walk(p, acc);
+      if (e.isDirectory() && !['node_modules', 'dist', 'public', 'lib'].includes(e.name)) walk(p, acc);
       else if (/\.[cm]?[jt]sx?$/.test(e.name) && !e.name.endsWith('.test.ts') && !e.name.endsWith('.test.tsx')) acc.push(p);
     }
     return acc;

@@ -174,6 +174,11 @@ export default defineConfig({
     // vendored loader index.ts: envData falls to its default branch.
     'process.env.CORDIS_SHARED': 'undefined',
   },
-  server: { port: 1420, strictPort: true },
+  server: {
+    port: 1420,
+    strictPort: true,
+    // 调试用：/api 转发到本地 UDS 代理（复现 tauri dsh_http 链路；生产无此配置）
+    proxy: { '/api': { target: 'http://127.0.0.1:13999', changeOrigin: true } },
+  },
   clearScreen: false,
 })
