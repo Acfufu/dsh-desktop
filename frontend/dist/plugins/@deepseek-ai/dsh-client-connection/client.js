@@ -4,7 +4,7 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		//#region lib/types/client/connection.js
+		//#region src/client/connection.ts
 		const CONNECTION_DEFAULTS = {
 			backoffBaseMs: 500,
 			backoffFactor: 2,
@@ -145,18 +145,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region ../../llm/llm/lib/types/brand.js
-		/**
-		* dsh-llm's owned branded ids: tool-call correlation and provider request
-		* diagnostics.
-		*
-		* The `Branded<B>` primitive itself lives in `@deepseek-ai/dsh-brand` (a
-		* zero-dependency type-only package) so every owner of a cross-boundary id can
-		* brand it without depending on dsh-llm; see that package's README for the
-		* nominal-typing policy.
-		*
-		* @module @deepseek-ai/dsh-llm/brand
-		*/
+		//#region ../../llm/llm/src/brand.ts
 		/**
 		* Brand a message identifier.
 		* @param id - the opaque message identifier.
@@ -174,7 +163,7 @@ window.__ModuleLoader__.load({
 			return id;
 		}
 		//#endregion
-		//#region ../../llm/llm/lib/types/call-config.js
+		//#region ../../llm/llm/src/call-config.ts
 		/**
 		* Deep-freeze a value in place with an iterative traversal, guarding cycles,
 		* so later mutation throws without imposing a JavaScript call-stack depth cap.
@@ -221,7 +210,7 @@ window.__ModuleLoader__.load({
 			return value;
 		}
 		//#endregion
-		//#region ../../llm/llm/lib/types/message.js
+		//#region ../../llm/llm/src/message.ts
 		/** Message value types, identity, and immutable construction helpers. */
 		/**
 		* Detach and deep-freeze a message whose identity already exists.
@@ -304,16 +293,7 @@ window.__ModuleLoader__.load({
 			}
 		}
 		//#endregion
-		//#region ../../core/session/lib/types/surface.js
-		/**
-		* Surface layer on top of the session event log: an ordered view of events
-		* that produce LLM messages. The append-only log remains the source of truth.
-		*
-		* Browser-safe: web clients consume this subpath export, so it must stay free
-		* of `node:` imports (they break the vite bundle).
-		*
-		* @module @deepseek-ai/dsh-session/surface
-		*/
+		//#region ../../core/session/src/surface.ts
 		/** Runtime counterpart of the message-producing event union. */
 		const SURFACE_EVENT_TYPES = new Set([
 			"user/message",
@@ -520,13 +500,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/rpc.js
-		/**
-		* Four-quadrant RPC message model. Channels and messages are decoupled: HTTP,
-		* WebSocket, and in-process SSE are physical carriers, while logical messages
-		* are channel-independent and form a four-member discriminated union.
-		* api/ contract layer: zero Node dependencies, importable from the browser.
-		*/
+		//#region ../../host/apiproxy/src/api/rpc.ts
 		/**
 		* Brands a string as RpcId (same precedent as core `SessionId()`). Minted by the initiator:
 		* client-request → client mints; server-request → host mints (answerable frames get a stable
@@ -4879,7 +4853,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return /* @__PURE__ */ _superRefine(fn, params);
 		}
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/rpc.schema.js
+		//#region ../../host/apiproxy/src/api/rpc.schema.ts
 		/**
 		* Message-layer zod schemas: the four wire full forms + error body +
 		* carrier receipt. The payload slot is unknown in the full-form schemas — business payloads
@@ -5194,7 +5168,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			reason: union([literal("not-pending"), literal("bad-response")])
 		})]);
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/session-search.js
+		//#region ../../host/apiproxy/src/api/session-search.ts
 		/**
 		* Return the longest prefix containing at most `maximum` Unicode code points.
 		* @param value - text to bound.
@@ -5212,7 +5186,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return value;
 		}
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/sessions.schema.js
+		//#region ../../host/apiproxy/src/api/sessions.schema.ts
 		/**
 		* sessions domain zod schemas (names derived from map keys: sessionListRequestSchema /
 		* sessionListValueSchema). SessionEvent passthrough = strict envelope (type/seq/time) + wide
@@ -5460,7 +5434,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** session.cancel response value. */
 		const sessionCancelValueSchema = object({ accepted: literal(true) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/approvals.schema.js
+		//#region ../../host/apiproxy/src/api/approvals.schema.ts
 		/**
 		* approvals domain zod schemas (respond is a client-response; the payload schema serves
 		* the /api/respond endpoint's second parse after routing via the pending table).
@@ -5494,7 +5468,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			finishedAt: number().int().nonnegative().optional()
 		});
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/workspace.schema.js
+		//#region ../../host/apiproxy/src/api/workspace.schema.ts
 		/**
 		* workspace domain zod schemas (names derived from map keys). The
 		* WorkspaceId brand cast lives in sessions.schema (see the note there) and
@@ -5547,7 +5521,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** workspace.archiveSession response value: the full updated archive set. */
 		const workspaceArchiveSessionValueSchema = object({ archivedSessionIds: array(sessionIdSchema) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/events.schema.js
+		//#region ../../host/apiproxy/src/api/events.schema.ts
 		/**
 		* events domain zod schemas: MuxFrame / HostFrame unions (discriminatedUnion('type')).
 		* A frame is the payload slot of the ServerRequest full form; the SessionEvent inside
@@ -5742,7 +5716,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** host.openPath response value. */
 		const hostOpenPathValueSchema = object({ opened: literal(true) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/skills.schema.js
+		//#region ../../host/apiproxy/src/api/skills.schema.ts
 		/**
 		* skills domain zod schemas (names derived from map keys: skillListRequestSchema /
 		* skillListValueSchema).
@@ -5758,7 +5732,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** skill.list response value. */
 		const skillListValueSchema = object({ skills: array(skillEntrySchema) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/agent-presets.schema.js
+		//#region ../../host/apiproxy/src/api/agent-presets.schema.ts
 		/**
 		* agent-presets domain zod schemas (names derived from map keys:
 		* agentPresetListRequestSchema / agentPresetListValueSchema).
@@ -5811,7 +5785,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** agentPreset.remove response value. */
 		const agentPresetRemoveValueSchema = object({});
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/goals.schema.js
+		//#region ../../host/apiproxy/src/api/goals.schema.ts
 		/**
 		* goals domain zod schemas. Mutation-only shapes: every value schema is a
 		* `{ ref }` acknowledgement (clear: `{ cleared }`) — the current goal state
@@ -5864,7 +5838,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** goal.clear response value. */
 		const goalClearValueSchema = object({ cleared: literal(true) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/settings.schema.js
+		//#region ../../host/apiproxy/src/api/settings.schema.ts
 		/**
 		* settings domain zod schemas (names derived from map keys: settingsDescribeRequestSchema /
 		* settingsDescribeValueSchema / settingsUpdate* / settingsReplace*).
@@ -5926,7 +5900,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** settings.replace response value. */
 		const settingsReplaceValueSchema = settingsNamespaceViewSchema;
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/credentials.schema.js
+		//#region ../../host/apiproxy/src/api/credentials.schema.ts
 		/**
 		* credentials domain zod schemas (names derived from map keys:
 		* credentialsDescribeRequestSchema / credentialsDescribeValueSchema / …).
@@ -5954,7 +5928,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** credentials.unset response value. */
 		const credentialsUnsetValueSchema = object({});
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/llm.schema.js
+		//#region ../../host/apiproxy/src/api/llm.schema.ts
 		/**
 		* llm domain zod schemas (names derived from map keys: llmProvidersRequestSchema /
 		* llmProvidersValueSchema / llmModelsRequestSchema / llmModelsValueSchema).
@@ -5994,7 +5968,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** llm.discoverModels response value. */
 		const llmDiscoverModelsValueSchema = object({ models: array(discoveredModelViewSchema) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/api/subagents.schema.js
+		//#region ../../host/apiproxy/src/api/subagents.schema.ts
 		/** Zod schemas for the browser-safe subagent domain. */
 		/** Healthy and diagnostic durable catalog rows. */
 		const subagentListEntrySchema = union([
@@ -6058,13 +6032,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** subagent.interrupt response value. */
 		const subagentInterruptValueSchema = object({ accepted: literal(true) });
 		//#endregion
-		//#region ../../host/apiproxy/lib/types/fetch/client.js
-		/**
-		* Client side of the fetch carrier. AbstractApiClient holds every protocol invariant: rpcId minting,
-		* four-quadrant envelope wrap/unwrap, zod parsing, in-process SSE frame decoding, and the payload-direct
-		* IApiClient domain methods (business code never mints). Platform differences ride two aspects:
-		* abstract doFetch (transport) + overridable onEnvelope (tap). ApiProxy (the impl face) is untouched.
-		*/
+		//#region ../../host/apiproxy/src/fetch/client.ts
 		/**
 		* S→C second-level parse table: value schema by method (the response-path
 		* mirror of the handler's request table; key coverage compiler-enforced against RpcMethodMap).
@@ -6136,14 +6104,86 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		* subclass whose doFetch is toFetchHandler(api).fetch never touches the network.
 		*/
 		var AbstractApiClient = class {
-			timeoutMs;
-			/** Instance-owned observation buffer (module-level state would leak across instances/tests). */
-			envelopeBatch = [];
-			flushScheduled = false;
-			envelopeListeners = /* @__PURE__ */ new Set();
 			/** @param timeoutMs - timeout for bounded unary calls; user-paced calls and streams do not use it. */
 			constructor(timeoutMs = DEFAULT_TIMEOUT_MS) {
 				this.timeoutMs = timeoutMs;
+				this.envelopeBatch = [];
+				this.flushScheduled = false;
+				this.envelopeListeners = /* @__PURE__ */ new Set();
+				this.sessions = {
+					list: (payload, signal) => this.callUnary("session.list", payload, signal),
+					search: (payload, signal) => this.callUnary("session.search", payload, signal),
+					create: (payload, signal) => this.callUnary("session.create", payload, signal),
+					history: (payload, signal) => this.callUnary("session.history", payload, signal),
+					models: (payload, signal) => this.callUnary("session.models", payload, signal),
+					selectModel: (payload, signal) => this.callUnary("session.selectModel", payload, signal),
+					rename: (payload, signal) => this.callUnary("session.rename", payload, signal),
+					fork: (payload, signal) => this.callUnary("session.fork", payload, signal),
+					prompt: (payload, signal) => this.callUnary("session.prompt", payload, signal),
+					attachment: (payload, signal) => this.callUnary("session.attachment", payload, signal),
+					updateQueue: (payload, signal) => this.callUnary("session.updateQueue", payload, signal),
+					cancel: (payload, signal) => this.callUnary("session.cancel", payload, signal)
+				};
+				this.subagents = {
+					list: (payload, signal) => this.callUnary("subagent.list", payload, signal),
+					history: (payload, signal) => this.callUnary("subagent.history", payload, signal),
+					prompt: (payload, signal) => this.callUnary("subagent.prompt", payload, signal),
+					interrupt: (payload, signal) => this.callUnary("subagent.interrupt", payload, signal)
+				};
+				this.host = {
+					describe: (payload, signal) => this.callUnary("host.describe", payload, signal),
+					pickDirectory: (payload, signal) => this.callUnary("host.pickDirectory", payload, signal, "caller-signal-only"),
+					listDirectory: (payload, signal) => this.callUnary("host.listDirectory", payload, signal),
+					createDirectory: (payload, signal) => this.callUnary("host.createDirectory", payload, signal),
+					openPath: (payload, signal) => this.callUnary("host.openPath", payload, signal)
+				};
+				this.workspace = {
+					list: (payload, signal) => this.callUnary("workspace.list", payload, signal),
+					create: (payload, signal) => this.callUnary("workspace.create", payload, signal),
+					rename: (payload, signal) => this.callUnary("workspace.rename", payload, signal),
+					delete: (payload, signal) => this.callUnary("workspace.delete", payload, signal),
+					insertBefore: (payload, signal) => this.callUnary("workspace.insertBefore", payload, signal),
+					insertSessionBefore: (payload, signal) => this.callUnary("workspace.insertSessionBefore", payload, signal),
+					archiveSession: (payload, signal) => this.callUnary("workspace.archiveSession", payload, signal)
+				};
+				this.skills = { list: (payload, signal) => this.callUnary("skill.list", payload, signal) };
+				this.agentPresets = {
+					list: (payload, signal) => this.callUnary("agentPreset.list", payload, signal),
+					select: (payload, signal) => this.callUnary("agentPreset.select", payload, signal),
+					read: (payload, signal) => this.callUnary("agentPreset.read", payload, signal),
+					copy: (payload, signal) => this.callUnary("agentPreset.copy", payload, signal),
+					openDocument: (payload, signal) => this.callUnary("agentPreset.openDocument", payload, signal),
+					remove: (payload, signal) => this.callUnary("agentPreset.remove", payload, signal)
+				};
+				this.goals = {
+					create: (payload, signal) => this.callUnary("goal.create", payload, signal),
+					edit: (payload, signal) => this.callUnary("goal.edit", payload, signal),
+					pause: (payload, signal) => this.callUnary("goal.pause", payload, signal),
+					resume: (payload, signal) => this.callUnary("goal.resume", payload, signal),
+					complete: (payload, signal) => this.callUnary("goal.complete", payload, signal),
+					clear: (payload, signal) => this.callUnary("goal.clear", payload, signal)
+				};
+				this.settings = {
+					describe: (payload, signal) => this.callUnary("settings.describe", payload, signal),
+					openDocument: (payload, signal) => this.callUnary("settings.openDocument", payload, signal),
+					update: (payload, signal) => this.callUnary("settings.update", payload, signal),
+					replace: (payload, signal) => this.callUnary("settings.replace", payload, signal),
+					mutate: (payload, signal) => this.callUnary("settings.mutate", payload, signal)
+				};
+				this.credentials = {
+					describe: (payload, signal) => this.callUnary("credentials.describe", payload, signal),
+					set: (payload, signal) => this.callUnary("credentials.set", payload, signal),
+					unset: (payload, signal) => this.callUnary("credentials.unset", payload, signal)
+				};
+				this.llm = {
+					providers: (payload, signal) => this.callUnary("llm.providers", payload, signal),
+					models: (payload, signal) => this.callUnary("llm.models", payload, signal),
+					discoverModels: (payload, signal) => this.callUnary("llm.discoverModels", payload, signal)
+				};
+				this.events = {
+					mux: (payload, signal, onOpen) => this.openMux(payload, signal, onOpen),
+					host: (payload, signal, onOpen) => this.openHost(payload, signal, onOpen)
+				};
 			}
 			/**
 			* Subscribe to batched envelope observation (diagnostics/logging consumers).
@@ -6281,80 +6321,6 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 					await reader.cancel().catch(() => void 0);
 				}
 			}
-			sessions = {
-				list: (payload, signal) => this.callUnary("session.list", payload, signal),
-				search: (payload, signal) => this.callUnary("session.search", payload, signal),
-				create: (payload, signal) => this.callUnary("session.create", payload, signal),
-				history: (payload, signal) => this.callUnary("session.history", payload, signal),
-				models: (payload, signal) => this.callUnary("session.models", payload, signal),
-				selectModel: (payload, signal) => this.callUnary("session.selectModel", payload, signal),
-				rename: (payload, signal) => this.callUnary("session.rename", payload, signal),
-				fork: (payload, signal) => this.callUnary("session.fork", payload, signal),
-				prompt: (payload, signal) => this.callUnary("session.prompt", payload, signal),
-				attachment: (payload, signal) => this.callUnary("session.attachment", payload, signal),
-				updateQueue: (payload, signal) => this.callUnary("session.updateQueue", payload, signal),
-				cancel: (payload, signal) => this.callUnary("session.cancel", payload, signal)
-			};
-			subagents = {
-				list: (payload, signal) => this.callUnary("subagent.list", payload, signal),
-				history: (payload, signal) => this.callUnary("subagent.history", payload, signal),
-				prompt: (payload, signal) => this.callUnary("subagent.prompt", payload, signal),
-				interrupt: (payload, signal) => this.callUnary("subagent.interrupt", payload, signal)
-			};
-			host = {
-				describe: (payload, signal) => this.callUnary("host.describe", payload, signal),
-				pickDirectory: (payload, signal) => this.callUnary("host.pickDirectory", payload, signal, "caller-signal-only"),
-				listDirectory: (payload, signal) => this.callUnary("host.listDirectory", payload, signal),
-				createDirectory: (payload, signal) => this.callUnary("host.createDirectory", payload, signal),
-				openPath: (payload, signal) => this.callUnary("host.openPath", payload, signal)
-			};
-			workspace = {
-				list: (payload, signal) => this.callUnary("workspace.list", payload, signal),
-				create: (payload, signal) => this.callUnary("workspace.create", payload, signal),
-				rename: (payload, signal) => this.callUnary("workspace.rename", payload, signal),
-				delete: (payload, signal) => this.callUnary("workspace.delete", payload, signal),
-				insertBefore: (payload, signal) => this.callUnary("workspace.insertBefore", payload, signal),
-				insertSessionBefore: (payload, signal) => this.callUnary("workspace.insertSessionBefore", payload, signal),
-				archiveSession: (payload, signal) => this.callUnary("workspace.archiveSession", payload, signal)
-			};
-			skills = { list: (payload, signal) => this.callUnary("skill.list", payload, signal) };
-			agentPresets = {
-				list: (payload, signal) => this.callUnary("agentPreset.list", payload, signal),
-				select: (payload, signal) => this.callUnary("agentPreset.select", payload, signal),
-				read: (payload, signal) => this.callUnary("agentPreset.read", payload, signal),
-				copy: (payload, signal) => this.callUnary("agentPreset.copy", payload, signal),
-				openDocument: (payload, signal) => this.callUnary("agentPreset.openDocument", payload, signal),
-				remove: (payload, signal) => this.callUnary("agentPreset.remove", payload, signal)
-			};
-			goals = {
-				create: (payload, signal) => this.callUnary("goal.create", payload, signal),
-				edit: (payload, signal) => this.callUnary("goal.edit", payload, signal),
-				pause: (payload, signal) => this.callUnary("goal.pause", payload, signal),
-				resume: (payload, signal) => this.callUnary("goal.resume", payload, signal),
-				complete: (payload, signal) => this.callUnary("goal.complete", payload, signal),
-				clear: (payload, signal) => this.callUnary("goal.clear", payload, signal)
-			};
-			settings = {
-				describe: (payload, signal) => this.callUnary("settings.describe", payload, signal),
-				openDocument: (payload, signal) => this.callUnary("settings.openDocument", payload, signal),
-				update: (payload, signal) => this.callUnary("settings.update", payload, signal),
-				replace: (payload, signal) => this.callUnary("settings.replace", payload, signal),
-				mutate: (payload, signal) => this.callUnary("settings.mutate", payload, signal)
-			};
-			credentials = {
-				describe: (payload, signal) => this.callUnary("credentials.describe", payload, signal),
-				set: (payload, signal) => this.callUnary("credentials.set", payload, signal),
-				unset: (payload, signal) => this.callUnary("credentials.unset", payload, signal)
-			};
-			llm = {
-				providers: (payload, signal) => this.callUnary("llm.providers", payload, signal),
-				models: (payload, signal) => this.callUnary("llm.models", payload, signal),
-				discoverModels: (payload, signal) => this.callUnary("llm.discoverModels", payload, signal)
-			};
-			events = {
-				mux: (payload, signal, onOpen) => this.openMux(payload, signal, onOpen),
-				host: (payload, signal, onOpen) => this.openHost(payload, signal, onOpen)
-			};
 			async respond(message, signal) {
 				this.onEnvelope(message);
 				const response = await this.postJson("/api/respond", message, signal);
@@ -6362,7 +6328,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/random-uuid.js
+		//#region src/client/random-uuid.ts
 		/** Browser-safe UUID generation for client-side wire correlation. */
 		/**
 		* Generate an RFC 4122 version 4 UUID without requiring a secure context.
@@ -6377,7 +6343,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 		}
 		//#endregion
-		//#region lib/types/client/fixture.js
+		//#region src/client/fixture.ts
 		/** The fake carrier mints like a real one (business code never mints). */
 		function rpcRequest(payload) {
 			return {
@@ -9989,7 +9955,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			};
 		}
 		//#endregion
-		//#region lib/types/api-path.js
+		//#region src/api-path.ts
 		/**
 		* The /api URL prefix — single source for both halves of the web transport.
 		* The node half registers this prefix on the web server; both halves share the
@@ -10002,8 +9968,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		/** Browser host-frame WebSocket pathname. */
 		const HOST_EVENTS_PATH = `${API_PATH}/events.host`;
 		//#endregion
-		//#region lib/types/client/web-api-client.js
-		/** Browser API carrier: HTTP upstream plus one WebSocket per downstream event stream. */
+		//#region src/client/web-api-client.ts
 		/** Browser platform subclass: unary/respond use fetch; mux/host use downlink-only WebSockets. */
 		var WebApiClient = class extends AbstractApiClient {
 			doFetch(input, init) {
@@ -10081,7 +10046,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/rpc.js
+		//#region src/client/rpc.ts
 		/** Browser caller for generic Connection unary RPC channels. */
 		const INTERNAL_BASE = "http://dsh.internal";
 		const CHANNEL_PATTERN = /^\/[A-Za-z0-9._~-]+$/;
@@ -10121,7 +10086,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			if (!CHANNEL_PATTERN.test(channel) || segments.some((segment) => segment === "" || segment === "." || segment === ".." || !ENDPOINT_SEGMENT_PATTERN.test(segment))) throw new Error(`connection: invalid RPC target ${JSON.stringify(`${channel}/${endpoint}`)}`);
 		}
 		//#endregion
-		//#region lib/types/loopback-hostname.js
+		//#region src/loopback-hostname.ts
 		/**
 		* Browser-safe, zero-dependency loopback classification shared by the `/api`
 		* Host fence and the package's `ctx.connection` state. The predicate stays
@@ -10138,7 +10103,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return parts.length === 4 && parts[0] === "127" && parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255);
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services (none — this is the wire root). */
 		const inject = [];
 		/**

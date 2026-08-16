@@ -136,8 +136,11 @@ export class ConnectionController {
         // subscribed baseline. The timeout guards against a carrier that never fires onOpen
         // (see ConnectionConfig.streamOpenTimeoutMs).
         const timeout = new AbortController()
+        // fork 改动：握手 describe 带 10s 调用点超时——闭合「sidecar 活但 describe 卡死」断点
+        // （spec §4.3/§6；基类 caller-signal-only 方法不受影响）
+        const describeSignal = AbortSignal.timeout(10_000)
         const [description] = await Promise.all([
-          this.api.host.describe({}),
+          this.api.host.describe({}, describeSignal),
           Promise.race([streamsOpen, sleep(this.config.streamOpenTimeoutMs, timeout.signal)]),
         ])
         timeout.abort()

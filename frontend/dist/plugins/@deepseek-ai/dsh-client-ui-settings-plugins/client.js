@@ -21,19 +21,19 @@ window.__ModuleLoader__.load({
 		}
 		var fields_module_css_default = {
 			"input": "_8xwsaa_input",
-			"badges": "_8xwsaa_badges",
-			"label": "_8xwsaa_label",
-			"badge": "_8xwsaa_badge",
-			"reset": "_8xwsaa_reset",
-			"inputInvalid": "_8xwsaa_inputInvalid",
-			"field": "_8xwsaa_field",
-			"badgeMuted": "_8xwsaa_badgeMuted",
-			"hint": "_8xwsaa_hint",
 			"invalid": "_8xwsaa_invalid",
-			"head": "_8xwsaa_head"
+			"hint": "_8xwsaa_hint",
+			"inputInvalid": "_8xwsaa_inputInvalid",
+			"badges": "_8xwsaa_badges",
+			"field": "_8xwsaa_field",
+			"label": "_8xwsaa_label",
+			"reset": "_8xwsaa_reset",
+			"badge": "_8xwsaa_badge",
+			"head": "_8xwsaa_head",
+			"badgeMuted": "_8xwsaa_badgeMuted"
 		};
 		//#endregion
-		//#region lib/types/client/fields.js
+		//#region src/client/fields.tsx
 		/**
 		* Hand-written controls for the plugin configuration forms. Each renders one
 		* field's label, its staged text, whether saving would leave an override, and
@@ -49,21 +49,21 @@ window.__ModuleLoader__.load({
 		* @returns the labelled control.
 		*/
 		function ValueField(props) {
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: fields_module_css_default.field,
 				children: [
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: fields_module_css_default.head,
-						children: [(0, react_jsx_runtime.jsx)("label", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("label", {
 							className: fields_module_css_default.label,
 							htmlFor: props.id,
 							children: props.label
-						}), props.overridden ? (0, react_jsx_runtime.jsxs)("span", {
+						}), props.overridden ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 							className: fields_module_css_default.badges,
-							children: [(0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: fields_module_css_default.badge,
 								children: props.overriddenLabel
-							}), (0, react_jsx_runtime.jsx)("button", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								type: "button",
 								className: fields_module_css_default.reset,
 								disabled: props.disabled,
@@ -72,7 +72,7 @@ window.__ModuleLoader__.load({
 							})]
 						}) : null]
 					}),
-					(0, react_jsx_runtime.jsx)("input", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 						id: props.id,
 						className: props.invalid ? fields_module_css_default.inputInvalid : fields_module_css_default.input,
 						type: "text",
@@ -85,7 +85,7 @@ window.__ModuleLoader__.load({
 							props.onEdit(event.target.value);
 						}
 					}),
-					(0, react_jsx_runtime.jsx)("p", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: props.invalid ? fields_module_css_default.invalid : fields_module_css_default.hint,
 						children: props.invalid ? props.invalidLabel : props.hint
 					})
@@ -100,24 +100,24 @@ window.__ModuleLoader__.load({
 		* @returns the labelled control.
 		*/
 		function SecretField(props) {
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: fields_module_css_default.field,
 				children: [
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: fields_module_css_default.head,
-						children: [(0, react_jsx_runtime.jsx)("label", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("label", {
 							className: fields_module_css_default.label,
 							htmlFor: props.id,
 							children: props.label
-						}), (0, react_jsx_runtime.jsx)("span", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: fields_module_css_default.badges,
-							children: (0, react_jsx_runtime.jsx)("span", {
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: props.configured ? fields_module_css_default.badge : fields_module_css_default.badgeMuted,
 								children: props.stateLabel
 							})
 						})]
 					}),
-					(0, react_jsx_runtime.jsx)("input", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 						id: props.id,
 						className: fields_module_css_default.input,
 						type: "password",
@@ -128,7 +128,7 @@ window.__ModuleLoader__.load({
 							props.onEdit(event.target.value);
 						}
 					}),
-					(0, react_jsx_runtime.jsx)("p", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: fields_module_css_default.hint,
 						children: props.hint
 					})
@@ -162,24 +162,24 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var PluginCard_module_css_default = {
-			"card": "Hd0xMq_card",
-			"name": "Hd0xMq_name",
-			"footer": "Hd0xMq_footer",
-			"body": "Hd0xMq_body",
-			"pending": "Hd0xMq_pending",
-			"cardOpen": "Hd0xMq_cardOpen",
+			"description": "Hd0xMq_description",
 			"readOnly": "Hd0xMq_readOnly",
+			"pending": "Hd0xMq_pending",
+			"body": "Hd0xMq_body",
+			"cardOpen": "Hd0xMq_cardOpen",
 			"chevron": "Hd0xMq_chevron",
 			"failed": "Hd0xMq_failed",
+			"name": "Hd0xMq_name",
 			"headText": "Hd0xMq_headText",
-			"header": "Hd0xMq_header",
-			"save": "Hd0xMq_save",
 			"chevronOpen": "Hd0xMq_chevronOpen",
+			"save": "Hd0xMq_save",
+			"footer": "Hd0xMq_footer",
 			"discard": "Hd0xMq_discard",
-			"description": "Hd0xMq_description"
+			"card": "Hd0xMq_card",
+			"header": "Hd0xMq_header"
 		};
 		//#endregion
-		//#region lib/types/client/PluginCard.js
+		//#region src/client/PluginCard.tsx
 		/**
 		* One plugin's card: a header naming the plugin and what its settings govern,
 		* disclosing that plugin's controls in place, with the save that writes them.
@@ -206,9 +206,9 @@ window.__ModuleLoader__.load({
 			if (!state.available) return null;
 			const title = props.t(props.titleKey);
 			const blocked = !state.dirty || state.invalid || state.saving;
-			return (0, react_jsx_runtime.jsxs)("li", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
 				className: clsx(PluginCard_module_css_default.card, open && PluginCard_module_css_default.cardOpen),
-				children: [(0, react_jsx_runtime.jsxs)("button", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 					type: "button",
 					className: PluginCard_module_css_default.header,
 					"aria-expanded": open,
@@ -217,47 +217,47 @@ window.__ModuleLoader__.load({
 						setOpen(!open);
 					},
 					children: [
-						(0, react_jsx_runtime.jsxs)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 							className: PluginCard_module_css_default.headText,
-							children: [(0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: PluginCard_module_css_default.name,
 								children: title
-							}), (0, react_jsx_runtime.jsx)("span", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: PluginCard_module_css_default.description,
 								children: props.t(props.descriptionKey)
 							})]
 						}),
-						state.dirty ? (0, react_jsx_runtime.jsx)("span", {
+						state.dirty ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: PluginCard_module_css_default.pending,
 							children: props.t("unsaved")
 						}) : null,
-						(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: clsx(PluginCard_module_css_default.chevron, open && PluginCard_module_css_default.chevronOpen) })
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: clsx(PluginCard_module_css_default.chevron, open && PluginCard_module_css_default.chevronOpen) })
 					]
-				}), open ? (0, react_jsx_runtime.jsxs)("div", {
+				}), open ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: PluginCard_module_css_default.body,
 					children: [
-						!state.writable ? (0, react_jsx_runtime.jsx)("p", {
+						!state.writable ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 							className: PluginCard_module_css_default.readOnly,
 							role: "status",
 							children: props.t("readOnly")
 						}) : null,
 						props.children,
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: PluginCard_module_css_default.footer,
 							children: [
-								state.failed ? (0, react_jsx_runtime.jsx)("p", {
+								state.failed ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 									className: PluginCard_module_css_default.failed,
 									role: "status",
 									children: props.t("saveFailed")
 								}) : null,
-								(0, react_jsx_runtime.jsx)("button", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 									type: "button",
 									className: PluginCard_module_css_default.discard,
 									disabled: !state.dirty || state.saving,
 									onClick: props.onDiscard,
 									children: props.t("discard")
 								}),
-								(0, react_jsx_runtime.jsx)("button", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 									type: "button",
 									className: PluginCard_module_css_default.save,
 									disabled: blocked,
@@ -271,7 +271,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/AgentLoopCard.js
+		//#region src/client/AgentLoopCard.tsx
 		/**
 		* Render the agent-loop card.
 		* @param props - locale copy, the card snapshot, and its form actions.
@@ -280,14 +280,14 @@ window.__ModuleLoader__.load({
 		function AgentLoopCard(props) {
 			const { t } = props;
 			const state = props.useAgentLoopCard((snapshot) => snapshot);
-			return (0, react_jsx_runtime.jsx)(PluginCard, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PluginCard, {
 				t,
 				titleKey: "agentLoopTitle",
 				descriptionKey: "agentLoopDescription",
 				state,
 				onSave: props.save,
 				onDiscard: props.discard,
-				children: (0, react_jsx_runtime.jsx)(ValueField, {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ValueField, {
 					id: "plugin-config-agent-loop-parallel",
 					label: t("agentLoopMaxParallel"),
 					hint: t("agentLoopMaxParallelHint"),
@@ -307,7 +307,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/BashCard.js
+		//#region src/client/BashCard.tsx
 		/**
 		* Render the shell card.
 		* @param props - locale copy, the card snapshot, and its form actions.
@@ -317,14 +317,14 @@ window.__ModuleLoader__.load({
 			const { t } = props;
 			const state = props.useBashCard((snapshot) => snapshot);
 			const disabled = !state.writable;
-			return (0, react_jsx_runtime.jsxs)(PluginCard, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(PluginCard, {
 				t,
 				titleKey: "bashTitle",
 				descriptionKey: "bashDescription",
 				state,
 				onSave: props.save,
 				onDiscard: props.discard,
-				children: [(0, react_jsx_runtime.jsx)(ValueField, {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ValueField, {
 					id: "plugin-config-bash-timeout",
 					label: t("bashTimeoutMs"),
 					hint: t("bashTimeoutMsHint"),
@@ -340,7 +340,7 @@ window.__ModuleLoader__.load({
 					onReset: () => {
 						props.resetField("timeoutMs");
 					}
-				}), (0, react_jsx_runtime.jsx)(ValueField, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ValueField, {
 					id: "plugin-config-bash-output",
 					label: t("bashMaxOutputBytes"),
 					hint: t("bashMaxOutputBytesHint"),
@@ -371,29 +371,29 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var PluginsSettingsSection_module_css_default = {
-			"cards": "SKKciG_cards",
-			"tab": "SKKciG_tab",
-			"section": "SKKciG_section",
-			"heading": "SKKciG_heading",
-			"empty": "SKKciG_empty",
-			"tabs": "SKKciG_tabs",
 			"panel": "SKKciG_panel",
-			"intro": "SKKciG_intro"
+			"section": "SKKciG_section",
+			"tabs": "SKKciG_tabs",
+			"empty": "SKKciG_empty",
+			"heading": "SKKciG_heading",
+			"tab": "SKKciG_tab",
+			"intro": "SKKciG_intro",
+			"cards": "SKKciG_cards"
 		};
 		//#endregion
-		//#region lib/types/client/ConfigurablePluginsTab.js
+		//#region src/client/ConfigurablePluginsTab.tsx
 		/** Render cards registered by plugins that expose editable settings. */
 		function ConfigurablePluginsTab({ t, renderSlot, cardCount }) {
-			return cardCount === 0 ? (0, react_jsx_runtime.jsx)("p", {
+			return cardCount === 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: PluginsSettingsSection_module_css_default.empty,
 				children: t("empty")
-			}) : (0, react_jsx_runtime.jsx)("ul", {
+			}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 				className: PluginsSettingsSection_module_css_default.cards,
 				children: renderSlot("settings.plugin.item", {})
 			});
 		}
 		//#endregion
-		//#region lib/types/client/PluginsSettingsSection.js
+		//#region src/client/PluginsSettingsSection.tsx
 		/** Plugins settings section: localized tabs around feature-owned pages. */
 		/** Render one Plugins page whose contents arrive from feature-owned tabs. */
 		function PluginsSettingsSection({ t, renderSlot, useTabs }) {
@@ -410,27 +410,27 @@ window.__ModuleLoader__.load({
 					return new Set([...previous, active]);
 				});
 			}, [active]);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: PluginsSettingsSection_module_css_default.section,
 				children: [
-					(0, react_jsx_runtime.jsx)("h2", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 						className: PluginsSettingsSection_module_css_default.heading,
 						children: t("title")
 					}),
-					(0, react_jsx_runtime.jsx)("p", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: PluginsSettingsSection_module_css_default.intro,
 						children: t("intro")
 					}),
-					rows.length === 0 ? (0, react_jsx_runtime.jsx)("p", {
+					rows.length === 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: PluginsSettingsSection_module_css_default.empty,
 						children: t("empty")
-					}) : (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("div", {
+					}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: PluginsSettingsSection_module_css_default.tabs,
 						role: "tablist",
 						"aria-label": t("tabs"),
 						children: rows.map((row, index) => {
 							const selected = row.id === active;
-							return (0, react_jsx_runtime.jsx)("button", {
+							return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								ref: (element) => {
 									tabRefs.current[index] = element;
 								},
@@ -473,7 +473,7 @@ window.__ModuleLoader__.load({
 						})
 					}), rows.filter((row) => row.id === active || visitedIds.has(row.id)).map((row) => {
 						const selected = row.id === active;
-						return (0, react_jsx_runtime.jsx)("div", {
+						return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							id: `${tabsId}-panel-${row.id}`,
 							className: PluginsSettingsSection_module_css_default.panel,
 							role: "tabpanel",
@@ -486,7 +486,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/WebSearchCard.js
+		//#region src/client/WebSearchCard.tsx
 		/**
 		* Render the web-search card.
 		* @param props - locale copy, the card snapshot, and its form actions.
@@ -496,7 +496,7 @@ window.__ModuleLoader__.load({
 			const { t } = props;
 			const state = props.useWebSearchCard((snapshot) => snapshot);
 			const disabled = !state.writable;
-			return (0, react_jsx_runtime.jsxs)(PluginCard, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(PluginCard, {
 				t,
 				titleKey: "webSearchTitle",
 				descriptionKey: "webSearchDescription",
@@ -504,7 +504,7 @@ window.__ModuleLoader__.load({
 				onSave: props.save,
 				onDiscard: props.discard,
 				children: [
-					(0, react_jsx_runtime.jsx)(SecretField, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SecretField, {
 						id: "plugin-config-web-search-key",
 						label: t("webSearchApiKey"),
 						hint: t("webSearchApiKeyHint"),
@@ -516,7 +516,7 @@ window.__ModuleLoader__.load({
 							props.edit("apiKey", text);
 						}
 					}),
-					(0, react_jsx_runtime.jsx)(ValueField, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ValueField, {
 						id: "plugin-config-web-search-endpoint",
 						label: t("webSearchBaseUrl"),
 						hint: t("webSearchBaseUrlHint"),
@@ -532,7 +532,7 @@ window.__ModuleLoader__.load({
 							props.resetField("baseURL");
 						}
 					}),
-					(0, react_jsx_runtime.jsx)(ValueField, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ValueField, {
 						id: "plugin-config-web-search-max-uses",
 						label: t("webSearchMaxUses"),
 						hint: t("webSearchMaxUsesHint"),
@@ -553,21 +553,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/card-form.js
-		/**
-		* Shared form model behind every plugin card.
-		*
-		* A card stages what the user types and writes it only when they save. Each
-		* settings write is a durable, revision-fenced document mutation, so a control
-		* that committed as it settled turned one edit into a write the user never
-		* asked for and could not preview; staged text makes what is on screen exactly
-		* what a save would store.
-		*
-		* A field shows its effective value — the user layer over the composition
-		* layer over the schema default — and whether the user layer carries it. That
-		* presence, not a value comparison, is what marks a field overridden: an
-		* override equal to the composition default is still an override.
-		*/
+		//#region src/client/card-form.ts
 		/**
 		* A whole-number field. An empty draft clears the field; any other draft that
 		* is not a finite number blocks the save.
@@ -823,8 +809,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/agent-loop-card-controller.js
-		/** The agent-loop card's staged form over the `agent-loop` settings namespace. */
+		//#region src/client/agent-loop-card-controller.ts
 		/**
 		* Namespace of the agent loop's user-owned settings. Spelled here rather than
 		* imported: a client package must not depend on a Host package.
@@ -857,8 +842,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/bash-card-controller.js
-		/** The shell card's staged form over the `bash` settings namespace. */
+		//#region src/client/bash-card-controller.ts
 		/**
 		* Namespace of the shell capability. Spelled here rather than imported: a
 		* client package must not depend on a Host package, and the executor families
@@ -893,17 +877,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/web-search-card-controller.js
-		/**
-		* The web-search card's staged form over the `web-search-deepseek` settings
-		* namespace.
-		*
-		* The key is the one control that does not live in the section: its literal
-		* never rides a response, so the card learns only whether one is configured
-		* and writes it through the credentials domain, addressed by the reference the
-		* section names. It is still staged with the rest of the form, so one save
-		* covers everything the card shows.
-		*/
+		//#region src/client/web-search-card-controller.ts
 		/**
 		* Namespace of the DeepSeek search provider. Spelled here rather than
 		* imported: a client package must not depend on a Host package.
@@ -1034,8 +1008,7 @@ window.__ModuleLoader__.load({
 			return declared !== void 0 && declared.length > 0 ? declared : DEFAULT_API_KEY_REF;
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
-		/** Locale bundles for the plugin configuration section and its plugin cards. */
+		//#region src/client/locales.ts
 		/** English copy. */
 		const en = {
 			nav: "Plugins",
@@ -1117,17 +1090,7 @@ window.__ModuleLoader__.load({
 			webSearchMaxUsesHint: "一次请求在必须作答前最多可以搜索多少次。"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
-		/**
-		* Plugins settings surface, browser half — one section whose feature-owned
-		* tabs include configurable Host plugin cards and read-only inventory.
-		*
-		* The section declares `settings.plugins.tab`; its own `configurable` tab then
-		* declares `settings.plugin.item` and renders whatever cards were registered
-		* into it. The three cards this package ships are the host-plane sections the
-		* deployment already exposes; each binds its namespace through the client
-		* settings scope, which keeps them unaware of one another and of other tabs.
-		*/
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "settings.plugins";
 		/** Required services (cordis fiber inject). */

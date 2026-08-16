@@ -5,7 +5,7 @@ window.__ModuleLoader__.load({
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 		let _deepseek_ai_cordis = require("@deepseek-ai/cordis");
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/**
 		* Client projection of generated Typert Remote descriptors. Contributions
 		* install traced `remote.<namespace>` services; no JavaScript Proxy

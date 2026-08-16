@@ -5,12 +5,12 @@ window.__ModuleLoader__.load({
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 		let _deepseek_ai_dsh_client_web_react = require("@deepseek-ai/dsh-client-web-react");
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
 		let _deepseek_ai_dsh_client_schema_form = require("@deepseek-ai/dsh-client-schema-form");
-		//#region lib/types/client/apiKey.js
+		//#region src/client/apiKey.ts
 		/**
 		* Browser-side judgement of a typed API key.
 		* @module @deepseek-ai/dsh-client-ui-settings-models/apiKey
@@ -67,70 +67,70 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var ModelsSection_module_css_default = {
-			"addActions": "q_Q8Jq_addActions",
-			"addButton": "q_Q8Jq_addButton",
-			"modelEntry": "q_Q8Jq_modelEntry",
-			"credentialDotConfigured": "q_Q8Jq_credentialDotConfigured",
-			"customizedBody": "q_Q8Jq_customizedBody",
-			"fieldLabel": "q_Q8Jq_fieldLabel",
-			"iconButton": "q_Q8Jq_iconButton",
-			"modelCatalogTitle": "q_Q8Jq_modelCatalogTitle",
-			"addBlock": "q_Q8Jq_addBlock",
-			"editor": "q_Q8Jq_editor",
-			"editorHeader": "q_Q8Jq_editorHeader",
-			"iconButtonDanger": "q_Q8Jq_iconButtonDanger",
-			"rows": "q_Q8Jq_rows",
-			"setupCard": "q_Q8Jq_setupCard",
-			"modelCatalogHeading": "q_Q8Jq_modelCatalogHeading",
-			"advancedHint": "q_Q8Jq_advancedHint",
-			"savedNotice": "q_Q8Jq_savedNotice",
-			"linkButton": "q_Q8Jq_linkButton",
-			"editorRoute": "q_Q8Jq_editorRoute",
-			"rowCard": "q_Q8Jq_rowCard",
-			"field": "q_Q8Jq_field",
-			"notice": "q_Q8Jq_notice",
-			"dangerButton": "q_Q8Jq_dangerButton",
-			"modelEmpty": "q_Q8Jq_modelEmpty",
-			"modelRow": "q_Q8Jq_modelRow",
-			"input": "q_Q8Jq_input",
-			"error": "q_Q8Jq_error",
-			"addModelButton": "q_Q8Jq_addModelButton",
-			"rowHead": "q_Q8Jq_rowHead",
-			"candidateList": "q_Q8Jq_candidateList",
-			"credentialDotMissing": "q_Q8Jq_credentialDotMissing",
-			"rowActions": "q_Q8Jq_rowActions",
-			"candidateId": "q_Q8Jq_candidateId",
-			"credentialDot": "q_Q8Jq_credentialDot",
-			"selectInput": "q_Q8Jq_selectInput",
-			"addCard": "q_Q8Jq_addCard",
-			"customized": "q_Q8Jq_customized",
-			"modelList": "q_Q8Jq_modelList",
-			"customizedSummary": "q_Q8Jq_customizedSummary",
-			"primaryButton": "q_Q8Jq_primaryButton",
-			"deleteConfirm": "q_Q8Jq_deleteConfirm",
-			"hiddenLabel": "q_Q8Jq_hiddenLabel",
-			"deleteDialog": "q_Q8Jq_deleteDialog",
-			"editorActions": "q_Q8Jq_editorActions",
 			"rowName": "q_Q8Jq_rowName",
-			"rowIdentity": "q_Q8Jq_rowIdentity",
-			"modelListHead": "q_Q8Jq_modelListHead",
-			"modelAdvanced": "q_Q8Jq_modelAdvanced",
-			"fetchDialog": "q_Q8Jq_fetchDialog",
-			"section": "q_Q8Jq_section",
-			"modelFieldLabel": "q_Q8Jq_modelFieldLabel",
-			"candidate": "q_Q8Jq_candidate",
-			"editorTitle": "q_Q8Jq_editorTitle",
-			"title": "q_Q8Jq_title",
-			"modelCatalog": "q_Q8Jq_modelCatalog",
-			"modelField": "q_Q8Jq_modelField",
-			"candidateLabel": "q_Q8Jq_candidateLabel",
-			"secondaryButton": "q_Q8Jq_secondaryButton",
+			"notice": "q_Q8Jq_notice",
+			"primaryButton": "q_Q8Jq_primaryButton",
+			"setupCard": "q_Q8Jq_setupCard",
+			"error": "q_Q8Jq_error",
+			"iconButtonDanger": "q_Q8Jq_iconButtonDanger",
+			"editor": "q_Q8Jq_editor",
 			"modelCatalogMeta": "q_Q8Jq_modelCatalogMeta",
+			"modelEmpty": "q_Q8Jq_modelEmpty",
+			"editorActions": "q_Q8Jq_editorActions",
+			"modelListHead": "q_Q8Jq_modelListHead",
+			"addCard": "q_Q8Jq_addCard",
+			"candidateList": "q_Q8Jq_candidateList",
+			"rowActions": "q_Q8Jq_rowActions",
+			"fetchDialog": "q_Q8Jq_fetchDialog",
+			"secondaryButton": "q_Q8Jq_secondaryButton",
+			"advancedHint": "q_Q8Jq_advancedHint",
+			"title": "q_Q8Jq_title",
+			"input": "q_Q8Jq_input",
+			"savedNotice": "q_Q8Jq_savedNotice",
+			"section": "q_Q8Jq_section",
+			"field": "q_Q8Jq_field",
+			"addBlock": "q_Q8Jq_addBlock",
+			"rowTag": "q_Q8Jq_rowTag",
+			"hiddenLabel": "q_Q8Jq_hiddenLabel",
+			"rows": "q_Q8Jq_rows",
+			"dangerButton": "q_Q8Jq_dangerButton",
+			"modelEntry": "q_Q8Jq_modelEntry",
+			"editorRoute": "q_Q8Jq_editorRoute",
+			"deleteConfirm": "q_Q8Jq_deleteConfirm",
+			"editorHeader": "q_Q8Jq_editorHeader",
+			"addActions": "q_Q8Jq_addActions",
+			"rowHead": "q_Q8Jq_rowHead",
+			"addButton": "q_Q8Jq_addButton",
+			"fieldLabel": "q_Q8Jq_fieldLabel",
+			"customizedBody": "q_Q8Jq_customizedBody",
+			"modelAdvanced": "q_Q8Jq_modelAdvanced",
+			"modelCatalogTitle": "q_Q8Jq_modelCatalogTitle",
+			"modelRow": "q_Q8Jq_modelRow",
+			"credentialDotMissing": "q_Q8Jq_credentialDotMissing",
+			"editorTitle": "q_Q8Jq_editorTitle",
+			"customized": "q_Q8Jq_customized",
+			"candidate": "q_Q8Jq_candidate",
+			"credentialDot": "q_Q8Jq_credentialDot",
+			"rowIdentity": "q_Q8Jq_rowIdentity",
+			"iconButton": "q_Q8Jq_iconButton",
+			"candidateLabel": "q_Q8Jq_candidateLabel",
+			"addModelButton": "q_Q8Jq_addModelButton",
+			"linkButton": "q_Q8Jq_linkButton",
 			"intro": "q_Q8Jq_intro",
-			"rowTag": "q_Q8Jq_rowTag"
+			"rowCard": "q_Q8Jq_rowCard",
+			"modelCatalogHeading": "q_Q8Jq_modelCatalogHeading",
+			"credentialDotConfigured": "q_Q8Jq_credentialDotConfigured",
+			"modelList": "q_Q8Jq_modelList",
+			"modelField": "q_Q8Jq_modelField",
+			"deleteDialog": "q_Q8Jq_deleteDialog",
+			"selectInput": "q_Q8Jq_selectInput",
+			"modelFieldLabel": "q_Q8Jq_modelFieldLabel",
+			"modelCatalog": "q_Q8Jq_modelCatalog",
+			"customizedSummary": "q_Q8Jq_customizedSummary",
+			"candidateId": "q_Q8Jq_candidateId"
 		};
 		//#endregion
-		//#region lib/types/client/EditorFooter.js
+		//#region src/client/EditorFooter.tsx
 		/**
 		* Render one provider card's action row.
 		* @param props - the labels, commit gating, and handlers the owning card supplies.
@@ -138,15 +138,15 @@ window.__ModuleLoader__.load({
 		*/
 		function EditorFooter(props) {
 			const { t } = props;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: ModelsSection_module_css_default["editorActions"],
-				children: [(0, react_jsx_runtime.jsx)("button", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 					type: "button",
 					className: ModelsSection_module_css_default["secondaryButton"],
 					disabled: props.busy,
 					onClick: props.onCancel,
 					children: t(props.cancelLabel ?? "cancel")
-				}), (0, react_jsx_runtime.jsx)("button", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 					type: "button",
 					className: ModelsSection_module_css_default["primaryButton"],
 					disabled: props.submitDisabled,
@@ -156,7 +156,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/DeepSeekModelsEditor.js
+		//#region src/client/DeepSeekModelsEditor.tsx
 		/**
 		* Curated editor for the direct DeepSeek adapter's advisory model catalog.
 		* The settings layer replaces `models` as one array, so the parent supplies
@@ -319,12 +319,12 @@ window.__ModuleLoader__.load({
 				});
 			};
 			/** One capacity field of one row, rendered inside the row's disclosure. */
-			const capacityField = (model, index, field, fallback) => (0, react_jsx_runtime.jsxs)("label", {
+			const capacityField = (model, index, field, fallback) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
 				className: ModelsSection_module_css_default["modelField"],
-				children: [(0, react_jsx_runtime.jsx)("span", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: ModelsSection_module_css_default["modelFieldLabel"],
 					children: props.t(field === "contextWindow" ? "contextWindow" : "maxTokens")
-				}), (0, react_jsx_runtime.jsx)("input", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 					className: ModelsSection_module_css_default["input"],
 					type: "text",
 					inputMode: "numeric",
@@ -342,22 +342,22 @@ window.__ModuleLoader__.load({
 					}
 				})]
 			});
-			return (0, react_jsx_runtime.jsxs)("section", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 				className: ModelsSection_module_css_default["modelCatalog"],
 				"aria-label": props.t("models"),
 				children: [
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["modelListHead"],
-						children: [(0, react_jsx_runtime.jsxs)("div", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: ModelsSection_module_css_default["modelCatalogHeading"],
-							children: [(0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: ModelsSection_module_css_default["modelCatalogTitle"],
 								children: props.t("models")
-							}), (0, react_jsx_runtime.jsx)("span", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: ModelsSection_module_css_default["modelCatalogMeta"],
 								children: props.overridden ? props.t("modelsCustomized") : props.t("modelsInherited")
 							})]
-						}), props.overridden ? (0, react_jsx_runtime.jsx)("button", {
+						}), props.overridden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: ModelsSection_module_css_default["linkButton"],
 							disabled: props.disabled,
@@ -365,17 +365,17 @@ window.__ModuleLoader__.load({
 							children: props.t("resetModels")
 						}) : null]
 					}),
-					props.models.length === 0 ? (0, react_jsx_runtime.jsx)("p", {
+					props.models.length === 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["modelEmpty"],
 						children: props.t("modelsEmpty")
-					}) : (0, react_jsx_runtime.jsx)("div", {
+					}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: ModelsSection_module_css_default["modelList"],
-						children: props.models.map((model, index) => (0, react_jsx_runtime.jsxs)("div", {
+						children: props.models.map((model, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: ModelsSection_module_css_default["modelEntry"],
-							children: [(0, react_jsx_runtime.jsxs)("div", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: ModelsSection_module_css_default["modelRow"],
 								children: [
-									(0, react_jsx_runtime.jsx)("input", {
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 										className: ModelsSection_module_css_default["input"],
 										type: "text",
 										value: typeof model["id"] === "string" ? model["id"] : "",
@@ -390,7 +390,7 @@ window.__ModuleLoader__.load({
 											if (trimmed !== event.target.value) update(index, "id", trimmed);
 										}
 									}),
-									(0, react_jsx_runtime.jsx)("input", {
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 										className: ModelsSection_module_css_default["input"],
 										type: "text",
 										value: typeof model["name"] === "string" ? model["name"] : "",
@@ -401,7 +401,7 @@ window.__ModuleLoader__.load({
 											update(index, "name", event.target.value === "" ? void 0 : event.target.value);
 										}
 									}),
-									(0, react_jsx_runtime.jsx)("button", {
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 										type: "button",
 										className: ModelsSection_module_css_default["iconButton"],
 										"aria-label": `${props.t("modelAdvanced")} ${String(index + 1)}`,
@@ -410,9 +410,9 @@ window.__ModuleLoader__.load({
 										onClick: () => {
 											toggle(index);
 										},
-										children: expanded.has(index) ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, {}) : (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {})
+										children: expanded.has(index) ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, {}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {})
 									}),
-									(0, react_jsx_runtime.jsx)("button", {
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 										type: "button",
 										className: `${ModelsSection_module_css_default["iconButton"]} ${ModelsSection_module_css_default["iconButtonDanger"]}`,
 										"aria-label": `${props.t("removeModel")} ${String(index + 1)}`,
@@ -421,36 +421,29 @@ window.__ModuleLoader__.load({
 										onClick: () => {
 											remove(index);
 										},
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, { size: 14 })
 									})
 								]
-							}), expanded.has(index) ? (0, react_jsx_runtime.jsxs)("div", {
+							}), expanded.has(index) ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: ModelsSection_module_css_default["modelAdvanced"],
 								children: [capacityField(model, index, "contextWindow", props.defaultContextWindow), capacityField(model, index, "maxTokens", props.defaultMaxTokens)]
 							}) : null]
 						}, index))
 					}),
-					(0, react_jsx_runtime.jsxs)("button", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: ModelsSection_module_css_default["addModelButton"],
 						disabled: props.disabled,
 						onClick: () => {
 							props.onChange([...props.models.map((model) => ({ ...model })), { id: "" }]);
 						},
-						children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }), props.t("addModel")]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }), props.t("addModel")]
 					})
 				]
 			});
 		}
 		//#endregion
-		//#region lib/types/client/store.js
-		/**
-		* Models settings page store: one snapshot joining the configurable-provider
-		* directory (`llm.providers`), the settings namespaces (`settings.describe`),
-		* and the referenced credentials (`credentials.describe`). The host stays the
-		* single fact source — every mutation writes through the wire and the page
-		* re-renders from the next describe, pushed or refetched.
-		*/
+		//#region src/client/store.ts
 		/**
 		* Any route key walks a dict schema to the same profile node, so the lookup
 		* names one that cannot collide with a configured route.
@@ -640,7 +633,7 @@ window.__ModuleLoader__.load({
 			return { kind: "credential-missing" };
 		}
 		//#endregion
-		//#region lib/types/client/ModelListEditor.js
+		//#region src/client/ModelListEditor.tsx
 		/**
 		* The model list of one pi-ai provider profile, plus the action that asks the
 		* provider what it serves.
@@ -668,7 +661,7 @@ window.__ModuleLoader__.load({
 		}
 		/** Disclosure chevron; rotates to point down while its row is open. */
 		function IconChevron({ open }) {
-			return (0, react_jsx_runtime.jsx)("svg", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
 				width: "14",
 				height: "14",
 				viewBox: "0 0 16 16",
@@ -678,7 +671,7 @@ window.__ModuleLoader__.load({
 					transform: open ? "rotate(90deg)" : void 0,
 					transition: "transform 120ms ease"
 				},
-				children: (0, react_jsx_runtime.jsx)("path", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
 					d: "M6 3.5L10.5 8L6 12.5",
 					stroke: "currentColor",
 					strokeWidth: "1.5",
@@ -689,13 +682,13 @@ window.__ModuleLoader__.load({
 		}
 		/** Removal glyph for one model row. */
 		function IconTrash() {
-			return (0, react_jsx_runtime.jsx)("svg", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
 				width: "14",
 				height: "14",
 				viewBox: "0 0 16 16",
 				fill: "none",
 				"aria-hidden": true,
-				children: (0, react_jsx_runtime.jsx)("path", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
 					d: "M2.5 4h11M6.5 4V2.5h3V4M4 4l.7 9a1 1 0 001 .9h4.6a1 1 0 001-.9L12 4M6.5 6.8v4.4M9.5 6.8v4.4",
 					stroke: "currentColor",
 					strokeWidth: "1.3",
@@ -838,31 +831,31 @@ window.__ModuleLoader__.load({
 				});
 			};
 			const askable = probe.provider !== void 0 || probe.baseURL !== void 0 && probe.baseURL.length > 0;
-			return (0, react_jsx_runtime.jsxs)("section", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 				className: ModelsSection_module_css_default["modelCatalog"],
 				"aria-label": t("models"),
 				children: [
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["modelListHead"],
 						children: [
-							(0, react_jsx_runtime.jsxs)("div", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: ModelsSection_module_css_default["modelCatalogHeading"],
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ModelsSection_module_css_default["modelCatalogTitle"],
 									children: t("models")
-								}), props.overridden === void 0 ? null : (0, react_jsx_runtime.jsx)("span", {
+								}), props.overridden === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ModelsSection_module_css_default["modelCatalogMeta"],
 									children: props.overridden ? t("modelsCustomized") : t("modelsInherited")
 								})]
 							}),
-							props.overridden === true && props.onReset !== void 0 ? (0, react_jsx_runtime.jsx)("button", {
+							props.overridden === true && props.onReset !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								type: "button",
 								className: ModelsSection_module_css_default["linkButton"],
 								disabled,
 								onClick: props.onReset,
 								children: t("resetModels")
 							}) : null,
-							(0, react_jsx_runtime.jsx)("button", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								type: "button",
 								className: ModelsSection_module_css_default["linkButton"],
 								disabled: disabled || busy || !askable || props.probeBlocked !== void 0,
@@ -874,16 +867,16 @@ window.__ModuleLoader__.load({
 							})
 						]
 					}),
-					models.length === 0 ? (0, react_jsx_runtime.jsx)("p", {
+					models.length === 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["modelEmpty"],
 						children: t("modelsEmpty")
 					}) : null,
-					models.map((model, index) => (0, react_jsx_runtime.jsxs)("div", {
+					models.map((model, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["modelEntry"],
-						children: [(0, react_jsx_runtime.jsxs)("div", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: ModelsSection_module_css_default["modelRow"],
 							children: [
-								(0, react_jsx_runtime.jsx)("input", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 									className: ModelsSection_module_css_default["input"],
 									type: "text",
 									value: textOf(model, "id"),
@@ -894,7 +887,7 @@ window.__ModuleLoader__.load({
 										patch(index, { id: event.target.value });
 									}
 								}),
-								(0, react_jsx_runtime.jsx)("input", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 									className: ModelsSection_module_css_default["input"],
 									type: "text",
 									value: textOf(model, "name"),
@@ -905,7 +898,7 @@ window.__ModuleLoader__.load({
 										patch(index, { name: event.target.value === "" ? void 0 : event.target.value });
 									}
 								}),
-								(0, react_jsx_runtime.jsx)("button", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 									type: "button",
 									className: ModelsSection_module_css_default["iconButton"],
 									"aria-label": `${t("modelAdvanced")} ${index + 1}`,
@@ -914,9 +907,9 @@ window.__ModuleLoader__.load({
 									onClick: () => {
 										toggleExpanded(index);
 									},
-									children: (0, react_jsx_runtime.jsx)(IconChevron, { open: expanded.has(index) })
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(IconChevron, { open: expanded.has(index) })
 								}),
-								(0, react_jsx_runtime.jsx)("button", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 									type: "button",
 									className: `${ModelsSection_module_css_default["iconButton"]} ${ModelsSection_module_css_default["iconButtonDanger"]}`,
 									"aria-label": `${t("removeModel")} ${index + 1}`,
@@ -932,17 +925,17 @@ window.__ModuleLoader__.load({
 										});
 										setEditing((current) => reindexOnRemove(current, index));
 									},
-									children: (0, react_jsx_runtime.jsx)(IconTrash, {})
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(IconTrash, {})
 								})
 							]
-						}), expanded.has(index) ? (0, react_jsx_runtime.jsxs)("div", {
+						}), expanded.has(index) ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: ModelsSection_module_css_default["modelAdvanced"],
-							children: [(0, react_jsx_runtime.jsxs)("label", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
 								className: ModelsSection_module_css_default["modelField"],
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ModelsSection_module_css_default["modelFieldLabel"],
 									children: t("modelContextWindow")
-								}), (0, react_jsx_runtime.jsx)("input", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 									className: ModelsSection_module_css_default["input"],
 									type: "text",
 									inputMode: "numeric",
@@ -954,12 +947,12 @@ window.__ModuleLoader__.load({
 										editCapacity(index, "contextWindow", event.target.value);
 									}
 								})]
-							}), (0, react_jsx_runtime.jsxs)("label", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
 								className: ModelsSection_module_css_default["modelField"],
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ModelsSection_module_css_default["modelFieldLabel"],
 									children: t("modelMaxTokens")
-								}), (0, react_jsx_runtime.jsx)("input", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 									className: ModelsSection_module_css_default["input"],
 									type: "text",
 									inputMode: "numeric",
@@ -974,7 +967,7 @@ window.__ModuleLoader__.load({
 							})]
 						}) : null]
 					}, index)),
-					(0, react_jsx_runtime.jsx)("button", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						type: "button",
 						className: ModelsSection_module_css_default["addModelButton"],
 						disabled,
@@ -983,39 +976,39 @@ window.__ModuleLoader__.load({
 						},
 						children: t("addModel")
 					}),
-					failure !== void 0 ? (0, react_jsx_runtime.jsx)("p", {
+					failure !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["error"],
 						children: failure
 					}) : null,
-					(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
 						open: candidates !== void 0,
 						onClose: closePicker,
 						title: t("fetchTitle"),
 						closeLabel: t("close"),
 						description: t("fetchDescription"),
 						className: ModelsSection_module_css_default["fetchDialog"],
-						footer: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+						footer: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 							variant: "outline",
 							onClick: closePicker,
 							children: t("cancel")
-						}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 							variant: "outline",
 							onClick: adoptPicked,
 							children: t("fetchAdopt")
 						})] }),
-						children: (0, react_jsx_runtime.jsx)("ul", {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 							className: ModelsSection_module_css_default["candidateList"],
-							children: (candidates ?? []).map((candidate) => (0, react_jsx_runtime.jsx)("li", {
+							children: (candidates ?? []).map((candidate) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", {
 								className: ModelsSection_module_css_default["candidate"],
-								children: (0, react_jsx_runtime.jsxs)("label", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
 									className: ModelsSection_module_css_default["candidateLabel"],
-									children: [(0, react_jsx_runtime.jsx)("input", {
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 										type: "checkbox",
 										checked: picked.has(candidate.id),
 										onChange: () => {
 											toggle(candidate.id);
 										}
-									}), (0, react_jsx_runtime.jsx)("span", {
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: ModelsSection_module_css_default["candidateId"],
 										children: candidate.id
 									})]
@@ -1027,7 +1020,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/CustomProviderCard.js
+		//#region src/client/CustomProviderCard.tsx
 		/**
 		* The card that declares a provider pi-ai does not ship — an OpenAI-compatible
 		* gateway, a self-hosted server, or a provider newer than the installed
@@ -1141,22 +1134,22 @@ window.__ModuleLoader__.load({
 					setBusy(false);
 				}
 			};
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: ModelsSection_module_css_default["editor"],
 				children: [
-					(0, react_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: ModelsSection_module_css_default["editorHeader"],
-						children: (0, react_jsx_runtime.jsx)("span", {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ModelsSection_module_css_default["editorTitle"],
 							children: t("customTitle")
 						})
 					}),
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["field"],
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ModelsSection_module_css_default["fieldLabel"],
 							children: t("customRoute")
-						}), (0, react_jsx_runtime.jsx)("input", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 							className: ModelsSection_module_css_default["input"],
 							type: "text",
 							value: route,
@@ -1168,19 +1161,19 @@ window.__ModuleLoader__.load({
 							}
 						})]
 					}),
-					routeInvalid || routeTaken ? (0, react_jsx_runtime.jsx)("p", {
+					routeInvalid || routeTaken ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["error"],
 						children: t(routeInvalid ? "customRouteInvalid" : "customRouteTaken")
-					}) : (0, react_jsx_runtime.jsx)("p", {
+					}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["advancedHint"],
 						children: t("customRouteHint")
 					}),
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["field"],
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ModelsSection_module_css_default["fieldLabel"],
 							children: t("customDisplayName")
-						}), (0, react_jsx_runtime.jsx)("input", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 							className: ModelsSection_module_css_default["input"],
 							type: "text",
 							value: displayName,
@@ -1192,12 +1185,12 @@ window.__ModuleLoader__.load({
 							}
 						})]
 					}),
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["field"],
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ModelsSection_module_css_default["fieldLabel"],
 							children: t("baseUrl")
-						}), (0, react_jsx_runtime.jsx)("input", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 							className: ModelsSection_module_css_default["input"],
 							type: "text",
 							value: baseURL,
@@ -1209,12 +1202,12 @@ window.__ModuleLoader__.load({
 							}
 						})]
 					}),
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["field"],
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ModelsSection_module_css_default["fieldLabel"],
 							children: t("customApi")
-						}), (0, react_jsx_runtime.jsx)("select", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("select", {
 							className: `${ModelsSection_module_css_default["input"]} ${ModelsSection_module_css_default["selectInput"]}`,
 							value: protocol,
 							"aria-label": t("customApi"),
@@ -1222,20 +1215,20 @@ window.__ModuleLoader__.load({
 							onChange: (event) => {
 								setProtocol(event.target.value);
 							},
-							children: protocols.map((choice) => (0, react_jsx_runtime.jsx)("option", {
+							children: protocols.map((choice) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("option", {
 								value: choice,
 								children: choice
 							}, choice))
 						})]
 					}),
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["field"],
 						children: [
-							(0, react_jsx_runtime.jsx)("span", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: ModelsSection_module_css_default["fieldLabel"],
 								children: t("keyInput")
 							}),
-							(0, react_jsx_runtime.jsx)("input", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 								className: ModelsSection_module_css_default["input"],
 								type: "password",
 								autoComplete: "off",
@@ -1247,13 +1240,13 @@ window.__ModuleLoader__.load({
 									setKeyDraft(event.target.value);
 								}
 							}),
-							keyFailure === void 0 ? null : (0, react_jsx_runtime.jsx)("p", {
+							keyFailure === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 								className: ModelsSection_module_css_default["error"],
 								children: t(keyFailure === "keyBlank" ? "keyBlankNew" : keyFailure)
 							})
 						]
 					}),
-					(0, react_jsx_runtime.jsx)(ModelListEditor, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ModelListEditor, {
 						models,
 						onChange: setModels,
 						probe: {
@@ -1267,15 +1260,15 @@ window.__ModuleLoader__.load({
 						t,
 						disabled: profileDisabled
 					}),
-					failure !== void 0 ? (0, react_jsx_runtime.jsx)("p", {
+					failure !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["error"],
 						children: failure
 					}) : null,
-					hint === void 0 ? null : (0, react_jsx_runtime.jsx)("p", {
+					hint === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["advancedHint"],
 						children: hint
 					}),
-					(0, react_jsx_runtime.jsx)(EditorFooter, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(EditorFooter, {
 						t,
 						busy,
 						submitDisabled: disabled || !ready,
@@ -1292,7 +1285,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/ProviderEditor.js
+		//#region src/client/ProviderEditor.tsx
 		/**
 		* One provider's editor card, hand-written per adapter family: the primary
 		* field is a single write-only **API key** input (the page never asks for an
@@ -1476,7 +1469,7 @@ window.__ModuleLoader__.load({
 					setBusy(false);
 				}
 			};
-			if (node === void 0) return (0, react_jsx_runtime.jsx)("p", {
+			if (node === void 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: ModelsSection_module_css_default["error"],
 				children: `${props.provider}: unresolvable settings path`
 			});
@@ -1517,14 +1510,14 @@ window.__ModuleLoader__.load({
 						setDraft((current) => (0, _deepseek_ai_dsh_client_schema_form.deletePath)(current, ["models"]));
 					}
 				};
-				return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsxs)("div", {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: ModelsSection_module_css_default["field"],
 					children: [
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ModelsSection_module_css_default["fieldLabel"],
 							children: t("keyInput")
 						}),
-						(0, react_jsx_runtime.jsx)("input", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 							className: ModelsSection_module_css_default["input"],
 							type: "password",
 							autoComplete: "off",
@@ -1539,25 +1532,25 @@ window.__ModuleLoader__.load({
 								setKeyDraft(event.target.value);
 							}
 						}),
-						shownKeyFailure === void 0 ? null : (0, react_jsx_runtime.jsx)("p", {
+						shownKeyFailure === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 							className: ModelsSection_module_css_default["error"],
 							children: t(shownKeyFailure)
 						})
 					]
-				}), props.credentialOnly === true ? null : (0, react_jsx_runtime.jsxs)("details", {
+				}), props.credentialOnly === true ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("details", {
 					className: ModelsSection_module_css_default["customized"],
-					children: [(0, react_jsx_runtime.jsx)("summary", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("summary", {
 						className: ModelsSection_module_css_default["customizedSummary"],
 						children: t("customized")
-					}), (0, react_jsx_runtime.jsxs)("div", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["customizedBody"],
 						children: [
-							ownsIdentity ? (0, react_jsx_runtime.jsxs)("div", {
+							ownsIdentity ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: ModelsSection_module_css_default["field"],
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ModelsSection_module_css_default["fieldLabel"],
 									children: t("customDisplayName")
-								}), (0, react_jsx_runtime.jsx)("input", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 									className: ModelsSection_module_css_default["input"],
 									type: "text",
 									value: stringAt(draft, "displayName") ?? "",
@@ -1569,12 +1562,12 @@ window.__ModuleLoader__.load({
 									}
 								})]
 							}) : null,
-							(0, react_jsx_runtime.jsxs)("div", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: ModelsSection_module_css_default["field"],
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ModelsSection_module_css_default["fieldLabel"],
 									children: t("baseUrl")
-								}), (0, react_jsx_runtime.jsx)("input", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 									className: ModelsSection_module_css_default["input"],
 									type: "text",
 									value: stringAt(draft, "baseURL") ?? "",
@@ -1586,12 +1579,12 @@ window.__ModuleLoader__.load({
 									}
 								})]
 							}),
-							ownsIdentity ? (0, react_jsx_runtime.jsxs)("div", {
+							ownsIdentity ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: ModelsSection_module_css_default["field"],
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ModelsSection_module_css_default["fieldLabel"],
 									children: t("customApi")
-								}), (0, react_jsx_runtime.jsxs)("select", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("select", {
 									className: `${ModelsSection_module_css_default["input"]} ${ModelsSection_module_css_default["selectInput"]}`,
 									value: probeApi ?? "",
 									"aria-label": t("customApi"),
@@ -1599,20 +1592,20 @@ window.__ModuleLoader__.load({
 									onChange: (event) => {
 										setField("api", event.target.value);
 									},
-									children: [probeApi === void 0 ? (0, react_jsx_runtime.jsx)("option", {
+									children: [probeApi === void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("option", {
 										value: "",
 										children: t("customApiUnset")
-									}) : null, protocols.map((choice) => (0, react_jsx_runtime.jsx)("option", {
+									}) : null, protocols.map((choice) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("option", {
 										value: choice,
 										children: choice
 									}, choice))]
 								})]
 							}) : null,
-							family === "deepseek" ? (0, react_jsx_runtime.jsx)(DeepSeekModelsEditor, {
+							family === "deepseek" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DeepSeekModelsEditor, {
 								...catalogProps,
 								defaultContextWindow: typeof defaultContextWindow === "number" ? defaultContextWindow : void 0,
 								defaultMaxTokens: typeof defaultMaxTokens === "number" ? defaultMaxTokens : void 0
-							}) : (0, react_jsx_runtime.jsx)(ModelListEditor, {
+							}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ModelListEditor, {
 								...catalogProps,
 								probe,
 								probeBlocked: keyFailure,
@@ -1622,32 +1615,32 @@ window.__ModuleLoader__.load({
 					})]
 				})] });
 			};
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: props.credentialOnly === true ? ModelsSection_module_css_default["addBlock"] : ModelsSection_module_css_default["editor"],
 				children: [
-					props.hideTitle === true ? null : (0, react_jsx_runtime.jsxs)("div", {
+					props.hideTitle === true ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ModelsSection_module_css_default["editorHeader"],
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ModelsSection_module_css_default["editorTitle"],
 							children: props.displayName
-						}), props.provider !== props.displayName ? (0, react_jsx_runtime.jsx)("span", {
+						}), props.provider !== props.displayName ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ModelsSection_module_css_default["editorRoute"],
 							children: props.provider
 						}) : null]
 					}),
-					layout === "unknown" ? (0, react_jsx_runtime.jsx)("p", {
+					layout === "unknown" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["advancedHint"],
 						children: `${t("advancedHint")} (${namespace.ns})`
 					}) : curatedFields(layout),
-					failure !== void 0 ? (0, react_jsx_runtime.jsx)("p", {
+					failure !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["error"],
 						children: failure
 					}) : null,
-					props.credentialOnly === true || modelFailure === void 0 ? null : (0, react_jsx_runtime.jsx)("p", {
+					props.credentialOnly === true || modelFailure === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["advancedHint"],
 						children: `${t("model")} ${String(modelFailure.index + 1)}: ${t(modelFailure.key)}`
 					}),
-					(0, react_jsx_runtime.jsx)(EditorFooter, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(EditorFooter, {
 						t,
 						busy,
 						submitDisabled: disabled || layout === "unknown" || props.credentialOnly !== true && modelFailure !== void 0 || shownKeyFailure !== void 0 || props.credentialRequired === true && keyValue.length === 0,
@@ -1665,7 +1658,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/ModelsSection.js
+		//#region src/client/ModelsSection.tsx
 		/**
 		* Models settings section: the provider rows joined from the configurable
 		* directory, settings namespaces, and credential states, with one editor
@@ -1681,7 +1674,7 @@ window.__ModuleLoader__.load({
 		*/
 		/** Render an editor for either the setup posture or an expanded provider row. */
 		function renderProviderEditor({ target, ...props }) {
-			return (0, react_jsx_runtime.jsx)(ProviderEditor, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ProviderEditor, {
 				provider: target.provider,
 				displayName: target.displayName,
 				settingsPath: target.settingsPath,
@@ -1761,7 +1754,7 @@ window.__ModuleLoader__.load({
 		function ModelsSection(props) {
 			const { controller, useSnapshot, api, t } = props;
 			if (controller === void 0 || useSnapshot === void 0 || api === void 0 || t === void 0) return null;
-			return (0, react_jsx_runtime.jsx)(Loaded, { injected: {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Loaded, { injected: {
 				controller,
 				useSnapshot,
 				api,
@@ -1825,12 +1818,12 @@ window.__ModuleLoader__.load({
 			if (state.status === "error") {
 				/* v8 ignore next -- an error status always carries text; the fallback satisfies the nullable type */
 				const errorText = state.error ?? "";
-				return (0, react_jsx_runtime.jsxs)("div", {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: ModelsSection_module_css_default["section"],
-					children: [(0, react_jsx_runtime.jsx)("p", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["error"],
 						children: `${t("loadFailed")}: ${errorText}`
-					}), (0, react_jsx_runtime.jsx)("button", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						type: "button",
 						className: ModelsSection_module_css_default["secondaryButton"],
 						onClick: () => {
@@ -1851,35 +1844,35 @@ window.__ModuleLoader__.load({
 			const addTarget = adding ? editing : void 0;
 			const addNamespace = addTarget === void 0 ? void 0 : state.namespaces.get(addTarget.settingsNs);
 			const protocols = protocolChoices(state.namespaces.get("llm-pi-ai"));
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: ModelsSection_module_css_default["section"],
 				children: [
-					(0, react_jsx_runtime.jsx)("h2", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 						className: ModelsSection_module_css_default["title"],
 						children: t("title")
 					}),
-					(0, react_jsx_runtime.jsx)("p", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["intro"],
 						children: t("intro")
 					}),
-					!state.writable && state.status === "ready" ? (0, react_jsx_runtime.jsx)("p", {
+					!state.writable && state.status === "ready" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["notice"],
 						children: t("readOnly")
 					}) : null,
-					savedIdentity === void 0 ? null : (0, react_jsx_runtime.jsx)("p", {
+					savedIdentity === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: ModelsSection_module_css_default["savedNotice"],
 						role: "status",
 						"aria-live": "polite",
 						children: providerCopy(t("savedProvider"), savedIdentity)
 					}),
-					(0, react_jsx_runtime.jsx)("ul", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 						className: ModelsSection_module_css_default["rows"],
 						children: configured.map((row) => {
 							const target = targetOf(row);
 							const namespace = state.namespaces.get(target.settingsNs);
 							/* v8 ignore next -- the join marks a row configured only when its namespace resolved */
 							if (namespace === void 0) return null;
-							if (needsSetup(row, anyUsable) && !dismissedSetup.has(row.entry.provider)) return (0, react_jsx_runtime.jsx)("li", {
+							if (needsSetup(row, anyUsable) && !dismissedSetup.has(row.entry.provider)) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", {
 								className: ModelsSection_module_css_default["setupCard"],
 								children: renderProviderEditor({
 									target,
@@ -1895,36 +1888,36 @@ window.__ModuleLoader__.load({
 							const open = !adding && editing?.provider === row.entry.provider;
 							const credentialConfigured = row.credential?.configured === true;
 							const credentialMissing = !credentialConfigured && row.apiKeyEnv !== void 0 && row.credential?.configured === false;
-							return (0, react_jsx_runtime.jsxs)("li", {
+							return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
 								className: ModelsSection_module_css_default["rowCard"],
-								children: [(0, react_jsx_runtime.jsxs)("div", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: ModelsSection_module_css_default["rowHead"],
-									children: [(0, react_jsx_runtime.jsxs)("span", {
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 										className: ModelsSection_module_css_default["rowIdentity"],
 										children: [
-											(0, react_jsx_runtime.jsx)("span", {
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 												className: ModelsSection_module_css_default["rowName"],
 												children: row.entry.displayName
 											}),
-											row.entry.declared === true ? (0, react_jsx_runtime.jsx)("span", {
+											row.entry.declared === true ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 												className: ModelsSection_module_css_default["rowTag"],
 												children: t("customTag")
 											}) : null,
-											credentialConfigured ? (0, react_jsx_runtime.jsx)("span", {
+											credentialConfigured ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 												className: `${ModelsSection_module_css_default["credentialDot"]} ${ModelsSection_module_css_default["credentialDotConfigured"]}`,
 												role: "img",
 												"aria-label": t("credentialConfigured"),
 												title: t("credentialConfigured")
-											}) : credentialMissing ? (0, react_jsx_runtime.jsx)("span", {
+											}) : credentialMissing ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 												className: `${ModelsSection_module_css_default["credentialDot"]} ${ModelsSection_module_css_default["credentialDotMissing"]}`,
 												role: "img",
 												"aria-label": t("credentialMissing"),
 												title: t("credentialMissing")
 											}) : null
 										]
-									}), (0, react_jsx_runtime.jsxs)("span", {
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 										className: ModelsSection_module_css_default["rowActions"],
-										children: [(0, react_jsx_runtime.jsx)("button", {
+										children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 											type: "button",
 											className: ModelsSection_module_css_default["secondaryButton"],
 											"aria-label": providerCopy(t("editProvider"), target),
@@ -1935,7 +1928,7 @@ window.__ModuleLoader__.load({
 												setEditing(open ? void 0 : target);
 											},
 											children: t("edit")
-										}), row.removable ? (0, react_jsx_runtime.jsx)("button", {
+										}), row.removable ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 											type: "button",
 											className: ModelsSection_module_css_default["dangerButton"],
 											"aria-label": providerCopy(t("removeProvider"), target),
@@ -1961,16 +1954,16 @@ window.__ModuleLoader__.load({
 							}, row.entry.provider);
 						})
 					}),
-					(0, react_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: ModelsSection_module_css_default["addBlock"],
-						children: addTarget !== void 0 && addNamespace !== void 0 ? (0, react_jsx_runtime.jsxs)("div", {
+						children: addTarget !== void 0 && addNamespace !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: ModelsSection_module_css_default["addCard"],
-							children: [(0, react_jsx_runtime.jsxs)("div", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: ModelsSection_module_css_default["field"],
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ModelsSection_module_css_default["fieldLabel"],
 									children: t("provider")
-								}), (0, react_jsx_runtime.jsx)("select", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("select", {
 									className: `${ModelsSection_module_css_default["input"]} ${ModelsSection_module_css_default["selectInput"]}`,
 									value: addTarget.provider,
 									"aria-label": t("provider"),
@@ -1980,12 +1973,12 @@ window.__ModuleLoader__.load({
 										if (row === void 0) return;
 										setEditing(targetOf(row));
 									},
-									children: addable.map((row) => (0, react_jsx_runtime.jsx)("option", {
+									children: addable.map((row) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("option", {
 										value: row.entry.provider,
 										children: row.entry.displayName
 									}, row.entry.provider))
 								})]
-							}), (0, react_jsx_runtime.jsx)(ProviderEditor, {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ProviderEditor, {
 								provider: addTarget.provider,
 								displayName: addTarget.displayName,
 								hideTitle: true,
@@ -1998,9 +1991,9 @@ window.__ModuleLoader__.load({
 									closeEditor(changed, addTarget);
 								}
 							}, addTarget.provider)]
-						}) : declaring ? (0, react_jsx_runtime.jsx)("div", {
+						}) : declaring ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: ModelsSection_module_css_default["addCard"],
-							children: (0, react_jsx_runtime.jsx)(CustomProviderCard, {
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CustomProviderCard, {
 								taken: state.rows.map((row) => row.entry.provider),
 								protocols,
 								/* v8 ignore next -- the card only opens from a button disabled without this namespace */
@@ -2013,9 +2006,9 @@ window.__ModuleLoader__.load({
 									if (changed) controller.load();
 								}
 							})
-						}) : (0, react_jsx_runtime.jsxs)("div", {
+						}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: ModelsSection_module_css_default["addActions"],
-							children: [(0, react_jsx_runtime.jsxs)("button", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: ModelsSection_module_css_default["addButton"],
 								disabled: addable.length === 0 || !state.writable,
@@ -2028,8 +2021,8 @@ window.__ModuleLoader__.load({
 									setAdding(true);
 									setEditing(targetOf(first));
 								},
-								children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }), t("add")]
-							}), (0, react_jsx_runtime.jsxs)("button", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }), t("add")]
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: ModelsSection_module_css_default["addButton"],
 								disabled: protocols.length === 0 || !state.writable,
@@ -2039,31 +2032,31 @@ window.__ModuleLoader__.load({
 									setEditing(void 0);
 									setDeclaring(true);
 								},
-								children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }), t("customAdd")]
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }), t("customAdd")]
 							})]
 						})
 					}),
-					(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
 						open: deleteTarget !== void 0,
 						onClose: closeDelete,
 						title: deleteTarget === void 0 ? "" : providerCopy(t("deleteTitle"), deleteTarget),
 						closeLabel: t("close"),
 						description: deleteTarget === void 0 ? "" : providerCopy(deleteTarget.credentialRef === void 0 ? t("deleteDescription") : t("deleteDescriptionWithCredential"), deleteTarget),
 						className: ModelsSection_module_css_default["deleteDialog"],
-						footer: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+						footer: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 							variant: "outline",
 							autoFocus: true,
 							disabled: deleting,
 							onClick: closeDelete,
 							children: t("cancel")
-						}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 							variant: "outline",
 							className: ModelsSection_module_css_default["deleteConfirm"],
 							disabled: deleting,
 							onClick: confirmDelete,
 							children: deleteTarget === void 0 ? "" : providerCopy(deleting ? t("deleting") : t("deleteConfirm"), deleteTarget)
 						})] }),
-						children: deleteFailure === void 0 ? null : (0, react_jsx_runtime.jsx)("p", {
+						children: deleteFailure === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 							className: ModelsSection_module_css_default["error"],
 							children: deleteFailure
 						})
@@ -2083,13 +2076,13 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var OnboardingModal_module_css_default = {
-			"dialog": "h8JHzq_dialog",
-			"body": "h8JHzq_body",
 			"content": "h8JHzq_content",
-			"title": "h8JHzq_title"
+			"body": "h8JHzq_body",
+			"title": "h8JHzq_title",
+			"dialog": "h8JHzq_dialog"
 		};
 		//#endregion
-		//#region lib/types/client/OnboardingModal.js
+		//#region src/client/OnboardingModal.tsx
 		/** Shared modal chrome for every step registered by this onboarding plugin. */
 		const ignoreImplicitDismiss = () => {};
 		/**
@@ -2113,20 +2106,20 @@ window.__ModuleLoader__.load({
 			(0, react.useEffect)(() => {
 				if (focusTitle) titleRef.current?.focus();
 			}, [focusTitle]);
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
 				open: true,
 				title,
 				onClose: ignoreImplicitDismiss,
 				headless: true,
 				className: OnboardingModal_module_css_default.dialog,
-				children: (0, react_jsx_runtime.jsxs)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: OnboardingModal_module_css_default.content,
-					children: [(0, react_jsx_runtime.jsx)("h2", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 						ref: titleRef,
 						className: OnboardingModal_module_css_default.title,
 						tabIndex: focusTitle ? -1 : void 0,
 						children: title
-					}), (0, react_jsx_runtime.jsx)("div", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: OnboardingModal_module_css_default.body,
 						children
 					})]
@@ -2145,11 +2138,11 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var DeepSeekOnboardingDialog_module_css_default = {
-			"editor": "fsjKHq_editor",
-			"description": "fsjKHq_description"
+			"description": "fsjKHq_description",
+			"editor": "fsjKHq_editor"
 		};
 		//#endregion
-		//#region lib/types/client/DeepSeekOnboardingDialog.js
+		//#region src/client/DeepSeekOnboardingDialog.tsx
 		/**
 		* Official-DeepSeek first-run step. Readiness comes from the same
 		* provider/settings/credential join as the Models page: any provider the user
@@ -2197,14 +2190,14 @@ window.__ModuleLoader__.load({
 				}
 				controller.load();
 			};
-			return (0, react_jsx_runtime.jsxs)(OnboardingModal, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(OnboardingModal, {
 				title: t("onboardingTitle"),
-				children: [(0, react_jsx_runtime.jsx)("p", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 					className: DeepSeekOnboardingDialog_module_css_default.description,
 					children: t("onboardingDescription")
-				}), (0, react_jsx_runtime.jsx)("div", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: DeepSeekOnboardingDialog_module_css_default.editor,
-					children: (0, react_jsx_runtime.jsx)(ProviderEditor, {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ProviderEditor, {
 						provider: row.entry.provider,
 						displayName: row.entry.displayName,
 						namespace,
@@ -2236,13 +2229,13 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var WelcomeNotice_module_css_default = {
+			"copy": "fOiVLG_copy",
 			"actions": "fOiVLG_actions",
 			"primary": "fOiVLG_primary",
-			"error": "fOiVLG_error",
-			"copy": "fOiVLG_copy"
+			"error": "fOiVLG_error"
 		};
 		//#endregion
-		//#region lib/types/client/WelcomeNotice.js
+		//#region src/client/WelcomeNotice.tsx
 		/** Product-wide, versioned internal-testing notice. */
 		/**
 		* Render the current notice until its exact copy version is acknowledged.
@@ -2269,22 +2262,22 @@ window.__ModuleLoader__.load({
 				if (await controller.acknowledge()) finish();
 			};
 			const paragraphs = t("welcomeBody").split("\n\n");
-			return (0, react_jsx_runtime.jsxs)(OnboardingModal, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(OnboardingModal, {
 				title: t("welcomeTitle"),
 				focusTitle: true,
 				children: [
-					(0, react_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: WelcomeNotice_module_css_default.copy,
-						children: paragraphs.map((paragraph) => (0, react_jsx_runtime.jsx)("p", { children: paragraph }, paragraph))
+						children: paragraphs.map((paragraph) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: paragraph }, paragraph))
 					}),
-					state.error === null ? null : (0, react_jsx_runtime.jsx)("p", {
+					state.error === null ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: WelcomeNotice_module_css_default.error,
 						role: "alert",
 						children: t("welcomeError")
 					}),
-					(0, react_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: WelcomeNotice_module_css_default.actions,
-						children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 							variant: "primary",
 							className: WelcomeNotice_module_css_default.primary,
 							disabled: state.status === "saving",
@@ -2298,7 +2291,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/onboarding-copy.js
+		//#region src/onboarding-copy.ts
 		/** Durable settings namespace for product-wide GUI onboarding facts. */
 		const WELCOME_NOTICE_SETTINGS_NAMESPACE = "ui-onboarding";
 		/** Field storing the last welcome notice version the user acknowledged. */
@@ -2322,8 +2315,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/welcome-store.js
-		/** Welcome-notice state, durable when the browser may use Host settings. */
+		//#region src/client/welcome-store.ts
 		function messageOf(error) {
 			return error instanceof Error ? error.message : String(error);
 		}
@@ -2439,7 +2431,7 @@ window.__ModuleLoader__.load({
 			controller.load();
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** Copy dictionaries for the Models settings section. */
 		/** English strings (the key-set source of truth for this pair). */
 		const en = {
@@ -2634,7 +2626,7 @@ window.__ModuleLoader__.load({
 			keyRequired: "请输入 API 密钥后继续。"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "settings.models";
 		/**

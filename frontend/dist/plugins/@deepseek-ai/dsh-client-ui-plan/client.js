@@ -4,9 +4,9 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		//#region \0dsh-css:/Users/acfufu/Codehub/deepseek-harness/packages/client/ui-plan/src/client/PlanModeControl.module.css.mjs
 		const css = ".o4uWhq_wrap{align-items:center;gap:6px;display:inline-flex}.o4uWhq_chip{background:var(--dsw-alias-state-warn-tertiary);min-width:34px;color:var(--dsw-alias-state-warn-label);cursor:pointer;border:none;border-radius:999px;align-items:center;gap:4px;padding:2px 8px;font-size:13px;font-weight:500;line-height:20px;display:inline-flex}.o4uWhq_chip:hover:not(:disabled){color:var(--dsw-alias-state-warn-primary)}.o4uWhq_chip:focus-visible{outline:2px solid var(--dsw-alias-state-warn-label);outline-offset:2px}.o4uWhq_chip:disabled{opacity:.6;cursor:default}.o4uWhq_close{color:currentColor;align-items:center;display:inline-flex}.o4uWhq_error{color:var(--dsw-alias-state-error-primary);font-size:12px;line-height:18px}";
 		const tagId = "@deepseek-ai/dsh-client-ui-plan/PlanModeControl.module.css";
@@ -18,13 +18,13 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var PlanModeControl_module_css_default = {
-			"error": "o4uWhq_error",
-			"close": "o4uWhq_close",
+			"wrap": "o4uWhq_wrap",
 			"chip": "o4uWhq_chip",
-			"wrap": "o4uWhq_wrap"
+			"close": "o4uWhq_close",
+			"error": "o4uWhq_error"
 		};
 		//#endregion
-		//#region lib/types/client/PlanModeControl.js
+		//#region src/client/PlanModeControl.tsx
 		/**
 		* Plan-mode status over the host-computed `plan` projection. The chip renders
 		* only while the effective target is plan mode (`pending ? !active : active`
@@ -56,21 +56,21 @@ window.__ModuleLoader__.load({
 					setError(reason instanceof Error ? reason.message : String(reason));
 				});
 			};
-			return (0, react_jsx_runtime.jsxs)("span", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 				className: PlanModeControl_module_css_default.wrap,
-				children: [(0, react_jsx_runtime.jsxs)("button", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 					type: "button",
 					className: PlanModeControl_module_css_default.chip,
 					"aria-label": t("chip.on.aria"),
 					title: t("chip.on.title"),
 					disabled: locked || leaving,
 					onClick: off,
-					children: ["Plan", (0, react_jsx_runtime.jsx)("span", {
+					children: ["Plan", /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						className: PlanModeControl_module_css_default.close,
 						"aria-hidden": true,
-						children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseFill14, { size: 12 })
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseFill14, { size: 12 })
 					})]
-				}), error !== null && (0, react_jsx_runtime.jsx)("span", {
+				}), error !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: PlanModeControl_module_css_default.error,
 					role: "status",
 					title: error,
@@ -79,7 +79,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `plan` namespace dictionaries (the composer plan chip's copy). */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -96,7 +96,7 @@ window.__ModuleLoader__.load({
 			"chip.off.title": "Plan mode off — click to turn on (/plan)"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "plan";
 		/** Required services: the seat's slot registry, commands Remote, and locale registry. */

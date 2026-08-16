@@ -4,9 +4,9 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		//#region \0dsh-css:/Users/acfufu/Codehub/deepseek-harness/packages/client/ui-skill/src/client/SkillRow.module.css.mjs
 		const css = ".kSZjbG_card{flex-direction:column;display:flex}.kSZjbG_row{align-items:center;min-width:0;height:24px;display:flex;position:relative;overflow:hidden}.kSZjbG_row[data-expandable]{cursor:pointer}.kSZjbG_card[data-state=running] .kSZjbG_row:after{content:\"\";background:linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--dsw-alias-bg-base) 60%, transparent) 55%, transparent 100%);pointer-events:none;width:300px;animation:2.6s ease-out infinite kSZjbG_dsh-skill-row-sweep;position:absolute;inset:0 auto 0 0}@keyframes kSZjbG_dsh-skill-row-sweep{0%{left:-300px}90%,to{left:100%}}.kSZjbG_leading{width:16px;height:16px;color:var(--dsw-alias-label-tertiary);flex:none;justify-content:center;align-items:center;margin-right:6px;display:inline-flex;position:relative}.kSZjbG_chevron{color:var(--dsw-alias-label-secondary)}.kSZjbG_iconIdle{opacity:1;transition:opacity .1s;display:inline-flex}.kSZjbG_chevronHover{opacity:0;margin:auto;transition:opacity .1s;position:absolute;inset:0}.kSZjbG_row:hover .kSZjbG_iconIdle{opacity:0}.kSZjbG_row:hover .kSZjbG_chevronHover{opacity:1}.kSZjbG_title{color:var(--dsw-alias-label-secondary);flex:none;font-size:14px;line-height:24px}.kSZjbG_separator{background:var(--dsw-alias-label-caption);border-radius:1px;flex:none;width:2px;height:2px;margin:0 8px}.kSZjbG_summary{text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--dsw-alias-label-tertiary);flex:auto;font-size:14px;line-height:24px;overflow:hidden}.kSZjbG_errorSummary{color:var(--dsw-alias-state-error-primary)}.kSZjbG_bodyWrap{flex-direction:column;display:flex}.kSZjbG_instructionsCard{border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-markdown-code-block);border-radius:12px;flex-direction:column;max-height:260px;margin:4px 0 4px 4px;display:flex;overflow:hidden}.kSZjbG_instructionsHeader{border-bottom:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-markdown-code-block-banner);color:var(--dsw-alias-label-caption);text-transform:uppercase;letter-spacing:.04em;flex:none;padding:8px 12px;font-size:11px;font-weight:500;line-height:16px}.kSZjbG_instructions{white-space:pre-wrap;overflow-wrap:anywhere;min-height:0;font:var(--dsw-font-markdown-code-block-small);color:var(--dsw-alias-label-secondary);margin:0;padding:10px 12px 12px;overflow:auto}.kSZjbG_instructions[data-error]{color:var(--dsw-alias-state-error-primary)}.kSZjbG_instructions::-webkit-scrollbar-thumb{background-clip:padding-box;border:2px solid #0000;border-radius:6px}.kSZjbG_instructions::-webkit-scrollbar-track{margin:6px 0}.kSZjbG_inspectButton{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-secondary);cursor:pointer;opacity:0;border-radius:999px;align-self:flex-start;align-items:center;gap:4px;margin:4px 0 2px 4px;padding:2px 8px;font-size:11px;line-height:16px;transition:opacity .1s;display:inline-flex}.kSZjbG_card:hover .kSZjbG_inspectButton,.kSZjbG_inspectButton:focus-visible{opacity:1}.kSZjbG_inspectButton:hover{background:var(--dsw-alias-interactive-bg-hover-solid);color:var(--dsw-alias-label-primary)}.kSZjbG_visuallyHidden{clip:rect(0 0 0 0);white-space:nowrap;width:1px;height:1px;position:absolute;overflow:hidden}@media (prefers-reduced-motion:reduce){.kSZjbG_card[data-state=running] .kSZjbG_row:after{animation:none;display:none}.kSZjbG_iconIdle,.kSZjbG_chevronHover,.kSZjbG_inspectButton{transition:none}}";
 		const tagId = "@deepseek-ai/dsh-client-ui-skill/SkillRow.module.css";
@@ -19,25 +19,25 @@ window.__ModuleLoader__.load({
 		}
 		var SkillRow_module_css_default = {
 			"row": "kSZjbG_row",
-			"title": "kSZjbG_title",
-			"inspectButton": "kSZjbG_inspectButton",
-			"dsh-skill-row-sweep": "kSZjbG_dsh-skill-row-sweep",
-			"visuallyHidden": "kSZjbG_visuallyHidden",
-			"instructionsCard": "kSZjbG_instructionsCard",
-			"chevron": "kSZjbG_chevron",
-			"leading": "kSZjbG_leading",
-			"iconIdle": "kSZjbG_iconIdle",
-			"instructionsHeader": "kSZjbG_instructionsHeader",
-			"card": "kSZjbG_card",
+			"chevronHover": "kSZjbG_chevronHover",
 			"errorSummary": "kSZjbG_errorSummary",
 			"bodyWrap": "kSZjbG_bodyWrap",
+			"visuallyHidden": "kSZjbG_visuallyHidden",
+			"title": "kSZjbG_title",
+			"instructionsHeader": "kSZjbG_instructionsHeader",
+			"dsh-skill-row-sweep": "kSZjbG_dsh-skill-row-sweep",
+			"instructionsCard": "kSZjbG_instructionsCard",
 			"instructions": "kSZjbG_instructions",
-			"chevronHover": "kSZjbG_chevronHover",
-			"separator": "kSZjbG_separator",
-			"summary": "kSZjbG_summary"
+			"chevron": "kSZjbG_chevron",
+			"summary": "kSZjbG_summary",
+			"inspectButton": "kSZjbG_inspectButton",
+			"card": "kSZjbG_card",
+			"leading": "kSZjbG_leading",
+			"iconIdle": "kSZjbG_iconIdle",
+			"separator": "kSZjbG_separator"
 		};
 		//#endregion
-		//#region lib/types/client/SkillRow.js
+		//#region src/client/SkillRow.tsx
 		/** First physical line for the collapsed error summary and malformed-args fallback. */
 		function firstLine(text) {
 			const newline = text.indexOf("\n");
@@ -79,20 +79,20 @@ window.__ModuleLoader__.load({
 		/** State substitution for the collapsed leading slot. */
 		function leadingFor(state) {
 			switch (state) {
-				case "error": return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" });
-				case "stopped": return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" });
-				default: return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSkillOutline16, { size: 14 });
+				case "error": return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" });
+				case "stopped": return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" });
+				default: return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSkillOutline16, { size: 14 });
 			}
 		}
 		/** Leading disclosure slot: state icon at rest, chevron on hover or while open. */
 		function disclosureLeading(state, open, expandable) {
-			if (open) return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: SkillRow_module_css_default.chevron });
+			if (open) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: SkillRow_module_css_default.chevron });
 			const icon = leadingFor(state);
 			if (!expandable) return icon;
-			return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("span", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				className: SkillRow_module_css_default.iconIdle,
 				children: icon
-			}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: `${SkillRow_module_css_default.chevron} ${SkillRow_module_css_default.chevronHover}` })] });
+			}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: `${SkillRow_module_css_default.chevron} ${SkillRow_module_css_default.chevronHover}` })] });
 		}
 		/** Visually hidden state copy for the colour-only lifecycle cues. */
 		function stateStatus(state, t) {
@@ -131,60 +131,60 @@ window.__ModuleLoader__.load({
 				onKeyDown: toggleFromKeyboard
 			} : {};
 			const leading = disclosureLeading(model.state, open, expandable);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: SkillRow_module_css_default.card,
 				"data-tool": "skill",
 				"data-state": model.state,
-				children: [(0, react_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: SkillRow_module_css_default.row,
 					"data-expandable": expandable || void 0,
 					...disclosureProps,
 					children: [
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: SkillRow_module_css_default.leading,
 							children: leading
 						}),
-						status !== null ? (0, react_jsx_runtime.jsx)("span", {
+						status !== null ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: SkillRow_module_css_default.visuallyHidden,
 							children: status
 						}) : null,
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: SkillRow_module_css_default.title,
 							children: "Skill"
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: SkillRow_module_css_default.separator,
 							"aria-hidden": true
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: model.errorSummary === null ? SkillRow_module_css_default.summary : `${SkillRow_module_css_default.summary} ${SkillRow_module_css_default.errorSummary}`,
 							children: summary
 						})
 					]
-				}), open ? (0, react_jsx_runtime.jsxs)("div", {
+				}), open ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: SkillRow_module_css_default.bodyWrap,
-					children: [(0, react_jsx_runtime.jsxs)("section", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 						className: SkillRow_module_css_default.instructionsCard,
 						"aria-label": t("row.instructions"),
-						children: [(0, react_jsx_runtime.jsx)("div", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: SkillRow_module_css_default.instructionsHeader,
 							children: t("row.instructions")
-						}), (0, react_jsx_runtime.jsx)("pre", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 							className: SkillRow_module_css_default.instructions,
 							"data-error": model.state === "error" || void 0,
 							children: model.output
 						})]
-					}), inspect !== void 0 ? (0, react_jsx_runtime.jsxs)("button", {
+					}), inspect !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: SkillRow_module_css_default.inspectButton,
 						onClick: inspect,
-						children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {}), "Inspect"]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {}), "Inspect"]
 					}) : null]
 				}) : null]
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `skill` namespace dictionaries for the dedicated tool row. */
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "skill";
@@ -205,7 +205,7 @@ window.__ModuleLoader__.load({
 			"menu.userOnly": "user-only"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services: reference source faces plus the tool-row and locale registries. */
 		const inject = [
 			"inputTriggers",

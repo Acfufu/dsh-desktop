@@ -4,8 +4,8 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
 		/** Viewport width below which the sidebar auto-collapses to the rail (deepsuite
 		* LG breakpoint); a manual toggle below it re-expands over the squeezed center
@@ -63,15 +63,15 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var AppFrame_module_css_default = {
-			"overlayLayer": "V2sjra_overlayLayer",
 			"handle": "V2sjra_handle",
-			"detailsCol": "V2sjra_detailsCol",
-			"frame": "V2sjra_frame",
 			"sidebarCol": "V2sjra_sidebarCol",
-			"centerCol": "V2sjra_centerCol"
+			"frame": "V2sjra_frame",
+			"centerCol": "V2sjra_centerCol",
+			"detailsCol": "V2sjra_detailsCol",
+			"overlayLayer": "V2sjra_overlayLayer"
 		};
 		//#endregion
-		//#region lib/types/client/AppFrame.js
+		//#region src/client/AppFrame.tsx
 		/**
 		* Three-column shell frame, registered into the built-in 'root' slot (the web
 		* shell renders only 'root'). Owns the grid tracks (sidebar | center |
@@ -86,14 +86,14 @@ window.__ModuleLoader__.load({
 		*/
 		/** Center column grid item (session-body building block). */
 		function CenterColumn(props) {
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: AppFrame_module_css_default.centerCol,
 				children: props.children
 			});
 		}
 		/** Details column grid item; width 0 keeps the subtree mounted (never unmount on close). */
 		function DetailsColumn(props) {
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: AppFrame_module_css_default.detailsCol,
 				children: props.children
 			});
@@ -144,7 +144,7 @@ window.__ModuleLoader__.load({
 				setDragging(false);
 				callbacks.current.onEnd();
 			}, []);
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: AppFrame_module_css_default.handle,
 				style: { left: props.left },
 				"data-side": props.side,
@@ -215,7 +215,7 @@ window.__ModuleLoader__.load({
 			const onDetailsDrag = (0, react.useCallback)((dx) => {
 				actions.setDetails(detailsBase.current - dx);
 			}, [actions]);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				ref: frameRef,
 				className: AppFrame_module_css_default.frame,
 				style: { gridTemplateColumns: `${cols.sidebar}px minmax(0, 1fr) ${cols.details}px` },
@@ -223,27 +223,27 @@ window.__ModuleLoader__.load({
 				"data-details-collapsed": cols.details === 0 || void 0,
 				"data-dragging": dragging || void 0,
 				children: [
-					(0, react_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: AppFrame_module_css_default.sidebarCol,
 						children: renderSlot("sidebar", {
 							collapsed: sidebarCollapsed,
 							width: cols.sidebar
 						})
 					}),
-					(0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)(CenterColumn, { children: renderSlot("conversation", {}) }), (0, react_jsx_runtime.jsx)(DetailsColumn, { children: renderSlot("details", {}) })] }),
-					(0, react_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(CenterColumn, { children: renderSlot("conversation", {}) }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DetailsColumn, { children: renderSlot("details", {}) })] }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: AppFrame_module_css_default.overlayLayer,
 						"data-shell-overlay": true,
 						children: renderSlot("shell.overlay", {})
 					}),
-					!sidebarCollapsed && (0, react_jsx_runtime.jsx)(DragHandle, {
+					!sidebarCollapsed && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DragHandle, {
 						side: "sidebar",
 						left: cols.sidebar,
 						onStart: onSidebarStart,
 						onDrag: onSidebarDrag,
 						onEnd: onDragEnd
 					}),
-					cols.details > 0 && (0, react_jsx_runtime.jsx)(DragHandle, {
+					cols.details > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DragHandle, {
 						side: "details",
 						left: viewport - cols.details,
 						onStart: onDetailsStart,
@@ -254,7 +254,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/stores.js
+		//#region src/client/stores.ts
 		/**
 		* The root entry's transient layout store: panel geometry as plain widths in
 		* px (0 = closed). Module level exports the factory only — a module-level
@@ -308,7 +308,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/service.js
+		//#region src/client/service.ts
 		/** Cross-plugin panel-action face (ctx.layout). */
 		var LayoutController = class {
 			#panels;
@@ -340,7 +340,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/theme-presenter.js
+		//#region src/client/theme-presenter.ts
 		/** Body attribute selecting the dark base palette in the token stylesheets. */
 		const DARK_ATTRIBUTE = "data-ds-dark-theme";
 		/** Applies theme snapshots to the document; one instance per plugin fiber. */
@@ -389,7 +389,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services (cordis fiber inject — the loader passes all module exports as an object plugin). */
 		const inject = ["slots", "theme"];
 		/**

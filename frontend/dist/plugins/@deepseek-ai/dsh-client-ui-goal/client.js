@@ -4,9 +4,9 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		//#region \0dsh-css:/Users/acfufu/Codehub/deepseek-harness/packages/client/ui-goal/src/client/GoalBar.module.css.mjs
 		const css$1 = ".au71tq_dock{box-sizing:border-box;width:calc(100% - var(--dsh-composer-side-clearance) - var(--dsh-composer-side-clearance) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset));margin:0 auto}.au71tq_bar{box-sizing:border-box;width:100%;max-width:calc(var(--dsh-composer-card-max-width) - 4 * var(--dsh-composer-dock-inset));border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-specific-tip);border-radius:12px;align-items:center;gap:10px;height:36px;margin:0 auto;padding:4px 5px 4px 12px;display:flex}.au71tq_goalGlyph{color:var(--dsw-alias-label-tertiary);flex:none;display:inline-flex}.au71tq_label{color:var(--dsw-alias-label-primary);flex:none;font-size:13px;font-weight:500;line-height:24px}.au71tq_objective{min-width:0;color:var(--dsw-alias-label-primary-dimmed);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:13px;line-height:20px;overflow:hidden}.au71tq_error{min-width:0;color:var(--dsw-alias-state-error-primary);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:12px;line-height:20px;overflow:hidden}.au71tq_objectiveInput{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-base);min-width:0;height:26px;color:var(--dsw-alias-label-primary);border-radius:6px;outline:none;flex:1;padding:0 8px;font-size:13px;line-height:20px}.au71tq_objectiveInput:focus{border-color:var(--dsw-alias-state-business-primary)}.au71tq_objectiveInput::placeholder{color:var(--dsw-alias-label-caption)}.au71tq_actions{flex:none;align-items:center;gap:10px;display:flex}.au71tq_iconBtn{width:28px;height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:999px;justify-content:center;align-items:center;padding:0;display:inline-flex}.au71tq_iconBtn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}.au71tq_iconBtn:disabled{opacity:.4;cursor:default}";
 		const tagId$1 = "@deepseek-ai/dsh-client-ui-goal/GoalBar.module.css";
@@ -18,18 +18,18 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var GoalBar_module_css_default = {
-			"bar": "au71tq_bar",
-			"objective": "au71tq_objective",
+			"label": "au71tq_label",
+			"goalGlyph": "au71tq_goalGlyph",
 			"iconBtn": "au71tq_iconBtn",
+			"dock": "au71tq_dock",
+			"objective": "au71tq_objective",
+			"actions": "au71tq_actions",
 			"objectiveInput": "au71tq_objectiveInput",
 			"error": "au71tq_error",
-			"dock": "au71tq_dock",
-			"label": "au71tq_label",
-			"actions": "au71tq_actions",
-			"goalGlyph": "au71tq_goalGlyph"
+			"bar": "au71tq_bar"
 		};
 		//#endregion
-		//#region lib/types/client/GoalBar.js
+		//#region src/client/GoalBar.tsx
 		/**
 		* GoalBar: the goal indicator docked above the message composer (input dock
 		* strip). A present goal shows a goal glyph, a phase label, the truncated
@@ -82,13 +82,13 @@ window.__ModuleLoader__.load({
 				if ((await runAction(onClear))?.ok) setClearedGoalId(clearedId);
 			}, [onClear, runAction]);
 			if (goal === void 0 || goal === null || goal.phase === "complete" || goal.id === clearedGoalId) return null;
-			if (editing) return (0, react_jsx_runtime.jsx)("div", {
+			if (editing) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: GoalBar_module_css_default.dock,
 				"data-goal-bar": true,
-				children: (0, react_jsx_runtime.jsxs)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: GoalBar_module_css_default.bar,
 					children: [
-						(0, react_jsx_runtime.jsx)("input", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 							className: GoalBar_module_css_default.objectiveInput,
 							type: "text",
 							"aria-label": t("objective.aria"),
@@ -102,18 +102,18 @@ window.__ModuleLoader__.load({
 							},
 							autoFocus: true
 						}),
-						actionError !== null && (0, react_jsx_runtime.jsx)("span", {
+						actionError !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: GoalBar_module_css_default.error,
 							role: "alert",
 							children: actionError
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: GoalBar_module_css_default.actions,
-							children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 								label: t("action.save"),
 								side: "bottom",
 								delayMs: 500,
-								children: (0, react_jsx_runtime.jsx)("button", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 									type: "button",
 									className: GoalBar_module_css_default.iconBtn,
 									onClick: () => {
@@ -121,13 +121,13 @@ window.__ModuleLoader__.load({
 									},
 									disabled: pending || draft.trim() === "",
 									"aria-label": t("action.save"),
-									children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 14 })
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 14 })
 								})
-							}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 								label: t("action.cancel"),
 								side: "bottom",
 								delayMs: 500,
-								children: (0, react_jsx_runtime.jsx)("button", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 									type: "button",
 									className: GoalBar_module_css_default.iconBtn,
 									onClick: () => {
@@ -135,7 +135,7 @@ window.__ModuleLoader__.load({
 									},
 									disabled: pending,
 									"aria-label": t("action.cancel"),
-									children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, { size: 14 })
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, { size: 14 })
 								})
 							})]
 						})
@@ -143,38 +143,38 @@ window.__ModuleLoader__.load({
 				})
 			});
 			const title = goal.phase === "blocked" ? goal.blockedReason?.message : void 0;
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: GoalBar_module_css_default.dock,
 				"data-goal-bar": true,
-				children: (0, react_jsx_runtime.jsxs)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: GoalBar_module_css_default.bar,
 					title,
 					children: [
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: GoalBar_module_css_default.goalGlyph,
-							children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconGoalOutline16, { size: 14 })
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconGoalOutline16, { size: 14 })
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: GoalBar_module_css_default.label,
 							children: t(PHASE_LABELS[goal.phase])
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: GoalBar_module_css_default.objective,
 							children: goal.objective
 						}),
-						actionError !== null && (0, react_jsx_runtime.jsx)("span", {
+						actionError !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: GoalBar_module_css_default.error,
 							role: "alert",
 							children: actionError
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: GoalBar_module_css_default.actions,
 							children: [
-								goal.phase === "active" && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+								goal.phase === "active" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 									label: t("action.pause"),
 									side: "bottom",
 									delayMs: 500,
-									children: (0, react_jsx_runtime.jsx)("button", {
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 										type: "button",
 										className: GoalBar_module_css_default.iconBtn,
 										disabled: pending,
@@ -182,14 +182,14 @@ window.__ModuleLoader__.load({
 											runAction(onPause);
 										},
 										"aria-label": t("action.pause"),
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPauseOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPauseOutline16, { size: 14 })
 									})
 								}),
-								goal.phase === "paused" && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+								goal.phase === "paused" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 									label: t("action.resume"),
 									side: "bottom",
 									delayMs: 500,
-									children: (0, react_jsx_runtime.jsx)("button", {
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 										type: "button",
 										className: GoalBar_module_css_default.iconBtn,
 										disabled: pending,
@@ -197,14 +197,14 @@ window.__ModuleLoader__.load({
 											runAction(onResume);
 										},
 										"aria-label": t("action.resume"),
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlayOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlayOutline16, { size: 14 })
 									})
 								}),
-								(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 									label: t("action.edit"),
 									side: "bottom",
 									delayMs: 500,
-									children: (0, react_jsx_runtime.jsx)("button", {
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 										type: "button",
 										className: GoalBar_module_css_default.iconBtn,
 										disabled: pending,
@@ -213,14 +213,14 @@ window.__ModuleLoader__.load({
 											setEditing(true);
 										},
 										"aria-label": t("action.edit"),
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 })
 									})
 								}),
-								(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 									label: t("action.clear"),
 									side: "bottom",
 									delayMs: 500,
-									children: (0, react_jsx_runtime.jsx)("button", {
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 										type: "button",
 										className: GoalBar_module_css_default.iconBtn,
 										disabled: pending,
@@ -228,7 +228,7 @@ window.__ModuleLoader__.load({
 											handleClear(goal.id);
 										},
 										"aria-label": t("action.clear"),
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, { size: 14 })
 									})
 								})
 							]
@@ -240,7 +240,7 @@ window.__ModuleLoader__.load({
 		/** Dock adapter: reads the host-computed 'goal' projection (whole value; absent or null renders nothing). */
 		function GoalDock({ useProjection, onEdit, onPause, onResume, onClear, t }) {
 			const projection = useProjection("goal");
-			return (0, react_jsx_runtime.jsx)(GoalBar, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(GoalBar, {
 				goal: projection === void 0 ? void 0 : projection === null ? null : projection.goal,
 				onEdit,
 				onPause,
@@ -266,26 +266,26 @@ window.__ModuleLoader__.load({
 			"stack": "_6hjCMW_stack"
 		};
 		//#endregion
-		//#region lib/types/client/GoalCommandInputView.js
+		//#region src/client/GoalCommandInputView.tsx
 		/** Right-aligned `/goal` input bubble without ordinary message actions. */
 		const GoalCommandInputView = (0, react.memo)(function GoalCommandInputView({ node, t }) {
 			const data = node.data;
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: GoalCommandInputView_module_css_default.row,
 				"data-command-input": "",
 				role: "group",
 				"aria-label": t("commandInput.aria"),
-				children: (0, react_jsx_runtime.jsx)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: GoalCommandInputView_module_css_default.stack,
-					children: (0, react_jsx_runtime.jsx)("div", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: GoalCommandInputView_module_css_default.bubble,
-						children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MessageText, { text: data.text })
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MessageText, { text: data.text })
 					})
 				})
 			});
 		});
 		//#endregion
-		//#region lib/types/client/goal-command-input.js
+		//#region src/client/goal-command-input.ts
 		/**
 		* Derive the visible command line from its structured durable run.
 		* @param event - `/goal` command run.
@@ -331,7 +331,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `goal` namespace dictionaries. */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -362,7 +362,7 @@ window.__ModuleLoader__.load({
 			"action.clear": "Clear goal"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "goal";
 		/** Required services for the Goal dock, command-input projection, Remote mutations, and copy. */

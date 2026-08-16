@@ -6,7 +6,7 @@ window.__ModuleLoader__.load({
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 		let _deepseek_ai_cordis = require("@deepseek-ai/cordis");
 		let _deepseek_ai_dsh_client_ui_slots = require("@deepseek-ai/dsh-client-ui-slots");
-		//#region lib/types/client/slots.js
+		//#region src/client/slots.ts
 		/**
 		* SlotRegistry: the cordis Service layer of the slot system over the pure
 		* SlotCore (ui-slots owns registration semantics, the declaration ledger,
@@ -5345,7 +5345,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 		}
 		var produce = new Immer2().produce;
 		//#endregion
-		//#region lib/types/client/contract/store.js
+		//#region src/client/contract/store.ts
 		/**
 		* Snapshot store engine (zustand vanilla + immer + subscribeWithSelector +
 		* rafFlush middleware + opt-in persist + dev freeze) plus the declarative
@@ -5505,7 +5505,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			};
 		}
 		//#endregion
-		//#region lib/types/client/agents/scope.js
+		//#region src/client/agents/scope.ts
 		/**
 		* Client Agent-scope primitive: mint a Cordis context tagged with the owning
 		* Agent's identity. The mechanism mirrors the host `dsh-scope` architecture
@@ -5558,7 +5558,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return ctx[kScope];
 		}
 		//#endregion
-		//#region lib/types/client/ordered-baseline.js
+		//#region src/client/ordered-baseline.ts
 		/**
 		* Merge an authoritative baseline without moving identities already visible to
 		* the client. Baseline-only identities are inserted relative to the nearest
@@ -5595,7 +5595,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return merged;
 		}
 		//#endregion
-		//#region lib/types/client/sessions/lineage.js
+		//#region src/client/sessions/lineage.ts
 		/**
 		* Summaries -> flat list with lineage indentation. Root and sibling order
 		* follows the established input order; this projection never re-sorts a
@@ -5639,7 +5639,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return out;
 		}
 		//#endregion
-		//#region lib/types/client/sessions/notifier.js
+		//#region src/client/sessions/notifier.ts
 		/** Subscription + batched notification primitive (shared by Session and SessionManager). */
 		var Notifier = class {
 			rebuild;
@@ -5723,7 +5723,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/sessions/projection-store.js
+		//#region src/client/sessions/projection-store.ts
 		/**
 		* One session's projection values. Framework semantics, uniform across every
 		* key: a baseline seeds rows at its cut, a push frame updates one row, and in
@@ -5847,7 +5847,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/contract/conversation.js
+		//#region src/client/contract/conversation.ts
 		/**
 		* Build a stable collision-free key for one Definition-local business identity.
 		* @param kind - Definition kind.
@@ -5858,7 +5858,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return `${kind.length}:${kind}${id}`;
 		}
 		//#endregion
-		//#region lib/types/client/sessions/conversation-location-index.js
+		//#region src/client/sessions/conversation-location-index.ts
 		var MutableLocationDataStore = class {
 			entries = /* @__PURE__ */ new Map();
 			get(key) {
@@ -6267,7 +6267,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			throw new Error(`conversation Step data "${data.key}" requires a step`);
 		}
 		//#endregion
-		//#region lib/types/client/sessions/conversation-assembler.js
+		//#region src/client/sessions/conversation-assembler.ts
 		const PUBLICATION_RANK = {
 			none: 0,
 			"animation-frame": 1,
@@ -6875,7 +6875,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return state;
 		}
 		//#endregion
-		//#region lib/types/client/sessions/conversation.js
+		//#region src/client/sessions/conversation.ts
 		/**
 		* core ContentBlock[] -> AssistantBlock[] (classifier shared by finalized messages and partial block-end).
 		* @param content - core content blocks verbatim.
@@ -6943,7 +6943,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/sessions/pending.js
+		//#region src/client/sessions/pending.ts
 		/** Key prefixes, one per kind (the key doubles as the Session pending-map key). */
 		const KEY_PREFIX = {
 			approval: "a",
@@ -7004,7 +7004,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/time-zone.js
+		//#region src/client/time-zone.ts
 		/** Browser-owned time-zone sampling for prompt RPC provenance. */
 		/**
 		* Resolve the current browser IANA zone for one outbound operation.
@@ -7017,7 +7017,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return timeZone;
 		}
 		//#endregion
-		//#region lib/types/client/sessions/queue-mirror.js
+		//#region src/client/sessions/queue-mirror.ts
 		const QUEUE_PREVIEW_CHARS = 200;
 		function previewOf(content) {
 			const flat = content.map((block) => block.type === "text" ? block.text : `[${block.type}]`).join(" ").replace(/\s+/g, " ").trim();
@@ -7768,7 +7768,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return promptAttempted ? "engaging" : "blank";
 		}
 		//#endregion
-		//#region lib/types/client/sessions/manager.js
+		//#region src/client/sessions/manager.ts
 		/** Stable identity of a frame retained until an uninstantiated Session can consume it. */
 		function bufferedRequestKey(envelope) {
 			const frame = envelope.payload;
@@ -8633,7 +8633,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return candidate.code === "workspace-attach-failed" ? candidate.details.sessionId : void 0;
 		}
 		//#endregion
-		//#region lib/types/client/sessions/provide.js
+		//#region src/client/sessions/provide.ts
 		/**
 		* Provider roster + materialization + current projection. The channel owns
 		* every rule a provider contribution must satisfy; owners keep only their
@@ -8782,7 +8782,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/sessions/service.js
+		//#region src/client/sessions/service.ts
 		/** Structured session-create failure. */
 		var SessionCreateError = class extends Error {
 			rpcError;
@@ -9337,8 +9337,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/workspaces/workspace.js
-		/** React-free Workspace entity with a client-local materialization lifecycle. */
+		//#region src/client/workspaces/workspace.ts
 		/**
 		* Observable Workspace object whose identity survives Host materialization.
 		* Local instances retain their create input and failure state; materialized
@@ -9446,8 +9445,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return input.path.replace(/[\\/]+$/, "").split(/[\\/]/).pop() ?? input.path;
 		}
 		//#endregion
-		//#region lib/types/client/workspaces/manager.js
-		/** Workspace baseline, incremental-frame, and unary-action owner. */
+		//#region src/client/workspaces/manager.ts
 		/** Workspace object cluster driven by one list baseline and changed-frame upserts. */
 		var WorkspaceManager = class {
 			api;
@@ -9789,8 +9787,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			];
 		}
 		//#endregion
-		//#region lib/types/client/workspaces/service.js
-		/** WorkspaceRuntime projects the Workspace object manager for UI consumers. */
+		//#region src/client/workspaces/service.ts
 		/** Structured create failure for UI flows that distinguish Host business errors. */
 		var WorkspaceCreateError = class extends Error {
 			rpcError;
@@ -10098,7 +10095,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return selected;
 		}
 		//#endregion
-		//#region lib/types/client/conversation/definition-registry.js
+		//#region src/client/conversation/definition-registry.ts
 		/** Shared lifecycle and stable-entry storage for one Conversation Definition registry. */
 		var ConversationDefinitionRegistry = class extends _deepseek_ai_cordis.Service {
 			definitions = /* @__PURE__ */ new Map();
@@ -10152,7 +10149,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region lib/types/client/conversation/event-registry.js
+		//#region src/client/conversation/event-registry.ts
 		/** Runtime registry of independently owned Conversation business Definitions. */
 		var ConversationEventRegistry = class extends ConversationDefinitionRegistry {
 			fallback;
@@ -10203,7 +10200,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			if (definition.target === void 0 !== (definition.buildViewNode === void 0)) throw new Error(`conversation Definition "${definition.kind}" must declare target and buildViewNode together`);
 		}
 		//#endregion
-		//#region lib/types/client/conversation/view-registry.js
+		//#region src/client/conversation/view-registry.ts
 		/** Runtime registry of per-target Conversation snapshot builders. */
 		var ConversationViewRegistry = class extends ConversationDefinitionRegistry {
 			/** @param ctx - owning Client Runtime context. */
@@ -10261,7 +10258,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return isSurfaceEvent(event) && event.surfaceOp !== "append";
 		}
 		//#endregion
-		//#region lib/types/client/sessions/subagent-lineage.js
+		//#region src/client/sessions/subagent-lineage.ts
 		/**
 		* Index every subagent descendant under each ancestor it reaches through an
 		* uninterrupted subagent-origin chain. Cycles fail soft and orphan owners
@@ -10292,7 +10289,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return indexed;
 		}
 		//#endregion
-		//#region lib/types/client/workspaces/path.js
+		//#region src/client/workspaces/path.ts
 		/**
 		* Resolve a workspace-relative path into the Host-facing spelling used by openPath.
 		* @param cwd - session workspace root, when known.
@@ -10305,7 +10302,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return `${cwd.replace(/[/\\]+$/, "")}/${path.replace(/^[/\\]+/, "")}`;
 		}
 		//#endregion
-		//#region lib/types/client/sessions/partial.js
+		//#region src/client/sessions/partial.ts
 		/**
 		* Create the empty client projection for one streamed Assistant block kind.
 		* @param blockType - wire block kind.
@@ -10352,7 +10349,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		}
 		//#endregion
-		//#region lib/types/client/sessions/context-provenance.js
+		//#region src/client/sessions/context-provenance.ts
 		/** One durable source narrowed to the readable-record shape; null for anything else. */
 		function asRecord(value) {
 			return typeof value === "object" && value !== null && !Array.isArray(value) ? value : null;
@@ -10444,7 +10441,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return form !== null && KNOWN_FORMS.includes(form) ? form : null;
 		}
 		//#endregion
-		//#region lib/types/client/sessions/failure-display.js
+		//#region src/client/sessions/failure-display.ts
 		/**
 		* Convert a durable failure into copy that is safe to expose in the GUI.
 		* @param failure - Failure value preserved by the session event.
@@ -10457,7 +10454,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			return typeof record.message === "string" ? record.message : JSON.stringify(failure);
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services: the wire handle and Client Typert registry. */
 		const inject = [
 			"connection",

@@ -4,10 +4,10 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
-		//#region lib/types/client/turn-deliverables.js
+		let react_jsx_runtime = require("react/jsx-runtime");
+		//#region src/client/turn-deliverables.ts
 		/**
 		* Paths a call view reports having created or changed, by render intent rather
 		* than tool name: a diff card, or a generic card whose kind is `edit` (the
@@ -167,17 +167,17 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var ProducedFiles_module_css_default = {
-			"measure": "weDWBW_measure",
 			"row": "weDWBW_row",
 			"showFolder": "weDWBW_showFolder",
-			"probe": "weDWBW_probe",
 			"more": "weDWBW_more",
+			"file": "weDWBW_file",
+			"measure": "weDWBW_measure",
+			"probe": "weDWBW_probe",
 			"root": "weDWBW_root",
-			"label": "weDWBW_label",
-			"file": "weDWBW_file"
+			"label": "weDWBW_label"
 		};
 		//#endregion
-		//#region lib/types/client/ProducedFiles.js
+		//#region src/client/ProducedFiles.tsx
 		/** At most six chips compete for the one-line summary; every other path stays counted. */
 		const SHOWN_LIMIT = 6;
 		/**
@@ -252,18 +252,18 @@ window.__ModuleLoader__.load({
 			const visibleCount = Math.min(shownCount, limit);
 			const shown = paths.slice(0, visibleCount);
 			const hidden = paths.length - shown.length;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: ProducedFiles_module_css_default.root,
 				children: [
-					(0, react_jsx_runtime.jsx)("span", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						className: ProducedFiles_module_css_default.label,
 						children: t("produced.label")
 					}),
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						ref: rowRef,
 						className: ProducedFiles_module_css_default.row,
 						"data-produced-files-row": true,
-						children: [shown.map((path) => (0, react_jsx_runtime.jsx)("button", {
+						children: [shown.map((path) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: ProducedFiles_module_css_default.file,
 							title: path,
@@ -272,12 +272,12 @@ window.__ModuleLoader__.load({
 								openFile(path);
 							},
 							children: basename(path)
-						}, path)), hidden > 0 && (0, react_jsx_runtime.jsx)("span", {
+						}, path)), hidden > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ProducedFiles_module_css_default.more,
 							children: moreLabel(t, hidden)
 						})]
 					}),
-					hidden > 0 && canOpenPath && (0, react_jsx_runtime.jsx)("button", {
+					hidden > 0 && canOpenPath && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						type: "button",
 						className: ProducedFiles_module_css_default.showFolder,
 						onClick: () => {
@@ -285,10 +285,10 @@ window.__ModuleLoader__.load({
 						},
 						children: t("produced.showInFolder")
 					}),
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ProducedFiles_module_css_default.measure,
 						"aria-hidden": "true",
-						children: [paths.slice(0, limit).map((path, index) => (0, react_jsx_runtime.jsx)("button", {
+						children: [paths.slice(0, limit).map((path, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							ref: (node) => {
 								chipProbes.current[index] = node;
 							},
@@ -296,7 +296,7 @@ window.__ModuleLoader__.load({
 							tabIndex: -1,
 							className: `${ProducedFiles_module_css_default.file} ${ProducedFiles_module_css_default.probe}`,
 							children: basename(path)
-						}, path)), (0, react_jsx_runtime.jsx)("span", {
+						}, path)), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							ref: moreProbe,
 							className: `${ProducedFiles_module_css_default.more} ${ProducedFiles_module_css_default.probe}`
 						})]
@@ -305,7 +305,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `deliverables` namespace dictionaries. */
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "deliverables";
@@ -326,7 +326,7 @@ window.__ModuleLoader__.load({
 			"produced.showInFolder": "Show in folder"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services for the tail-slot registration and its dictionaries. */
 		const inject = [
 			"slots",

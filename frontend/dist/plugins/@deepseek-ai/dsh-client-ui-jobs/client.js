@@ -4,9 +4,9 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		//#region \0dsh-css:/Users/acfufu/Codehub/deepseek-harness/packages/client/ui-jobs/src/client/JobListAction.module.css.mjs
 		const css = ".nrej4a_root{position:relative}.nrej4a_trigger{min-height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;border-radius:6px;align-items:center;gap:3px;padding:3px 2px;font-size:12px;line-height:18px;display:inline-flex}.nrej4a_trigger:hover,.nrej4a_trigger:focus-visible{color:var(--dsw-alias-label-secondary)}.nrej4a_trigger svg{transition:transform .12s}.nrej4a_triggerOpen{transform:rotate(180deg)}.nrej4a_triggerDot{flex:none}.nrej4a_count{margin:0 5px}.nrej4a_menu{z-index:100;box-sizing:border-box;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-specific-menu);--dsh-scrollbar-thumb:var(--dsw-alias-scrollbar-bg-l2);--dsh-scrollbar-thumb-hover:var(--dsw-alias-scrollbar-hover-l2);width:336px;max-width:min(400px,100vw - 32px);max-height:min(420px,100vh - 140px);box-shadow:var(--dsw-shadow-lv3);border-radius:12px;flex-direction:column;gap:1px;margin:0;padding:4px;list-style:none;display:flex;position:absolute;top:calc(100% + 5px);left:0;overflow:auto}.nrej4a_row{box-sizing:border-box;width:100%;min-height:32px;color:var(--dsw-alias-label-primary);border-radius:8px;align-items:center;gap:8px;padding:6px 8px;font-size:13px;line-height:18px;display:flex}.nrej4a_rowSettled{color:var(--dsw-alias-label-tertiary)}.nrej4a_rowDot{flex:none}.nrej4a_kind{background:var(--dsw-alias-fill-l2);color:var(--dsw-alias-label-secondary);border-radius:5px;flex:none;padding:0 6px;font-size:11px;line-height:18px}.nrej4a_label{min-width:0;font-family:var(--dsw-font-mono);white-space:nowrap;text-overflow:ellipsis;flex:1;overflow:hidden}.nrej4a_status,.nrej4a_duration{color:var(--dsw-alias-label-tertiary);flex:none;font-size:11px;line-height:18px}.nrej4a_status{white-space:nowrap;text-overflow:ellipsis;max-width:40%;overflow:hidden}.nrej4a_duration{font-variant-numeric:tabular-nums}";
 		const tagId = "@deepseek-ai/dsh-client-ui-jobs/JobListAction.module.css";
@@ -18,22 +18,22 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var JobListAction_module_css_default = {
-			"rowSettled": "nrej4a_rowSettled",
-			"triggerDot": "nrej4a_triggerDot",
 			"kind": "nrej4a_kind",
-			"label": "nrej4a_label",
-			"trigger": "nrej4a_trigger",
-			"count": "nrej4a_count",
-			"root": "nrej4a_root",
-			"rowDot": "nrej4a_rowDot",
 			"menu": "nrej4a_menu",
-			"duration": "nrej4a_duration",
+			"label": "nrej4a_label",
 			"status": "nrej4a_status",
+			"root": "nrej4a_root",
+			"count": "nrej4a_count",
+			"rowSettled": "nrej4a_rowSettled",
 			"row": "nrej4a_row",
-			"triggerOpen": "nrej4a_triggerOpen"
+			"triggerDot": "nrej4a_triggerDot",
+			"trigger": "nrej4a_trigger",
+			"duration": "nrej4a_duration",
+			"triggerOpen": "nrej4a_triggerOpen",
+			"rowDot": "nrej4a_rowDot"
 		};
 		//#endregion
-		//#region lib/types/client/JobListAction.js
+		//#region src/client/JobListAction.tsx
 		/** Stable empty list so a session with no jobs keeps one array identity. */
 		const NO_TASKS = [];
 		/** A job the registry still holds open, and whose duration therefore ticks. */
@@ -153,11 +153,11 @@ window.__ModuleLoader__.load({
 				setOpen(false);
 				triggerRef.current?.focus();
 			};
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				ref: rootRef,
 				className: JobListAction_module_css_default.root,
 				onKeyDown,
-				children: [(0, react_jsx_runtime.jsxs)("button", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 					ref: triggerRef,
 					type: "button",
 					className: JobListAction_module_css_default.trigger,
@@ -168,45 +168,45 @@ window.__ModuleLoader__.load({
 						setOpen((current) => !current);
 					},
 					children: [
-						liveCount > 0 ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, {
+						liveCount > 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, {
 							state: "ongoing",
 							className: JobListAction_module_css_default.triggerDot
 						}) : null,
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: JobListAction_module_css_default.count,
 							children: countLabel
 						}),
-						(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: open ? JobListAction_module_css_default.triggerOpen : void 0 })
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: open ? JobListAction_module_css_default.triggerOpen : void 0 })
 					]
-				}), open ? (0, react_jsx_runtime.jsx)("ul", {
+				}), open ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 					className: JobListAction_module_css_default.menu,
 					"aria-label": t("list.aria"),
 					children: rows.map((job) => {
 						const live = isLive(job);
 						const duration = formatDuration(live ? now - job.startedAt : (job.finishedAt ?? job.startedAt) - job.startedAt, t);
 						const status = statusLabel(job.status, t);
-						return (0, react_jsx_runtime.jsxs)("li", {
+						return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
 							className: live ? JobListAction_module_css_default.row : `${JobListAction_module_css_default.row} ${JobListAction_module_css_default.rowSettled}`,
 							children: [
-								(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, {
 									state: dotState(job.status),
 									className: JobListAction_module_css_default.rowDot
 								}),
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: JobListAction_module_css_default.kind,
 									children: job.kind
 								}),
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: JobListAction_module_css_default.label,
 									title: job.label,
 									children: job.label
 								}),
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: JobListAction_module_css_default.status,
 									title: job.detail ?? status,
 									children: job.detail ?? status
 								}),
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: JobListAction_module_css_default.duration,
 									title: t(live ? "duration.title.live" : "duration.title.done", { duration }),
 									children: duration
@@ -218,7 +218,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
 			"count.live.one": "{count} 个后台任务运行中",
@@ -256,7 +256,7 @@ window.__ModuleLoader__.load({
 			"duration.title.done": "Took {duration}"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services for locale registration and header-slot contribution. */
 		const inject = [
 			"sessions",

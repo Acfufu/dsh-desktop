@@ -4,10 +4,10 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		//#region \0dsh-css:/Users/acfufu/Codehub/deepseek-harness/packages/client/ui-workflow-run/src/client/WorkflowRunPanel.module.css.mjs
 		const css = ".XxA2wG_root{width:100%;min-width:0}.XxA2wG_runHeader{box-sizing:border-box;background:var(--dsw-alias-bg-module-platform);border-radius:8px;align-items:center;gap:6px;width:100%;min-width:0;height:32px;padding:0 8px;display:flex}.XxA2wG_runHeader:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:-2px}.XxA2wG_runLeading{width:16px;height:16px;color:var(--dsw-alias-label-tertiary);flex:none;justify-content:center;align-items:center;margin-right:0;display:inline-flex}.XxA2wG_runTitle{max-width:42%;color:var(--dsw-alias-label-secondary);text-overflow:ellipsis;white-space:nowrap;flex:none;font-size:14px;font-weight:510;line-height:24px;overflow:hidden}.XxA2wG_runSummary{min-width:0;color:var(--dsw-alias-label-tertiary);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:12px;line-height:18px;overflow:hidden}.XxA2wG_statusTail{height:20px;color:var(--dsw-alias-label-secondary);white-space:nowrap;flex:none;align-items:center;gap:4px;font-size:11px;font-weight:510;line-height:16px;display:inline-flex;overflow:hidden}.XxA2wG_phaseHeader{box-sizing:border-box;align-items:center;gap:6px;width:100%;min-width:0;height:32px;display:flex}.XxA2wG_phaseHeader:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:-2px;border-radius:4px}.XxA2wG_phaseLeading{width:16px;height:16px;color:var(--dsw-alias-label-tertiary);flex:none;justify-content:center;align-items:center;margin-right:0;display:inline-flex}.XxA2wG_phaseTitle{min-width:0;max-width:42%;color:var(--dsw-alias-label-secondary);text-overflow:ellipsis;white-space:nowrap;flex:0 auto;font-size:14px;line-height:24px;overflow:hidden}.XxA2wG_phaseCount{min-width:0;color:var(--dsw-alias-label-tertiary);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:13px;line-height:20px;overflow:hidden}.XxA2wG_phaseStatus{width:132px;color:var(--dsw-alias-label-secondary);text-align:right;text-overflow:ellipsis;white-space:nowrap;flex:none;font-size:13px;line-height:20px;overflow:hidden}.XxA2wG_separator{background:var(--dsw-alias-label-tertiary);border-radius:50%;flex:none;width:2px;height:2px}.XxA2wG_phaseList{flex-direction:column;gap:4px;min-width:0;padding:4px 0 0 16px;display:flex}.XxA2wG_phase{min-width:0}.XxA2wG_members{flex-direction:column;gap:2px;min-width:0;padding:0 0 0 16px;display:flex}.XxA2wG_memberRow,.XxA2wG_memberButton{width:100%;min-width:0;min-height:24px;color:var(--dsw-alias-label-secondary);font:inherit;text-align:left;background:0 0;border:0;border-radius:4px;align-items:center;gap:12px;padding:0;display:flex}.XxA2wG_memberButton{cursor:pointer}.XxA2wG_memberButton .XxA2wG_memberLabel{color:var(--dsw-alias-state-business-primary);text-underline-position:from-font;text-decoration:underline}.XxA2wG_dotSlot{flex:none;justify-content:center;align-items:center;width:16px;height:24px;display:inline-flex;overflow:hidden}.XxA2wG_memberButton:focus-visible{outline:none}.XxA2wG_memberButton:focus-visible .XxA2wG_memberLabelWrap{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:-1px}.XxA2wG_memberLabelWrap{border-radius:4px;flex:1;align-items:center;min-width:0;height:24px;padding:0 2px;display:flex;overflow:hidden}.XxA2wG_memberLabel{min-width:0;color:var(--dsw-alias-label-secondary);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:14px;line-height:24px;overflow:hidden}.XxA2wG_memberStatus{width:64px;color:var(--dsw-alias-label-secondary);text-align:right;text-overflow:ellipsis;white-space:nowrap;flex:none;font-size:13px;line-height:20px;overflow:hidden}.XxA2wG_empty{color:var(--dsw-alias-label-tertiary);padding:0;font-size:13px;line-height:20px}@media (width<=560px){.XxA2wG_phaseList,.XxA2wG_members{padding-left:12px}}";
 		const tagId = "@deepseek-ai/dsh-client-ui-workflow-run/WorkflowRunPanel.module.css";
@@ -19,31 +19,31 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var WorkflowRunPanel_module_css_default = {
-			"phaseHeader": "XxA2wG_phaseHeader",
-			"phaseStatus": "XxA2wG_phaseStatus",
-			"phase": "XxA2wG_phase",
-			"runLeading": "XxA2wG_runLeading",
-			"runHeader": "XxA2wG_runHeader",
-			"runSummary": "XxA2wG_runSummary",
-			"members": "XxA2wG_members",
-			"separator": "XxA2wG_separator",
+			"memberStatus": "XxA2wG_memberStatus",
+			"phaseCount": "XxA2wG_phaseCount",
 			"memberRow": "XxA2wG_memberRow",
-			"phaseTitle": "XxA2wG_phaseTitle",
+			"root": "XxA2wG_root",
+			"runHeader": "XxA2wG_runHeader",
 			"memberButton": "XxA2wG_memberButton",
+			"runSummary": "XxA2wG_runSummary",
+			"memberLabelWrap": "XxA2wG_memberLabelWrap",
 			"memberLabel": "XxA2wG_memberLabel",
 			"phaseList": "XxA2wG_phaseList",
+			"runLeading": "XxA2wG_runLeading",
+			"members": "XxA2wG_members",
+			"phaseTitle": "XxA2wG_phaseTitle",
+			"separator": "XxA2wG_separator",
+			"runTitle": "XxA2wG_runTitle",
 			"empty": "XxA2wG_empty",
-			"phaseCount": "XxA2wG_phaseCount",
-			"dotSlot": "XxA2wG_dotSlot",
-			"memberStatus": "XxA2wG_memberStatus",
-			"root": "XxA2wG_root",
-			"memberLabelWrap": "XxA2wG_memberLabelWrap",
 			"statusTail": "XxA2wG_statusTail",
-			"phaseLeading": "XxA2wG_phaseLeading",
-			"runTitle": "XxA2wG_runTitle"
+			"phaseHeader": "XxA2wG_phaseHeader",
+			"dotSlot": "XxA2wG_dotSlot",
+			"phase": "XxA2wG_phase",
+			"phaseStatus": "XxA2wG_phaseStatus",
+			"phaseLeading": "XxA2wG_phaseLeading"
 		};
 		//#endregion
-		//#region lib/types/client/WorkflowRunPanel.js
+		//#region src/client/WorkflowRunPanel.tsx
 		const STATUS_KEYS = {
 			running: "status.running",
 			completed: "status.completed",
@@ -82,7 +82,7 @@ window.__ModuleLoader__.load({
 		const forcedOpenToggle = () => {};
 		function ManualDisclosure(props) {
 			const [open, setOpen] = (0, react.useState)(false);
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DisclosureRow, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DisclosureRow, {
 				...props,
 				open,
 				expandable: true,
@@ -92,8 +92,8 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function StatusDisclosure({ cleanCycleKey, requiresExpansion, ...props }) {
-			if (!requiresExpansion) return (0, react_jsx_runtime.jsx)(ManualDisclosure, { ...props }, cleanCycleKey);
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DisclosureRow, {
+			if (!requiresExpansion) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ManualDisclosure, { ...props }, cleanCycleKey);
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DisclosureRow, {
 				...props,
 				open: true,
 				expandable: false,
@@ -123,8 +123,8 @@ window.__ModuleLoader__.load({
 			return result;
 		}
 		function RunHeader({ children, count, name, requiresExpansion, status, t }) {
-			return (0, react_jsx_runtime.jsx)(StatusDisclosure, {
-				icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {}),
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StatusDisclosure, {
+				icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {}),
 				title: t("run.title", { name }),
 				requiresExpansion,
 				expandOnRowClick: true,
@@ -133,19 +133,19 @@ window.__ModuleLoader__.load({
 				rowClassName: WorkflowRunPanel_module_css_default.runHeader,
 				leadingClassName: WorkflowRunPanel_module_css_default.runLeading,
 				titleClassName: WorkflowRunPanel_module_css_default.runTitle,
-				collapsedContent: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-					(0, react_jsx_runtime.jsx)("span", {
+				collapsedContent: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						className: WorkflowRunPanel_module_css_default.separator,
 						"aria-hidden": true
 					}),
-					(0, react_jsx_runtime.jsx)("span", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						className: WorkflowRunPanel_module_css_default.runSummary,
 						children: memberCount(count, t)
 					}),
-					(0, react_jsx_runtime.jsxs)("span", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 						className: WorkflowRunPanel_module_css_default.statusTail,
 						"data-status": status,
-						children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: dotState(status) }), (0, react_jsx_runtime.jsx)("span", { children: t(STATUS_KEYS[status]) })]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: dotState(status) }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: t(STATUS_KEYS[status]) })]
 					})
 				] }),
 				children
@@ -153,32 +153,32 @@ window.__ModuleLoader__.load({
 		}
 		function MemberRow({ member, navigable, openSession, t }) {
 			const name = readableMember(member.label, t);
-			const content = (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-				(0, react_jsx_runtime.jsx)("span", {
+			const content = /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: WorkflowRunPanel_module_css_default.dotSlot,
-					children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: dotState(member.status) })
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: dotState(member.status) })
 				}),
-				(0, react_jsx_runtime.jsx)("span", {
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: WorkflowRunPanel_module_css_default.memberLabelWrap,
 					"data-member-label-wrap": true,
-					children: (0, react_jsx_runtime.jsx)("span", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						className: WorkflowRunPanel_module_css_default.memberLabel,
 						"data-member-label": true,
 						children: name
 					})
 				}),
-				(0, react_jsx_runtime.jsx)("span", {
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: WorkflowRunPanel_module_css_default.memberStatus,
 					"data-member-status-text": true,
 					children: t(STATUS_KEYS[member.status])
 				})
 			] });
-			if (!navigable) return (0, react_jsx_runtime.jsx)("div", {
+			if (!navigable) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: WorkflowRunPanel_module_css_default.memberRow,
 				"data-member-status": member.status,
 				children: content
 			});
-			return (0, react_jsx_runtime.jsx)("button", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 				type: "button",
 				className: WorkflowRunPanel_module_css_default.memberButton,
 				"data-member-status": member.status,
@@ -190,8 +190,8 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function PhaseSection({ phase, navigable, openSession, t }) {
-			return (0, react_jsx_runtime.jsx)(StatusDisclosure, {
-				icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {}),
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StatusDisclosure, {
+				icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {}),
 				title: readablePhase(phase.phase, t),
 				cleanCycleKey: phase.members.length,
 				requiresExpansion: phaseRequiresExpansion(phase),
@@ -202,25 +202,25 @@ window.__ModuleLoader__.load({
 				rowClassName: WorkflowRunPanel_module_css_default.phaseHeader,
 				leadingClassName: WorkflowRunPanel_module_css_default.phaseLeading,
 				titleClassName: WorkflowRunPanel_module_css_default.phaseTitle,
-				collapsedContent: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-					(0, react_jsx_runtime.jsx)("span", {
+				collapsedContent: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						className: WorkflowRunPanel_module_css_default.separator,
 						"aria-hidden": true
 					}),
-					(0, react_jsx_runtime.jsx)("span", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						className: WorkflowRunPanel_module_css_default.phaseCount,
 						"data-phase-count": true,
 						children: memberCount(phase.members.length, t)
 					}),
-					(0, react_jsx_runtime.jsx)("span", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						className: WorkflowRunPanel_module_css_default.phaseStatus,
 						"data-phase-status-text": true,
 						children: phaseStatusSummary(phase.members, t)
 					})
 				] }),
-				children: (0, react_jsx_runtime.jsx)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: WorkflowRunPanel_module_css_default.members,
-					children: phase.members.map((member) => (0, react_jsx_runtime.jsx)(MemberRow, {
+					children: phase.members.map((member) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MemberRow, {
 						member,
 						navigable: navigable.includes(member.childId),
 						openSession,
@@ -234,22 +234,22 @@ window.__ModuleLoader__.load({
 			const totalMembers = node.data.phases.reduce((count, phase) => count + phase.members.length, 0);
 			const requiresExpansion = node.data.status !== "completed" || node.data.phases.some(phaseRequiresExpansion);
 			const navigable = useSessions((sessions) => navigableMembers(sessions, node.data.phases, sessionId), _deepseek_ai_dsh_client_runtime_client.shallowEqual);
-			return (0, react_jsx_runtime.jsx)("section", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("section", {
 				className: WorkflowRunPanel_module_css_default.root,
 				"data-workflow-run": true,
 				"data-run-status": node.data.status,
-				children: (0, react_jsx_runtime.jsx)(RunHeader, {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RunHeader, {
 					count: totalMembers,
 					name: node.data.name,
 					requiresExpansion,
 					status: node.data.status,
 					t,
-					children: (0, react_jsx_runtime.jsx)("div", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: WorkflowRunPanel_module_css_default.phaseList,
-						children: node.data.phases.length === 0 ? (0, react_jsx_runtime.jsx)("span", {
+						children: node.data.phases.length === 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: WorkflowRunPanel_module_css_default.empty,
 							children: t("run.empty")
-						}) : node.data.phases.map((phase) => (0, react_jsx_runtime.jsx)(PhaseSection, {
+						}) : node.data.phases.map((phase) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PhaseSection, {
 							phase,
 							navigable,
 							openSession,
@@ -260,7 +260,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `workflowRun` namespace dictionaries. */
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "workflowRun";
@@ -307,7 +307,7 @@ window.__ModuleLoader__.load({
 			"status.interrupted": "Interrupted"
 		};
 		//#endregion
-		//#region lib/types/client/workflow-definition.js
+		//#region src/client/workflow-definition.ts
 		/**
 		* Build a collision-free phase key preserving absent versus empty identity.
 		* @param phase - exact phase string, or null for an omitted field.
@@ -439,8 +439,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/index.js
-		/** Browser plugin for durable workflow-run Conversation Nodes. */
+		//#region src/client/index.ts
 		/** Required services for Definition, keyed renderer, navigation, and copy. */
 		const inject = [
 			"conversationEvents",

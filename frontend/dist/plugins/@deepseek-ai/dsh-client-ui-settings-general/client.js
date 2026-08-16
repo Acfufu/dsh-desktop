@@ -6,9 +6,9 @@ window.__ModuleLoader__.load({
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 		let _deepseek_ai_dsh_client_ui_slots = require("@deepseek-ai/dsh-client-ui-slots");
 		let _deepseek_ai_dsh_client_web_react = require("@deepseek-ai/dsh-client-web-react");
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
 		//#region ../../../node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs
 		function r(e) {
@@ -36,28 +36,28 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var SettingsRoot_module_css_default = {
-			"active": "_44TZGq_active",
-			"close": "_44TZGq_close",
-			"navIcon": "_44TZGq_navIcon",
-			"nav": "_44TZGq_nav",
-			"trigger": "_44TZGq_trigger",
-			"rail": "_44TZGq_rail",
-			"actions": "_44TZGq_actions",
-			"options": "_44TZGq_options",
-			"hiddenLabel": "_44TZGq_hiddenLabel",
-			"triggerLabel": "_44TZGq_triggerLabel",
-			"panel": "_44TZGq_panel",
-			"mask": "_44TZGq_mask",
-			"overlay": "_44TZGq_overlay",
-			"navCell": "_44TZGq_navCell",
-			"content": "_44TZGq_content",
-			"navLabel": "_44TZGq_navLabel",
 			"header": "_44TZGq_header",
+			"navLabel": "_44TZGq_navLabel",
+			"trigger": "_44TZGq_trigger",
+			"overlay": "_44TZGq_overlay",
+			"active": "_44TZGq_active",
+			"actions": "_44TZGq_actions",
+			"nav": "_44TZGq_nav",
+			"mask": "_44TZGq_mask",
+			"close": "_44TZGq_close",
+			"options": "_44TZGq_options",
+			"content": "_44TZGq_content",
+			"panel": "_44TZGq_panel",
 			"navList": "_44TZGq_navList",
+			"triggerLabel": "_44TZGq_triggerLabel",
+			"hiddenLabel": "_44TZGq_hiddenLabel",
+			"rail": "_44TZGq_rail",
+			"navCell": "_44TZGq_navCell",
+			"navIcon": "_44TZGq_navIcon",
 			"navTitle": "_44TZGq_navTitle"
 		};
 		//#endregion
-		//#region lib/types/client/SettingsRoot.js
+		//#region src/client/SettingsRoot.tsx
 		/**
 		* Settings shell root: the sidebar-foot trigger row plus the centered modal
 		* panel (figma 501:29947, 1080x700) with the section nav rail. The shell is
@@ -72,19 +72,19 @@ window.__ModuleLoader__.load({
 		*/
 		/** Nav glyph by section id; unknown ids fall back to the settings gear. */
 		function navIcon(id) {
-			if (id === "models") return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconDataOutline16, {
+			if (id === "models") return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconDataOutline16, {
 				className: SettingsRoot_module_css_default.navIcon,
 				size: 16
 			});
-			if (id === "agent-presets") return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconAgentPresetOutline16, {
+			if (id === "agent-presets") return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconAgentPresetOutline16, {
 				className: SettingsRoot_module_css_default.navIcon,
 				size: 16
 			});
-			if (id === "plugins") return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPersonalizationOutline16, {
+			if (id === "plugins") return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPersonalizationOutline16, {
 				className: SettingsRoot_module_css_default.navIcon,
 				size: 16
 			});
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSettingsOutline16, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSettingsOutline16, {
 				className: SettingsRoot_module_css_default.navIcon,
 				size: 16
 			});
@@ -110,57 +110,57 @@ window.__ModuleLoader__.load({
 			(0, react.useEffect)(() => {
 				closeButton.current?.focus();
 			}, []);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: SettingsRoot_module_css_default.overlay,
 				role: "presentation",
-				children: [(0, react_jsx_runtime.jsx)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: SettingsRoot_module_css_default.mask,
 					"aria-hidden": "true",
 					onClick: onClose
-				}), (0, react_jsx_runtime.jsxs)("div", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: SettingsRoot_module_css_default.panel,
 					role: "dialog",
 					"aria-modal": "true",
 					"aria-labelledby": titleId,
-					children: [(0, react_jsx_runtime.jsxs)("nav", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("nav", {
 						className: SettingsRoot_module_css_default.nav,
-						children: [(0, react_jsx_runtime.jsx)("div", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: SettingsRoot_module_css_default.navTitle,
 							id: titleId,
 							children: renderSlot("settings.header", {})
-						}), (0, react_jsx_runtime.jsx)("div", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: SettingsRoot_module_css_default.navList,
-							children: rows.map((row) => (0, react_jsx_runtime.jsxs)("button", {
+							children: rows.map((row) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: clsx(SettingsRoot_module_css_default.navCell, row.id === active && SettingsRoot_module_css_default.active),
 								"aria-current": row.id === active ? "true" : void 0,
 								onClick: () => {
 									onSelect(row.id);
 								},
-								children: [navIcon(row.id), (0, react_jsx_runtime.jsx)("span", {
+								children: [navIcon(row.id), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: SettingsRoot_module_css_default.navLabel,
 									children: row.label
 								})]
 							}, row.id))
 						})]
-					}), (0, react_jsx_runtime.jsxs)("div", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: SettingsRoot_module_css_default.content,
-						children: [(0, react_jsx_runtime.jsxs)("div", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: SettingsRoot_module_css_default.header,
-							children: [(0, react_jsx_runtime.jsx)("div", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: SettingsRoot_module_css_default.actions,
 								children: renderSlot("settings.action", {})
-							}), (0, react_jsx_runtime.jsxs)("button", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								ref: closeButton,
 								type: "button",
 								className: SettingsRoot_module_css_default.close,
 								onClick: onClose,
-								children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, { size: 14 }), (0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, { size: 14 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: SettingsRoot_module_css_default.hiddenLabel,
 									children: renderSlot("settings.close", {})
 								})]
 							})]
-						}), (0, react_jsx_runtime.jsx)("div", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: SettingsRoot_module_css_default.options,
 							children: active !== void 0 && renderSlot("settings.section", { close: onClose }, { only: active })
 						})]
@@ -200,8 +200,8 @@ window.__ModuleLoader__.load({
 					return new Set([...previous, id]);
 				});
 			}, []);
-			return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-				(0, react_jsx_runtime.jsx)("button", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 					type: "button",
 					className: clsx(SettingsRoot_module_css_default.trigger, !wide && SettingsRoot_module_css_default.rail),
 					"aria-haspopup": "dialog",
@@ -211,7 +211,7 @@ window.__ModuleLoader__.load({
 					},
 					children: renderSlot("settings.trigger", { wide })
 				}),
-				open && (0, react_jsx_runtime.jsx)(SettingsPanel, {
+				open && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SettingsPanel, {
 					rows,
 					renderSlot,
 					activeId,
@@ -240,7 +240,7 @@ window.__ModuleLoader__.load({
 		}
 		var chrome_module_css_default = { "triggerLabel": "inFkDq_triggerLabel" };
 		//#endregion
-		//#region lib/types/client/chrome.js
+		//#region src/client/chrome.tsx
 		/**
 		* Shell chrome content registered into the shell's trigger/header seats: the
 		* trigger row icon + label (figma sidebar foot) and the panel title text.
@@ -253,7 +253,7 @@ window.__ModuleLoader__.load({
 		* @returns the trigger content fragment.
 		*/
 		function TriggerContent({ wide, t }) {
-			return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [wide ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSettingsOutline16, { size: 16 }) : (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSettingsOutline14, { size: 18 }), wide && (0, react_jsx_runtime.jsx)("span", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [wide ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSettingsOutline16, { size: 16 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSettingsOutline14, { size: 18 }), wide && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				className: chrome_module_css_default.triggerLabel,
 				children: t("trigger")
 			})] });
@@ -264,7 +264,7 @@ window.__ModuleLoader__.load({
 		* @returns the title text node.
 		*/
 		function HeaderContent({ t }) {
-			return (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: t("title") });
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: t("title") });
 		}
 		/**
 		* Render the close button's visually-hidden label text.
@@ -272,7 +272,7 @@ window.__ModuleLoader__.load({
 		* @returns the label text node.
 		*/
 		function CloseLabel({ t }) {
-			return (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: t("close") });
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: t("close") });
 		}
 		//#endregion
 		//#region \0dsh-css:/Users/acfufu/Codehub/deepseek-harness/packages/client/ui-settings-general/src/client/GeneralSection.module.css.mjs
@@ -287,14 +287,14 @@ window.__ModuleLoader__.load({
 		}
 		var GeneralSection_module_css_default = { "section": "_7sI9Mq_section" };
 		//#endregion
-		//#region lib/types/client/GeneralSection.js
+		//#region src/client/GeneralSection.tsx
 		/**
 		* Render the General section content column.
 		* @param props - composed slot props (contract/slots.ts).
 		* @returns the section element tree.
 		*/
 		function GeneralSection({ renderSlot }) {
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: GeneralSection_module_css_default.section,
 				children: renderSlot("settings.general.item", {})
 			});
@@ -315,7 +315,7 @@ window.__ModuleLoader__.load({
 			"action": "smobUq_action"
 		};
 		//#endregion
-		//#region lib/types/client/SettingsDocumentAction.js
+		//#region src/client/SettingsDocumentAction.tsx
 		/** Optional settings-header action for opening a file-backed Host document. */
 		/**
 		* Render the open-document action only after Host metadata confirms document availability.
@@ -328,13 +328,13 @@ window.__ModuleLoader__.load({
 				controller.load();
 			}, [controller]);
 			if (state.status !== "ready") return null;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: SettingsDocumentAction_module_css_default.action,
-				children: [state.error === null ? null : (0, react_jsx_runtime.jsx)("span", {
+				children: [state.error === null ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: SettingsDocumentAction_module_css_default.error,
 					role: "alert",
 					children: t("openDocument.error")
-				}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 					variant: "outline",
 					size: "sm",
 					disabled: state.opening,
@@ -346,8 +346,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/settings-document-store.js
-		/** State owner for the optional local settings-document action. */
+		//#region src/client/settings-document-store.ts
 		function messageOf(error) {
 			return error instanceof Error ? error.message : String(error);
 		}
@@ -433,7 +432,7 @@ window.__ModuleLoader__.load({
 			controller.load();
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** Shell chrome and General-nav dictionaries; feature rows own their copy. */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -454,7 +453,7 @@ window.__ModuleLoader__.load({
 			"general.nav": "General"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin (shell chrome + General copy). */
 		const NS = "settings";
 		/**

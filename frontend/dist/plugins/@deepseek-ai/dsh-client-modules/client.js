@@ -4,7 +4,7 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		//#region lib/types/client/system.js
+		//#region src/client/system.ts
 		/** Default bundle-load hook: same-origin external classic script. */
 		const defaultLoadBundle = (url) => new Promise((resolve, reject) => {
 			const el = document.createElement("script");
@@ -167,38 +167,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/manifest.js
-		/**
-		* Client module system: the browser peer of Node's internal ESM loader, built
-		* as a lazy CJS table. The vendored cordis Loader consumes this object
-		* through its `internal` contract (the only call site is `EntryTree.import` →
-		* `internal.import`), which keeps entry governance (fiber lifecycle, inject
-		* waiting, update/refresh) entirely on the vendored side while this package
-		* owns code arrival.
-		*
-		* Lazy CJS model: executing a plugin bundle only REGISTERS its
-		* factory (`window.__ModuleLoader__.load({id, factory})`); every module body
-		* side effect — including CSS injection — lives inside the factory closure
-		* and runs at materialization, not at script execution. Materialization
-		* (factory(require) → exports) happens on first import/require and is
-		* memoized in {@link ClientModuleLoader.loadCache}; a factory that requires
-		* another registered-but-unmaterialized module materializes it recursively,
-		* so load order needs no external sequencing.
-		*
-		* Resolution branch order (import): seed word → shell instance; memoized
-		* record → exports; static registry (shell-own modules, e.g. app-shell) →
-		* module; registered factory → materialize; graph row → load + materialize;
-		* anything else → throw (loud — the runtime mirror of the
-		* build-time bundle purity gate). The synchronous `require` handed to
-		* factories walks the same order minus the load branch: loading is async,
-		* so only already-registered bundles can be required — and cross-plugin value
-		* imports are a build error anyway.
-		*
-		* This file is the browser-safe contract face (zero node imports): the
-		* `__DSH_BOOT__` wire types, the boot-manifest parser, and the boundaries around
-		* {@link ClientModuleSystem}. The package root is the host-side service that
-		* composes the wire.
-		*/
+		//#region src/client/manifest.ts
 		/**
 		* Parse `window.__DSH_BOOT__` into the two consumer views. Wire boundary:
 		* a missing or malformed graph throws (the shell shows the loud failure —
@@ -238,7 +207,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/**
 		* Enroll the kernel-built module system as `ctx.modules`.
 		* @param ctx - client root context.

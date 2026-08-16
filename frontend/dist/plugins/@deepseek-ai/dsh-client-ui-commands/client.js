@@ -6,10 +6,10 @@ window.__ModuleLoader__.load({
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 		let _deepseek_ai_cordis = require("@deepseek-ai/cordis");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
-		//#region lib/types/client/directory.js
+		let react_jsx_runtime = require("react/jsx-runtime");
+		//#region src/client/directory.ts
 		/** One session key's cache cell. */
 		var Entry = class {
 			state = "cold";
@@ -148,7 +148,7 @@ window.__ModuleLoader__.load({
 			return signal.reason instanceof Error ? signal.reason : /* @__PURE__ */ new Error("command directory wait aborted");
 		}
 		//#endregion
-		//#region lib/types/client/popup.js
+		//#region src/client/popup.ts
 		/**
 		* Headless popupSelect shell state: one controller per client
 		* session, owned by CommandUiRuntime's per-session map and torn down by the
@@ -416,7 +416,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/service.js
+		//#region src/client/service.ts
 		/**
 		* CommandUiRuntime (`ctx.commandUi`): the '/' command source over the
 		* session-keyed directory, the client-contribution registry, and the
@@ -855,21 +855,21 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var PopupSelectView_module_css_default = {
-			"detail": "_kuEHq_detail",
-			"search": "_kuEHq_search",
-			"retry": "_kuEHq_retry",
-			"status": "_kuEHq_status",
-			"check": "_kuEHq_check",
 			"error": "_kuEHq_error",
-			"errorText": "_kuEHq_errorText",
-			"viewport": "_kuEHq_viewport",
 			"rowActive": "_kuEHq_rowActive",
-			"row": "_kuEHq_row",
 			"label": "_kuEHq_label",
-			"card": "_kuEHq_card"
+			"search": "_kuEHq_search",
+			"detail": "_kuEHq_detail",
+			"check": "_kuEHq_check",
+			"retry": "_kuEHq_retry",
+			"viewport": "_kuEHq_viewport",
+			"status": "_kuEHq_status",
+			"errorText": "_kuEHq_errorText",
+			"card": "_kuEHq_card",
+			"row": "_kuEHq_row"
 		};
 		//#endregion
-		//#region lib/types/client/PopupSelectView.js
+		//#region src/client/PopupSelectView.tsx
 		/**
 		* Official popupSelect shell: renders one session's PopupSelectController
 		* store into the conversation.input.overlay anchor. Unlike the slash menu
@@ -940,14 +940,14 @@ window.__ModuleLoader__.load({
 					default:
 				}
 			};
-			return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [state.confirming === null && (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [state.confirming === null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				ref: cardRef,
 				className: PopupSelectView_module_css_default.card,
 				style: { maxHeight },
 				"aria-label": t("overlay.aria", { command: String(state.command) }),
 				onKeyDown,
 				children: [
-					(0, react_jsx_runtime.jsx)("input", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 						ref: searchRef,
 						className: PopupSelectView_module_css_default.search,
 						type: "text",
@@ -959,13 +959,13 @@ window.__ModuleLoader__.load({
 							popup.setSearch(ev.currentTarget.value);
 						}
 					}),
-					state.error !== null && (0, react_jsx_runtime.jsxs)("div", {
+					state.error !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: PopupSelectView_module_css_default.error,
 						role: "alert",
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: PopupSelectView_module_css_default.errorText,
 							children: state.error
-						}), state.status === "failed" && (0, react_jsx_runtime.jsx)("button", {
+						}), state.status === "failed" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: PopupSelectView_module_css_default.retry,
 							onClick: () => {
@@ -974,23 +974,23 @@ window.__ModuleLoader__.load({
 							children: t("retry")
 						})]
 					}),
-					state.status === "pending" && (0, react_jsx_runtime.jsx)("div", {
+					state.status === "pending" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: PopupSelectView_module_css_default.status,
 						children: t("status.loading")
 					}),
-					state.submitting && (0, react_jsx_runtime.jsx)("div", {
+					state.submitting && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: PopupSelectView_module_css_default.status,
 						children: t("status.applying")
 					}),
-					state.status === "ready" && rows.length === 0 && (0, react_jsx_runtime.jsx)("div", {
+					state.status === "ready" && rows.length === 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: PopupSelectView_module_css_default.status,
 						children: t("status.empty")
 					}),
-					state.status === "ready" && (0, react_jsx_runtime.jsx)("div", {
+					state.status === "ready" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						role: "listbox",
 						"aria-label": t("listbox.aria", { command: String(state.command) }),
 						className: PopupSelectView_module_css_default.viewport,
-						children: rows.map((option, index) => (0, react_jsx_runtime.jsxs)("div", {
+						children: rows.map((option, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							role: "option",
 							"aria-selected": index === state.active,
 							className: clsx(PopupSelectView_module_css_default.row, index === state.active && PopupSelectView_module_css_default.rowActive),
@@ -1001,23 +1001,23 @@ window.__ModuleLoader__.load({
 								popup.highlight(index);
 							},
 							children: [
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: PopupSelectView_module_css_default.label,
 									children: option.label
 								}),
-								option.detail !== void 0 && (0, react_jsx_runtime.jsx)("span", {
+								option.detail !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: PopupSelectView_module_css_default.detail,
 									children: option.detail
 								}),
-								option.active === true && (0, react_jsx_runtime.jsx)("span", {
+								option.active === true && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: PopupSelectView_module_css_default.check,
-									children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, {})
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, {})
 								})
 							]
 						}, option.id))
 					})
 				]
-			}), confirmation !== void 0 && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.RiskConfirmation, {
+			}), confirmation !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.RiskConfirmation, {
 				open: true,
 				title: confirmation.title,
 				description: confirmation.description,
@@ -1037,7 +1037,7 @@ window.__ModuleLoader__.load({
 			})] });
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `command` namespace dictionaries (the popupSelect shell's copy). */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -1060,7 +1060,7 @@ window.__ModuleLoader__.load({
 			"listbox.aria": "/{command} matches"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "command";
 		/** Required services: the '/' source registry, session scopes, commands Remote, and locale registry. */

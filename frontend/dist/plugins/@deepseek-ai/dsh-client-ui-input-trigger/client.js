@@ -6,10 +6,10 @@ window.__ModuleLoader__.load({
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 		let _deepseek_ai_cordis = require("@deepseek-ai/cordis");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
-		//#region lib/types/core/detect.js
+		let react_jsx_runtime = require("react/jsx-runtime");
+		//#region src/core/detect.ts
 		const WORD_CHAR = /[\p{L}\p{N}_]/u;
 		const WHITESPACE = /\s/u;
 		/**
@@ -68,7 +68,7 @@ window.__ModuleLoader__.load({
 			return null;
 		};
 		//#endregion
-		//#region lib/types/core/menu.js
+		//#region src/core/menu.ts
 		/** Closed rest state with generation 0; store initializer and test seed. */
 		const MENU_CLOSED = {
 			open: false,
@@ -207,7 +207,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/controller.js
+		//#region src/client/controller.ts
 		/**
 		* Per-session trigger pipeline state and orchestration. All mutation stays
 		* inside; MenuView renders from {@link InputTriggerController.menu} and routes
@@ -567,7 +567,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/service.js
+		//#region src/client/service.ts
 		/**
 		* InputTriggerService (`ctx.inputTriggers`): the root half of the trigger pipeline — the
 		* stateless source registry plus the per-session controller map. Every piece
@@ -674,17 +674,17 @@ window.__ModuleLoader__.load({
 		}
 		var MenuView_module_css_default = {
 			"viewport": "xpZ1-a_viewport",
-			"groupTitle": "xpZ1-a_groupTitle",
-			"menu": "xpZ1-a_menu",
-			"itemIcon": "xpZ1-a_itemIcon",
-			"itemName": "xpZ1-a_itemName",
-			"itemDescription": "xpZ1-a_itemDescription",
 			"loading": "xpZ1-a_loading",
 			"active": "xpZ1-a_active",
-			"item": "xpZ1-a_item"
+			"menu": "xpZ1-a_menu",
+			"itemName": "xpZ1-a_itemName",
+			"item": "xpZ1-a_item",
+			"groupTitle": "xpZ1-a_groupTitle",
+			"itemDescription": "xpZ1-a_itemDescription",
+			"itemIcon": "xpZ1-a_itemIcon"
 		};
 		//#endregion
-		//#region lib/types/client/MenuView.js
+		//#region src/client/MenuView.tsx
 		/**
 		* Trigger candidate menu: renders the InputTriggerService menu store into the
 		* conversation.input.overlay anchor. Closed state renders null (the overlay
@@ -728,27 +728,27 @@ window.__ModuleLoader__.load({
 				};
 			}, [state.open, onDismiss]);
 			if (!state.open) return null;
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				ref: listRef,
 				className: MenuView_module_css_default.menu,
 				style: { maxHeight },
 				role: "listbox",
 				"aria-label": t("suggestions.aria"),
 				"aria-activedescendant": highlight !== null ? optionId(highlight.source, highlight.index) : void 0,
-				children: (0, react_jsx_runtime.jsx)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: MenuView_module_css_default.viewport,
-					children: state.groups.map((group) => group.status === "ready" && group.items.length === 0 ? null : (0, react_jsx_runtime.jsxs)(react.Fragment, { children: [(0, react_jsx_runtime.jsx)("div", {
+					children: state.groups.map((group) => group.status === "ready" && group.items.length === 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: MenuView_module_css_default.groupTitle,
 						role: "presentation",
 						"data-source": group.source,
 						children: t(group.source)
-					}), group.status === "pending" ? (0, react_jsx_runtime.jsx)("div", {
+					}), group.status === "pending" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: MenuView_module_css_default.loading,
 						"data-source": group.source,
 						children: t("loading")
 					}) : group.items.map((item, index) => {
 						const active = highlight !== null && highlight.source === group.source && highlight.index === index;
-						return (0, react_jsx_runtime.jsxs)("button", {
+						return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 							id: optionId(group.source, index),
 							type: "button",
 							role: "option",
@@ -759,16 +759,16 @@ window.__ModuleLoader__.load({
 								onPick(group.source, index);
 							},
 							children: [
-								item.icon !== void 0 && (0, react_jsx_runtime.jsx)("span", {
+								item.icon !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: MenuView_module_css_default.itemIcon,
 									"aria-hidden": true,
 									children: item.icon
 								}),
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: MenuView_module_css_default.itemName,
 									children: item.name
 								}),
-								item.description !== void 0 && (0, react_jsx_runtime.jsx)("span", {
+								item.description !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: MenuView_module_css_default.itemDescription,
 									children: item.description
 								})
@@ -779,7 +779,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/**
 		* `slash.menu` namespace dictionaries: group titles keyed by source name
 		* (the lookup chain returns the key itself, so an unknown source shows its
@@ -802,7 +802,7 @@ window.__ModuleLoader__.load({
 			"suggestions.aria": "Trigger suggestions"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Namespace owning the candidate-menu copy. */
 		const MENU_NS = "slash.menu";
 		/** Required services: controller resolution reads the session scope tree; the menu copy is localized. */

@@ -4,12 +4,12 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
 		let _deepseek_ai_dsh_client_schema_form = require("@deepseek-ai/dsh-client-schema-form");
-		//#region lib/types/client/presentation.js
+		//#region src/client/presentation.ts
 		/** Machine value of the preset that requires an explicit GUI risk gate. */
 		const FULL_ACCESS_PRESET = "danger-full-access";
 		/**
@@ -42,15 +42,15 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var PermissionRow_module_css_default = {
-			"title": "csVwmq_title",
 			"rowText": "csVwmq_rowText",
 			"desc": "csVwmq_desc",
+			"title": "csVwmq_title",
 			"row": "csVwmq_row",
 			"selector": "csVwmq_selector",
 			"chevron": "csVwmq_chevron"
 		};
 		//#endregion
-		//#region lib/types/client/PermissionRow.js
+		//#region src/client/PermissionRow.tsx
 		/**
 		* Permission preference row: the default preset for subsequently created
 		* sessions. Current-session switches remain on the composer `/permission`
@@ -80,19 +80,19 @@ window.__ModuleLoader__.load({
 			const busy = state.status === "loading" || state.status === "saving" || confirmingFullAccess;
 			const label = selected?.label ?? (busy ? t("loading") : t("unavailable"));
 			const description = state.error ?? t("description");
-			return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: PermissionRow_module_css_default.row,
-				children: [(0, react_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: PermissionRow_module_css_default.rowText,
-					children: [(0, react_jsx_runtime.jsx)("div", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: PermissionRow_module_css_default.title,
 						children: t("title")
-					}), (0, react_jsx_runtime.jsx)("div", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: PermissionRow_module_css_default.desc,
 						role: state.error === null ? void 0 : "alert",
 						children: description
 					})]
-				}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Menu, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Menu, {
 					open,
 					onClose: () => {
 						setOpen(false);
@@ -114,7 +114,7 @@ window.__ModuleLoader__.load({
 					},
 					align: "end",
 					portal: true,
-					anchor: (0, react_jsx_runtime.jsxs)("button", {
+					anchor: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: PermissionRow_module_css_default.selector,
 						"aria-haspopup": "menu",
@@ -123,10 +123,10 @@ window.__ModuleLoader__.load({
 						onClick: () => {
 							setOpen((value) => !value);
 						},
-						children: [label, (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: PermissionRow_module_css_default.chevron })]
+						children: [label, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: PermissionRow_module_css_default.chevron })]
 					})
 				})]
-			}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.RiskConfirmation, {
+			}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.RiskConfirmation, {
 				open: confirmingFullAccess,
 				title: t("confirm.title"),
 				description: t("confirm.description"),
@@ -148,7 +148,7 @@ window.__ModuleLoader__.load({
 			})] });
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `settings.permission` namespace dictionaries (the Permission row's copy). */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -191,12 +191,7 @@ window.__ModuleLoader__.load({
 			"confirm.enable": "Enable Full access"
 		};
 		//#endregion
-		//#region lib/types/client/settings-store.js
-		/**
-		* Permission default-settings controller. The host descriptor supplies the
-		* current value and the dynamic preset enum; writes target only
-		* `defaultPreset` and carry the descriptor revision.
-		*/
+		//#region src/client/settings-store.ts
 		/** Permission's settings namespace on the host wire. */
 		const PERMISSION_SETTINGS_NS = "permission";
 		/**
@@ -338,7 +333,7 @@ window.__ModuleLoader__.load({
 			controller.load();
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services (cordis fiber inject). */
 		const inject = [
 			"commandUi",

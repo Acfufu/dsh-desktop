@@ -27,12 +27,12 @@ window.__ModuleLoader__.load({
 		}) : target, mod));
 		//#endregion
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		react = __toESM(react, 1);
 		let react_dom = require("react-dom");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
-		//#region lib/types/client/duration-store.js
+		let react_jsx_runtime = require("react/jsx-runtime");
+		//#region src/client/duration-store.ts
 		/**
 		* Create the browser-wide trajectory duration preference source.
 		* @returns a persisted source shared by every session view in one plugin lifecycle.
@@ -41,7 +41,7 @@ window.__ModuleLoader__.load({
 			return (0, _deepseek_ai_dsh_client_runtime_client.createSnapshotStore)(false, { persist: { name: "dsh.trajectory.duration" } });
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `trajectory` namespace dictionaries (view tab label + toolbar strings). */
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "trajectory";
@@ -80,7 +80,7 @@ window.__ModuleLoader__.load({
 			"toolbar.searchPlaceholder": "Search"
 		};
 		//#endregion
-		//#region lib/types/client/trajectory-definition-common.js
+		//#region src/client/trajectory-definition-common.ts
 		/**
 		* Wrap one contribution in the Engine-owned target envelope.
 		*
@@ -101,7 +101,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-assistant-definition.js
+		//#region src/client/trajectory-assistant-definition.ts
 		function initialState(turn, step, startSeq, startTime, started) {
 			return {
 				turn,
@@ -405,7 +405,7 @@ window.__ModuleLoader__.load({
 			ctx.conversationEvents.register(trajectoryTurnEndDefinition);
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-compaction-definition.js
+		//#region src/client/trajectory-compaction-definition.ts
 		function checkpointId(event) {
 			if (event.type !== "user/message") return void 0;
 			const source = event.data.source;
@@ -520,7 +520,7 @@ window.__ModuleLoader__.load({
 			ctx.conversationEvents.register(trajectorySessionEndDefinition);
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-message-definitions.js
+		//#region src/client/trajectory-message-definitions.ts
 		function applySplice(previous, splice) {
 			const pending = [...previous?.state.pending ?? []];
 			const claimed = new Set(previous?.state.claimed ?? []);
@@ -595,7 +595,7 @@ window.__ModuleLoader__.load({
 			ctx.conversationEvents.register(trajectoryMessageDefinition);
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-request-header-definition.js
+		//#region src/client/trajectory-request-header-definition.ts
 		function requestPrompt(match) {
 			if (match.event.type !== "request/header") throw new Error("trajectory-request-header start requires request/header");
 			const header = match.event.data.header;
@@ -653,7 +653,7 @@ window.__ModuleLoader__.load({
 			ctx.conversationEvents.register(trajectoryRequestHeaderDefinition);
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-snapshot-builder.js
+		//#region src/client/trajectory-snapshot-builder.ts
 		const EMPTY_LIST = [];
 		/** Stable empty target used until a Session has assembled Trajectory records. */
 		const EMPTY_TRAJECTORY_SNAPSHOT = {
@@ -862,7 +862,7 @@ window.__ModuleLoader__.load({
 			ctx.conversationViews.register(trajectoryViewDefinition);
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-tool-definition.js
+		//#region src/client/trajectory-tool-definition.ts
 		const MAX_DEPTH = 256;
 		function rootCall(match) {
 			if (match.event.type !== "tool/call") throw new Error("trajectory-tool-call start requires tool/call");
@@ -2893,8 +2893,7 @@ window.__ModuleLoader__.load({
 			return result;
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-record.js
-		/** Shared trajectory record data and formatting contracts. */
+		//#region src/client/trajectory-record.ts
 		/**
 		* Resolve the identity that survives prepending older projected records.
 		* @param cell - Projected trajectory record.
@@ -2924,8 +2923,7 @@ window.__ModuleLoader__.load({
 			return formatDurationMillis(seconds === null ? null : seconds * 1e3);
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-virtual-rows.js
-		/** Pure projection from trajectory records to measurable virtual ledger rows. */
+		//#region src/client/trajectory-virtual-rows.ts
 		const CONTENT_ROW_HEIGHT = 30;
 		const COLLAPSED_SUMMARY_HEIGHT = 20;
 		const TERMINAL_BOUNDARY_HEIGHT = 9;
@@ -2974,7 +2972,7 @@ window.__ModuleLoader__.load({
 			return rows;
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-preview.js
+		//#region src/client/trajectory-preview.ts
 		/** Bounded Markdown-to-text projection shared by trajectory consumers. */
 		const PREVIEW_SOURCE_CHARACTERS = 2048;
 		const PREVIEW_OUTPUT_CHARACTERS = 512;
@@ -3001,155 +2999,155 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var TrajectoryTable_module_css_default = {
-			"toolCatalogFullDescription": "_5vxwIW_toolCatalogFullDescription",
-			"detailsTitle": "_5vxwIW_detailsTitle",
-			"trajectory-table": "_5vxwIW_trajectory-table",
-			"detailBody": "_5vxwIW_detailBody",
-			"panelImageLinkPreview": "_5vxwIW_panelImageLinkPreview",
-			"selectionRail": "_5vxwIW_selectionRail",
-			"overview": "_5vxwIW_overview",
-			"sourceBlock": "_5vxwIW_sourceBlock",
-			"thinkingQuoteOnlyPreview": "_5vxwIW_thinkingQuoteOnlyPreview",
-			"jsonPreview": "_5vxwIW_jsonPreview",
-			"errorPayload": "_5vxwIW_errorPayload",
-			"thinkingQuote": "_5vxwIW_thinkingQuote",
-			"user": "_5vxwIW_user",
-			"resultRequest": "_5vxwIW_resultRequest",
-			"thinkingToggle": "_5vxwIW_thinkingToggle",
-			"messageImagesPreview": "_5vxwIW_messageImagesPreview",
-			"collapsedTurnText": "_5vxwIW_collapsedTurnText",
-			"turnLabelFull": "_5vxwIW_turnLabelFull",
-			"close": "_5vxwIW_close",
-			"requestTokenDetail": "_5vxwIW_requestTokenDetail",
-			"requestDetailsDot": "_5vxwIW_requestDetailsDot",
-			"overviewHierarchyJumpIconTight": "_5vxwIW_overviewHierarchyJumpIconTight",
-			"requestBoundaryControlActive": "_5vxwIW_requestBoundaryControlActive",
-			"schemaTree": "_5vxwIW_schemaTree",
-			"sourceBlockJumpTarget": "_5vxwIW_sourceBlockJumpTarget",
-			"usagePanel": "_5vxwIW_usagePanel",
-			"overviewHeading": "_5vxwIW_overviewHeading",
-			"toolCatalogSummary": "_5vxwIW_toolCatalogSummary",
-			"turnLabelCompact": "_5vxwIW_turnLabelCompact",
-			"promptDiff": "_5vxwIW_promptDiff",
-			"requestDetailsName": "_5vxwIW_requestDetailsName",
-			"overviewTitleIcon": "_5vxwIW_overviewTitleIcon",
-			"historyLoadButton": "_5vxwIW_historyLoadButton",
-			"resultBlockText": "_5vxwIW_resultBlockText",
-			"overviewSection": "_5vxwIW_overviewSection",
-			"systemNeutral": "_5vxwIW_systemNeutral",
-			"assistantVioletBright": "_5vxwIW_assistantVioletBright",
-			"inlineResultText": "_5vxwIW_inlineResultText",
-			"promptDiffLineadded": "_5vxwIW_promptDiffLineadded",
-			"overviewTitle": "_5vxwIW_overviewTitle",
-			"schemaIntro": "_5vxwIW_schemaIntro",
-			"messageImages": "_5vxwIW_messageImages",
-			"toolCatalogDescription": "_5vxwIW_toolCatalogDescription",
-			"schemaName": "_5vxwIW_schemaName",
-			"sourceBlockJumpIcon": "_5vxwIW_sourceBlockJumpIcon",
-			"turnLabelActive": "_5vxwIW_turnLabelActive",
-			"collapsedTurnEllipsis": "_5vxwIW_collapsedTurnEllipsis",
-			"arrow": "_5vxwIW_arrow",
-			"historyLoadRow": "_5vxwIW_historyLoadRow",
-			"visuallyHidden": "_5vxwIW_visuallyHidden",
-			"sourceBlockContent": "_5vxwIW_sourceBlockContent",
-			"resultBlocks": "_5vxwIW_resultBlocks",
-			"split": "_5vxwIW_split",
-			"details": "_5vxwIW_details",
-			"timestampToggle": "_5vxwIW_timestampToggle",
-			"contentColumn": "_5vxwIW_contentColumn",
-			"compacted": "_5vxwIW_compacted",
-			"promptDiffTitle": "_5vxwIW_promptDiffTitle",
-			"assistantToolCallsPreview": "_5vxwIW_assistantToolCallsPreview",
-			"promptDiffLinemeta": "_5vxwIW_promptDiffLinemeta",
-			"schemaDescription": "_5vxwIW_schemaDescription",
-			"schema": "_5vxwIW_schema",
-			"assistantContentRendered": "_5vxwIW_assistantContentRendered",
-			"toolCallPayload": "_5vxwIW_toolCallPayload",
-			"event": "_5vxwIW_event",
-			"kindTagIcon": "_5vxwIW_kindTagIcon",
-			"subtoolAmber": "_5vxwIW_subtoolAmber",
-			"jsonPayload": "_5vxwIW_jsonPayload",
-			"table": "_5vxwIW_table",
 			"detailTabActive": "_5vxwIW_detailTabActive",
-			"kindSlot": "_5vxwIW_kindSlot",
+			"eventInner": "_5vxwIW_eventInner",
+			"assistantToolCallArgs": "_5vxwIW_assistantToolCallArgs",
+			"trajectory-table": "_5vxwIW_trajectory-table",
+			"assistantContent": "_5vxwIW_assistantContent",
+			"schemaParameters": "_5vxwIW_schemaParameters",
+			"resultPreview": "_5vxwIW_resultPreview",
+			"table": "_5vxwIW_table",
+			"requestTokenDetail": "_5vxwIW_requestTokenDetail",
+			"error": "_5vxwIW_error",
+			"assistantToolCallText": "_5vxwIW_assistantToolCallText",
+			"toolCatalogItem": "_5vxwIW_toolCatalogItem",
+			"jsonPayload": "_5vxwIW_jsonPayload",
 			"promptDiffLinecontext": "_5vxwIW_promptDiffLinecontext",
-			"sourceBlockHeader": "_5vxwIW_sourceBlockHeader",
-			"panelImageLink": "_5vxwIW_panelImageLink",
+			"content": "_5vxwIW_content",
+			"promptDiff": "_5vxwIW_promptDiff",
+			"toolCatalogFullDescription": "_5vxwIW_toolCatalogFullDescription",
+			"schemaParametersTitle": "_5vxwIW_schemaParametersTitle",
 			"tablePane": "_5vxwIW_tablePane",
-			"noPayload": "_5vxwIW_noPayload",
-			"assistantToolCalls": "_5vxwIW_assistantToolCalls",
-			"thinkingChevron": "_5vxwIW_thinkingChevron",
-			"collapsedTurnContent": "_5vxwIW_collapsedTurnContent",
+			"detailsHeader": "_5vxwIW_detailsHeader",
+			"detailsLocation": "_5vxwIW_detailsLocation",
+			"usagePanel": "_5vxwIW_usagePanel",
+			"schemaTree": "_5vxwIW_schemaTree",
+			"messageImages": "_5vxwIW_messageImages",
+			"kindSlot": "_5vxwIW_kindSlot",
+			"resultRequest": "_5vxwIW_resultRequest",
+			"selectionRail": "_5vxwIW_selectionRail",
+			"detailTab": "_5vxwIW_detailTab",
+			"toolCatalogIcon": "_5vxwIW_toolCatalogIcon",
+			"detailTabs": "_5vxwIW_detailTabs",
+			"requestBoundaryControl": "_5vxwIW_requestBoundaryControl",
+			"sourceBlocks": "_5vxwIW_sourceBlocks",
 			"contentText": "_5vxwIW_contentText",
-			"eventColumn": "_5vxwIW_eventColumn",
-			"promptDiffSections": "_5vxwIW_promptDiffSections",
-			"toolCatalog": "_5vxwIW_toolCatalog",
-			"usageGroup": "_5vxwIW_usageGroup",
-			"detailsResizeHandle": "_5vxwIW_detailsResizeHandle",
+			"split": "_5vxwIW_split",
+			"overviewSection": "_5vxwIW_overviewSection",
+			"turnRail": "_5vxwIW_turnRail",
+			"requestDetailsDot": "_5vxwIW_requestDetailsDot",
+			"overviewTitleIcon": "_5vxwIW_overviewTitleIcon",
+			"detailsTitle": "_5vxwIW_detailsTitle",
+			"thinkingQuote": "_5vxwIW_thinkingQuote",
+			"assistantVioletBright": "_5vxwIW_assistantVioletBright",
+			"detailBodySummary": "_5vxwIW_detailBodySummary",
+			"messageImagesPreview": "_5vxwIW_messageImagesPreview",
+			"requestDetailsName": "_5vxwIW_requestDetailsName",
+			"schemaIntro": "_5vxwIW_schemaIntro",
+			"sourceBlockContent": "_5vxwIW_sourceBlockContent",
 			"kindTag": "_5vxwIW_kindTag",
+			"summaryScrollRegion": "_5vxwIW_summaryScrollRegion",
+			"assistantToolCallButton": "_5vxwIW_assistantToolCallButton",
+			"timestampToggle": "_5vxwIW_timestampToggle",
 			"assistantToolCallName": "_5vxwIW_assistantToolCallName",
 			"virtualSpacer": "_5vxwIW_virtualSpacer",
-			"noOutputText": "_5vxwIW_noOutputText",
-			"content": "_5vxwIW_content",
-			"assistantToolCallArgs": "_5vxwIW_assistantToolCallArgs",
-			"promptDiffLineremoved": "_5vxwIW_promptDiffLineremoved",
-			"detailsLocation": "_5vxwIW_detailsLocation",
-			"schemaParametersTitle": "_5vxwIW_schemaParametersTitle",
-			"contextGreen": "_5vxwIW_contextGreen",
-			"sourceBlocks": "_5vxwIW_sourceBlocks",
-			"toolAmber": "_5vxwIW_toolAmber",
-			"overviewPreview": "_5vxwIW_overviewPreview",
-			"resultPreview": "_5vxwIW_resultPreview",
-			"message": "_5vxwIW_message",
-			"detailTab": "_5vxwIW_detailTab",
-			"eventInner": "_5vxwIW_eventInner",
-			"eventHeader": "_5vxwIW_eventHeader",
+			"panelImageLink": "_5vxwIW_panelImageLink",
+			"event": "_5vxwIW_event",
+			"close": "_5vxwIW_close",
 			"inlineResult": "_5vxwIW_inlineResult",
-			"overviewHierarchyNavLink": "_5vxwIW_overviewHierarchyNavLink",
-			"detailBodySummary": "_5vxwIW_detailBodySummary",
-			"compactedSummary": "_5vxwIW_compactedSummary",
-			"promptDiffSection": "_5vxwIW_promptDiffSection",
-			"payload": "_5vxwIW_payload",
-			"historyLoadingSpinner": "_5vxwIW_historyLoadingSpinner",
-			"historyLoading": "_5vxwIW_historyLoading",
-			"detailTabs": "_5vxwIW_detailTabs",
-			"error": "_5vxwIW_error",
-			"kindTagLabel": "_5vxwIW_kindTagLabel",
-			"usageHeading": "_5vxwIW_usageHeading",
-			"payloadPreview": "_5vxwIW_payloadPreview",
-			"systemPrompt": "_5vxwIW_systemPrompt",
-			"resultBlocksPreview": "_5vxwIW_resultBlocksPreview",
-			"toolCallNameTypeface": "_5vxwIW_toolCallNameTypeface",
-			"panelImage": "_5vxwIW_panelImage",
-			"markdownPreview": "_5vxwIW_markdownPreview",
-			"schemaParameters": "_5vxwIW_schemaParameters",
-			"assistantToolCallText": "_5vxwIW_assistantToolCallText",
-			"assistantOutput": "_5vxwIW_assistantOutput",
-			"history-loading-spin": "_5vxwIW_history-loading-spin",
-			"assistantToolCallIcon": "_5vxwIW_assistantToolCallIcon",
-			"turnLabel": "_5vxwIW_turnLabel",
-			"toolCatalogItem": "_5vxwIW_toolCatalogItem",
-			"toolCatalogChevron": "_5vxwIW_toolCatalogChevron",
+			"overviewHierarchyJumpIconTight": "_5vxwIW_overviewHierarchyJumpIconTight",
 			"toolCatalogTree": "_5vxwIW_toolCatalogTree",
-			"schemaPreview": "_5vxwIW_schemaPreview",
-			"overviewParentLinks": "_5vxwIW_overviewParentLinks",
-			"turnRail": "_5vxwIW_turnRail",
-			"toolCatalogName": "_5vxwIW_toolCatalogName",
-			"toolCatalogIcon": "_5vxwIW_toolCatalogIcon",
-			"toolCallOnly": "_5vxwIW_toolCallOnly",
-			"summaryScrollRegion": "_5vxwIW_summaryScrollRegion",
-			"historyLoadingBar": "_5vxwIW_historyLoadingBar",
-			"overviewSections": "_5vxwIW_overviewSections",
-			"requestBoundaryControl": "_5vxwIW_requestBoundaryControl",
-			"assistantToolCallButton": "_5vxwIW_assistantToolCallButton",
-			"sourceBlockLabel": "_5vxwIW_sourceBlockLabel",
-			"markdownPayload": "_5vxwIW_markdownPayload",
+			"detailsResizeHandle": "_5vxwIW_detailsResizeHandle",
+			"schemaName": "_5vxwIW_schemaName",
+			"contextGreen": "_5vxwIW_contextGreen",
+			"assistantToolCallIcon": "_5vxwIW_assistantToolCallIcon",
+			"toolCatalogSummary": "_5vxwIW_toolCatalogSummary",
+			"user": "_5vxwIW_user",
+			"sourceBlockJumpIcon": "_5vxwIW_sourceBlockJumpIcon",
+			"assistantToolCallsPreview": "_5vxwIW_assistantToolCallsPreview",
+			"promptDiffTitle": "_5vxwIW_promptDiffTitle",
+			"eventHeader": "_5vxwIW_eventHeader",
+			"systemPrompt": "_5vxwIW_systemPrompt",
 			"toolCatalogDefinition": "_5vxwIW_toolCatalogDefinition",
-			"assistantContent": "_5vxwIW_assistantContent",
-			"detailsHeader": "_5vxwIW_detailsHeader"
+			"sourceBlockHeader": "_5vxwIW_sourceBlockHeader",
+			"message": "_5vxwIW_message",
+			"details": "_5vxwIW_details",
+			"overviewTitle": "_5vxwIW_overviewTitle",
+			"overviewPreview": "_5vxwIW_overviewPreview",
+			"payload": "_5vxwIW_payload",
+			"thinkingToggle": "_5vxwIW_thinkingToggle",
+			"payloadPreview": "_5vxwIW_payloadPreview",
+			"historyLoadingSpinner": "_5vxwIW_historyLoadingSpinner",
+			"toolCatalogName": "_5vxwIW_toolCatalogName",
+			"compactedSummary": "_5vxwIW_compactedSummary",
+			"schemaPreview": "_5vxwIW_schemaPreview",
+			"historyLoadingBar": "_5vxwIW_historyLoadingBar",
+			"toolCallOnly": "_5vxwIW_toolCallOnly",
+			"assistantOutput": "_5vxwIW_assistantOutput",
+			"schema": "_5vxwIW_schema",
+			"subtoolAmber": "_5vxwIW_subtoolAmber",
+			"assistantToolCalls": "_5vxwIW_assistantToolCalls",
+			"inlineResultText": "_5vxwIW_inlineResultText",
+			"usageGroup": "_5vxwIW_usageGroup",
+			"eventColumn": "_5vxwIW_eventColumn",
+			"turnLabel": "_5vxwIW_turnLabel",
+			"resultBlockText": "_5vxwIW_resultBlockText",
+			"toolCallNameTypeface": "_5vxwIW_toolCallNameTypeface",
+			"noOutputText": "_5vxwIW_noOutputText",
+			"compacted": "_5vxwIW_compacted",
+			"resultBlocks": "_5vxwIW_resultBlocks",
+			"collapsedTurnText": "_5vxwIW_collapsedTurnText",
+			"kindTagIcon": "_5vxwIW_kindTagIcon",
+			"toolCatalogDescription": "_5vxwIW_toolCatalogDescription",
+			"errorPayload": "_5vxwIW_errorPayload",
+			"toolCatalogChevron": "_5vxwIW_toolCatalogChevron",
+			"promptDiffSections": "_5vxwIW_promptDiffSections",
+			"promptDiffLineremoved": "_5vxwIW_promptDiffLineremoved",
+			"kindTagLabel": "_5vxwIW_kindTagLabel",
+			"history-loading-spin": "_5vxwIW_history-loading-spin",
+			"jsonPreview": "_5vxwIW_jsonPreview",
+			"sourceBlockJumpTarget": "_5vxwIW_sourceBlockJumpTarget",
+			"panelImageLinkPreview": "_5vxwIW_panelImageLinkPreview",
+			"visuallyHidden": "_5vxwIW_visuallyHidden",
+			"contentColumn": "_5vxwIW_contentColumn",
+			"markdownPayload": "_5vxwIW_markdownPayload",
+			"toolAmber": "_5vxwIW_toolAmber",
+			"collapsedTurnContent": "_5vxwIW_collapsedTurnContent",
+			"sourceBlock": "_5vxwIW_sourceBlock",
+			"noPayload": "_5vxwIW_noPayload",
+			"usageHeading": "_5vxwIW_usageHeading",
+			"promptDiffLineadded": "_5vxwIW_promptDiffLineadded",
+			"detailBody": "_5vxwIW_detailBody",
+			"resultBlocksPreview": "_5vxwIW_resultBlocksPreview",
+			"overviewParentLinks": "_5vxwIW_overviewParentLinks",
+			"overviewSections": "_5vxwIW_overviewSections",
+			"requestBoundaryControlActive": "_5vxwIW_requestBoundaryControlActive",
+			"historyLoadButton": "_5vxwIW_historyLoadButton",
+			"overviewHeading": "_5vxwIW_overviewHeading",
+			"promptDiffLinemeta": "_5vxwIW_promptDiffLinemeta",
+			"historyLoadRow": "_5vxwIW_historyLoadRow",
+			"assistantContentRendered": "_5vxwIW_assistantContentRendered",
+			"markdownPreview": "_5vxwIW_markdownPreview",
+			"collapsedTurnEllipsis": "_5vxwIW_collapsedTurnEllipsis",
+			"toolCallPayload": "_5vxwIW_toolCallPayload",
+			"thinkingChevron": "_5vxwIW_thinkingChevron",
+			"schemaDescription": "_5vxwIW_schemaDescription",
+			"turnLabelCompact": "_5vxwIW_turnLabelCompact",
+			"panelImage": "_5vxwIW_panelImage",
+			"promptDiffSection": "_5vxwIW_promptDiffSection",
+			"overview": "_5vxwIW_overview",
+			"overviewHierarchyNavLink": "_5vxwIW_overviewHierarchyNavLink",
+			"historyLoading": "_5vxwIW_historyLoading",
+			"turnLabelActive": "_5vxwIW_turnLabelActive",
+			"turnLabelFull": "_5vxwIW_turnLabelFull",
+			"arrow": "_5vxwIW_arrow",
+			"thinkingQuoteOnlyPreview": "_5vxwIW_thinkingQuoteOnlyPreview",
+			"sourceBlockLabel": "_5vxwIW_sourceBlockLabel",
+			"toolCatalog": "_5vxwIW_toolCatalog",
+			"systemNeutral": "_5vxwIW_systemNeutral"
 		};
 		//#endregion
-		//#region lib/types/client/TrajectoryTable.js
+		//#region src/client/TrajectoryTable.tsx
 		/** Turn-aware trajectory event ledger with a local record inspector. */
 		const BOTTOM_FOLLOW_THRESHOLD_PX = 2;
 		const OLDER_LOAD_THRESHOLD_PX = 48;
@@ -3167,7 +3165,7 @@ window.__ModuleLoader__.load({
 			subtool: "SUBTOOL"
 		};
 		function ToolWrenchIcon() {
-			return (0, react_jsx_runtime.jsx)("svg", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
 				width: "13",
 				height: "13",
 				viewBox: "0 0 16 16",
@@ -3178,11 +3176,11 @@ window.__ModuleLoader__.load({
 				strokeLinejoin: "round",
 				"data-role-icon": "wrench",
 				"aria-hidden": "true",
-				children: (0, react_jsx_runtime.jsx)("path", { d: "M14 3.3a3.8 3.8 0 0 1-4.8 4.8l-5.1 5.1a1.6 1.6 0 1 1-2.3-2.3l5.1-5.1A3.8 3.8 0 0 1 11.7 1l-2.3 2.3 2.3 2.3L14 3.3Z" })
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M14 3.3a3.8 3.8 0 0 1-4.8 4.8l-5.1 5.1a1.6 1.6 0 1 1-2.3-2.3l5.1-5.1A3.8 3.8 0 0 1 11.7 1l-2.3 2.3 2.3 2.3L14 3.3Z" })
 			});
 		}
 		function InformationIcon() {
-			return (0, react_jsx_runtime.jsxs)("svg", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
 				width: "14",
 				height: "14",
 				viewBox: "0 0 16 16",
@@ -3193,19 +3191,19 @@ window.__ModuleLoader__.load({
 				"data-role-icon": "information",
 				"aria-hidden": "true",
 				children: [
-					(0, react_jsx_runtime.jsx)("circle", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
 						cx: "8",
 						cy: "8",
 						r: "6.7"
 					}),
-					(0, react_jsx_runtime.jsx)("circle", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
 						cx: "8",
 						cy: "5.5",
 						r: ".85",
 						fill: "currentColor",
 						stroke: "none"
 					}),
-					(0, react_jsx_runtime.jsx)("path", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
 						d: "M8 7.75v3.4",
 						strokeWidth: "1.8"
 					})
@@ -3213,7 +3211,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function CompactedIcon() {
-			return (0, react_jsx_runtime.jsxs)("svg", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
 				width: "13",
 				height: "13",
 				viewBox: "0 0 16 16",
@@ -3225,21 +3223,21 @@ window.__ModuleLoader__.load({
 				"data-role-icon": "compacted",
 				"aria-hidden": "true",
 				children: [
-					(0, react_jsx_runtime.jsx)("path", { d: "m2.5 2.5 3.75 3.75M3 6.25h3.25V3" }),
-					(0, react_jsx_runtime.jsx)("path", { d: "m13.5 2.5-3.75 3.75M13 6.25H9.75V3" }),
-					(0, react_jsx_runtime.jsx)("path", { d: "m2.5 13.5 3.75-3.75M3 9.75h3.25V13" }),
-					(0, react_jsx_runtime.jsx)("path", { d: "m13.5 13.5-3.75-3.75M13 9.75H9.75V13" })
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m2.5 2.5 3.75 3.75M3 6.25h3.25V3" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m13.5 2.5-3.75 3.75M13 6.25H9.75V3" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m2.5 13.5 3.75-3.75M3 9.75h3.25V13" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "m13.5 13.5-3.75-3.75M13 9.75H9.75V13" })
 				]
 			});
 		}
 		const KIND_ICON = {
-			system: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSettingsOutline16, { size: 13 }),
-			user: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconUserOutline16, { size: 13 }),
-			context: (0, react_jsx_runtime.jsx)(InformationIcon, {}),
-			compacted: (0, react_jsx_runtime.jsx)(CompactedIcon, {}),
-			message: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSparkle16, { size: 13 }),
-			tool: (0, react_jsx_runtime.jsx)(ToolWrenchIcon, {}),
-			subtool: (0, react_jsx_runtime.jsx)(ToolWrenchIcon, {})
+			system: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSettingsOutline16, { size: 13 }),
+			user: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconUserOutline16, { size: 13 }),
+			context: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(InformationIcon, {}),
+			compacted: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CompactedIcon, {}),
+			message: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSparkle16, { size: 13 }),
+			tool: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolWrenchIcon, {}),
+			subtool: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolWrenchIcon, {})
 		};
 		function useStableVirtualRowStructure(rows) {
 			const cache = (0, react.useRef)({
@@ -3324,8 +3322,8 @@ window.__ModuleLoader__.load({
 		}
 		function StartedAtValue({ timestamp }) {
 			const [showUnix, setShowUnix] = (0, react.useState)(false);
-			if (timestamp === null || !Number.isFinite(timestamp)) return (0, react_jsx_runtime.jsx)("dd", { children: "Not available" });
-			return (0, react_jsx_runtime.jsx)("dd", { children: (0, react_jsx_runtime.jsx)("button", {
+			if (timestamp === null || !Number.isFinite(timestamp)) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: "Not available" });
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 				type: "button",
 				className: TrajectoryTable_module_css_default.timestampToggle,
 				title: showUnix ? "Show local time" : "Show Unix timestamp",
@@ -3363,14 +3361,14 @@ window.__ModuleLoader__.load({
 			return `${(metrics.outputTokens / generationSeconds).toFixed(1)} tok/s`;
 		}
 		function AssistantTimingPanel({ metrics }) {
-			return (0, react_jsx_runtime.jsxs)("dl", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dl", {
 				className: TrajectoryTable_module_css_default.overview,
 				children: [
-					(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Started" }), (0, react_jsx_runtime.jsx)(StartedAtValue, { timestamp: metrics.stepStartTime })] }),
-					(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Total duration" }), (0, react_jsx_runtime.jsx)("dd", { children: totalTime(metrics) })] }),
-					(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "TTFT" }), (0, react_jsx_runtime.jsx)("dd", { children: ttft(metrics) })] }),
-					(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Generation" }), (0, react_jsx_runtime.jsx)("dd", { children: generationTime(metrics) })] }),
-					(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Throughput" }), (0, react_jsx_runtime.jsx)("dd", { children: throughput(metrics) })] })
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Started" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StartedAtValue, { timestamp: metrics.stepStartTime })] }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Total duration" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: totalTime(metrics) })] }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "TTFT" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: ttft(metrics) })] }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Generation" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: generationTime(metrics) })] }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Throughput" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: throughput(metrics) })] })
 				]
 			});
 		}
@@ -3562,15 +3560,15 @@ window.__ModuleLoader__.load({
 		}
 		function TokenRows({ cell }) {
 			const content = cell.output !== void 0 && cell.think !== void 0 ? Math.max(0, cell.output - cell.think) : void 0;
-			return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-				(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Tokens" }), (0, react_jsx_runtime.jsx)("dd", { children: cell.output === void 0 ? "—" : `${cell.output} tok` })] }),
-				cell.think !== void 0 && (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Tokens" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: cell.output === void 0 ? "—" : `${cell.output} tok` })] }),
+				cell.think !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: TrajectoryTable_module_css_default.requestTokenDetail,
-					children: [(0, react_jsx_runtime.jsx)("dt", { children: "Reasoning" }), (0, react_jsx_runtime.jsxs)("dd", { children: [cell.think, " tok"] })]
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Reasoning" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [cell.think, " tok"] })]
 				}),
-				content !== void 0 && (0, react_jsx_runtime.jsxs)("div", {
+				content !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: TrajectoryTable_module_css_default.requestTokenDetail,
-					children: [(0, react_jsx_runtime.jsx)("dt", { children: "Content" }), (0, react_jsx_runtime.jsxs)("dd", { children: [content, " tok"] })]
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Content" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [content, " tok"] })]
 				})
 			] });
 		}
@@ -3579,64 +3577,64 @@ window.__ModuleLoader__.load({
 			return (usage.input ?? 0) + (usage.cacheRead ?? 0) + (usage.cacheWrite ?? 0);
 		}
 		function UsageRows({ usage }) {
-			if (usage === void 0) return (0, react_jsx_runtime.jsx)("p", {
+			if (usage === void 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: TrajectoryTable_module_css_default.noPayload,
 				children: "Usage not reported"
 			});
 			const totalInput = inputTotal(usage);
 			const otherOutput = usage.output !== void 0 && usage.reasoning !== void 0 ? usage.output - usage.reasoning : void 0;
-			return (0, react_jsx_runtime.jsxs)("dl", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dl", {
 				className: TrajectoryTable_module_css_default.overview,
 				children: [
-					totalInput !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Input" }), (0, react_jsx_runtime.jsxs)("dd", { children: [totalInput, " tok"] })] }),
-					usage.cacheRead !== void 0 && (0, react_jsx_runtime.jsxs)("div", {
+					totalInput !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Input" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [totalInput, " tok"] })] }),
+					usage.cacheRead !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryTable_module_css_default.requestTokenDetail,
-						children: [(0, react_jsx_runtime.jsx)("dt", { children: "Cached" }), (0, react_jsx_runtime.jsxs)("dd", { children: [usage.cacheRead, " tok"] })]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Cached" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [usage.cacheRead, " tok"] })]
 					}),
-					usage.cacheWrite !== void 0 && (0, react_jsx_runtime.jsxs)("div", {
+					usage.cacheWrite !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryTable_module_css_default.requestTokenDetail,
-						children: [(0, react_jsx_runtime.jsx)("dt", { children: "Cache created" }), (0, react_jsx_runtime.jsxs)("dd", { children: [usage.cacheWrite, " tok"] })]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Cache created" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [usage.cacheWrite, " tok"] })]
 					}),
-					usage.input !== void 0 && (0, react_jsx_runtime.jsxs)("div", {
+					usage.input !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryTable_module_css_default.requestTokenDetail,
-						children: [(0, react_jsx_runtime.jsx)("dt", { children: "Other" }), (0, react_jsx_runtime.jsxs)("dd", { children: [usage.input, " tok"] })]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Other" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [usage.input, " tok"] })]
 					}),
-					usage.output !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Output" }), (0, react_jsx_runtime.jsxs)("dd", { children: [usage.output, " tok"] })] }),
-					usage.reasoning !== void 0 && (0, react_jsx_runtime.jsxs)("div", {
+					usage.output !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Output" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [usage.output, " tok"] })] }),
+					usage.reasoning !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryTable_module_css_default.requestTokenDetail,
-						children: [(0, react_jsx_runtime.jsx)("dt", { children: "Reasoning" }), (0, react_jsx_runtime.jsxs)("dd", { children: [usage.reasoning, " tok"] })]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Reasoning" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [usage.reasoning, " tok"] })]
 					}),
-					otherOutput !== void 0 && (0, react_jsx_runtime.jsxs)("div", {
+					otherOutput !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryTable_module_css_default.requestTokenDetail,
-						children: [(0, react_jsx_runtime.jsx)("dt", { children: "Content" }), (0, react_jsx_runtime.jsxs)("dd", { children: [otherOutput, " tok"] })]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Content" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [otherOutput, " tok"] })]
 					})
 				]
 			});
 		}
 		function RequestUsagePanel({ usage, cumulative }) {
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: TrajectoryTable_module_css_default.usagePanel,
-				children: [(0, react_jsx_runtime.jsxs)("section", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 					className: TrajectoryTable_module_css_default.usageGroup,
-					children: [(0, react_jsx_runtime.jsx)("h4", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h4", {
 						className: TrajectoryTable_module_css_default.usageHeading,
 						children: "This request"
-					}), (0, react_jsx_runtime.jsx)(UsageRows, { usage })]
-				}), (0, react_jsx_runtime.jsxs)("section", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(UsageRows, { usage })]
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 					className: TrajectoryTable_module_css_default.usageGroup,
-					children: [(0, react_jsx_runtime.jsx)("h4", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h4", {
 						className: TrajectoryTable_module_css_default.usageHeading,
 						children: "Session cumulative"
-					}), (0, react_jsx_runtime.jsx)(UsageRows, { usage: cumulative })]
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(UsageRows, { usage: cumulative })]
 				})]
 			});
 		}
 		function RequestOptions({ options, preview = false }) {
-			if (options === void 0) return (0, react_jsx_runtime.jsx)("p", {
+			if (options === void 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: TrajectoryTable_module_css_default.noPayload,
 				children: "Options not recorded"
 			});
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
 				data: options,
 				label: "Request options JSON",
 				className: preview ? TrajectoryTable_module_css_default.jsonPreview : TrajectoryTable_module_css_default.jsonPayload
@@ -3660,11 +3658,11 @@ window.__ModuleLoader__.load({
 		}
 		function MessageSource({ record }) {
 			const source = record.cell.messageSource;
-			if (source === void 0) return (0, react_jsx_runtime.jsx)("p", {
+			if (source === void 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: TrajectoryTable_module_css_default.noPayload,
 				children: "Source not recorded"
 			});
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
 				data: typeof source === "object" && source !== null ? source : { value: source },
 				label: "Message source JSON",
 				className: TrajectoryTable_module_css_default.jsonPayload
@@ -3795,35 +3793,35 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function RecordListText({ displayText, toolCallOnly, toolCallText }) {
-			if (toolCallOnly) return (0, react_jsx_runtime.jsx)("span", {
+			if (toolCallOnly) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				className: TrajectoryTable_module_css_default.toolCallOnly,
 				children: "(tool call only)"
 			});
 			if (toolCallText === void 0) return displayText || "—";
-			return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("span", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				className: TrajectoryTable_module_css_default.toolCallNameTypeface,
 				children: toolCallText.name || "—"
-			}), toolCallText.args !== void 0 && (0, react_jsx_runtime.jsx)("span", {
+			}), toolCallText.args !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				className: TrajectoryTable_module_css_default.toolCallPayload,
 				children: toolCallText.args
 			})] });
 		}
 		function MarkdownFragment({ text, rendered, preview }) {
-			if (rendered) return (0, react_jsx_runtime.jsx)("div", {
+			if (rendered) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: preview ? TrajectoryTable_module_css_default.markdownPreview : TrajectoryTable_module_css_default.markdownPayload,
-				children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text })
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text })
 			});
-			return (0, react_jsx_runtime.jsx)("pre", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 				className: `${TrajectoryTable_module_css_default.payload} ${preview ? TrajectoryTable_module_css_default.payloadPreview : ""}`,
 				children: text
 			});
 		}
 		function SourceBlocks({ blocks, onOpenCall }) {
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: TrajectoryTable_module_css_default.sourceBlocks,
-				children: blocks.map((block, index) => (0, react_jsx_runtime.jsxs)("section", {
+				children: blocks.map((block, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 					className: TrajectoryTable_module_css_default.sourceBlock,
-					children: [block.callId !== void 0 ? (0, react_jsx_runtime.jsxs)("button", {
+					children: [block.callId !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: TrajectoryTable_module_css_default.sourceBlockJumpTarget,
 						"aria-label": `Open Block #${index + 1} tool call summary`,
@@ -3831,20 +3829,20 @@ window.__ModuleLoader__.load({
 						onClick: () => {
 							if (block.callId !== void 0) onOpenCall(block.callId);
 						},
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: TrajectoryTable_module_css_default.sourceBlockLabel,
 							children: `Block #${index + 1} ${block.type}`
-						}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 							className: TrajectoryTable_module_css_default.sourceBlockJumpIcon,
 							size: 12
 						})]
-					}) : (0, react_jsx_runtime.jsx)("div", {
+					}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: TrajectoryTable_module_css_default.sourceBlockHeader,
-						children: (0, react_jsx_runtime.jsx)("span", {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: TrajectoryTable_module_css_default.sourceBlockLabel,
 							children: `Block #${index + 1} ${block.type}`
 						})
-					}), block.imageSrc !== void 0 ? (0, react_jsx_runtime.jsx)(PanelImage, { block }) : (0, react_jsx_runtime.jsx)("pre", {
+					}), block.imageSrc !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PanelImage, { block }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 						className: TrajectoryTable_module_css_default.sourceBlockContent,
 						children: block.content
 					})]
@@ -3853,13 +3851,13 @@ window.__ModuleLoader__.load({
 		}
 		function PanelImage({ block, preview = false }) {
 			if (block.imageSrc === void 0) return null;
-			return (0, react_jsx_runtime.jsx)("a", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
 				className: preview ? `${TrajectoryTable_module_css_default.panelImageLink} ${TrajectoryTable_module_css_default.panelImageLinkPreview}` : TrajectoryTable_module_css_default.panelImageLink,
 				href: block.imageSrc,
 				target: "_blank",
 				rel: "noopener noreferrer",
 				title: "Open image",
-				children: (0, react_jsx_runtime.jsx)("img", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
 					className: TrajectoryTable_module_css_default.panelImage,
 					src: block.imageSrc,
 					alt: block.imageAlt ?? ""
@@ -3869,9 +3867,9 @@ window.__ModuleLoader__.load({
 		function MessageImages({ blocks, preview }) {
 			const images = blocks?.filter((block) => block.imageSrc !== void 0) ?? [];
 			if (images.length === 0) return null;
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: preview ? `${TrajectoryTable_module_css_default.messageImages} ${TrajectoryTable_module_css_default.messageImagesPreview}` : TrajectoryTable_module_css_default.messageImages,
-				children: images.map((block, index) => (0, react_jsx_runtime.jsx)(PanelImage, {
+				children: images.map((block, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PanelImage, {
 					block,
 					preview
 				}, index))
@@ -3880,35 +3878,35 @@ window.__ModuleLoader__.load({
 		function AssistantToolCalls({ blocks, preview, onOpenCall }) {
 			const calls = blocks?.filter((block) => block.type === "tool-call") ?? [];
 			if (calls.length === 0) return null;
-			return (0, react_jsx_runtime.jsx)("ul", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 				className: preview ? `${TrajectoryTable_module_css_default.assistantToolCalls} ${TrajectoryTable_module_css_default.assistantToolCallsPreview}` : TrajectoryTable_module_css_default.assistantToolCalls,
-				children: calls.map((call, index) => (0, react_jsx_runtime.jsx)("li", { children: (0, react_jsx_runtime.jsxs)("button", {
+				children: calls.map((call, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 					type: "button",
 					className: TrajectoryTable_module_css_default.assistantToolCallButton,
 					title: "Open tool call summary",
 					onClick: () => {
 						if (call.callId !== void 0) onOpenCall(call.callId);
 					},
-					children: [(0, react_jsx_runtime.jsx)("svg", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
 						className: TrajectoryTable_module_css_default.assistantToolCallIcon,
 						width: "12",
 						height: "12",
 						viewBox: "0 0 24 24",
 						fill: "none",
 						"aria-hidden": "true",
-						children: (0, react_jsx_runtime.jsx)("path", {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
 							d: "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z",
 							stroke: "currentColor",
 							strokeWidth: "1.8",
 							strokeLinecap: "round",
 							strokeLinejoin: "round"
 						})
-					}), (0, react_jsx_runtime.jsxs)("span", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 						className: TrajectoryTable_module_css_default.assistantToolCallText,
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: TrajectoryTable_module_css_default.assistantToolCallName,
 							children: call.toolName ?? "tool-call"
-						}), call.content !== "" && (0, react_jsx_runtime.jsx)("span", {
+						}), call.content !== "" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: TrajectoryTable_module_css_default.assistantToolCallArgs,
 							children: call.content
 						})]
@@ -3917,14 +3915,14 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function ToolGlyph() {
-			return (0, react_jsx_runtime.jsx)("svg", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
 				className: TrajectoryTable_module_css_default.toolCatalogIcon,
 				width: "12",
 				height: "12",
 				viewBox: "0 0 24 24",
 				fill: "none",
 				"aria-hidden": "true",
-				children: (0, react_jsx_runtime.jsx)("path", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
 					d: "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z",
 					stroke: "currentColor",
 					strokeWidth: "1.8",
@@ -3934,37 +3932,37 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function ToolCatalog({ tools }) {
-			if (tools.length === 0) return (0, react_jsx_runtime.jsx)("p", {
+			if (tools.length === 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: TrajectoryTable_module_css_default.noPayload,
 				children: "No tools in this request"
 			});
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: TrajectoryTable_module_css_default.toolCatalog,
-				children: tools.map((tool, index) => (0, react_jsx_runtime.jsxs)("details", {
+				children: tools.map((tool, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("details", {
 					className: TrajectoryTable_module_css_default.toolCatalogItem,
-					children: [(0, react_jsx_runtime.jsxs)("summary", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("summary", {
 						className: TrajectoryTable_module_css_default.toolCatalogSummary,
 						children: [
-							(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 								className: TrajectoryTable_module_css_default.toolCatalogChevron,
 								size: 12
 							}),
-							(0, react_jsx_runtime.jsx)(ToolGlyph, {}),
-							(0, react_jsx_runtime.jsx)("span", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolGlyph, {}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: TrajectoryTable_module_css_default.toolCatalogName,
 								children: tool.name
 							}),
-							(0, react_jsx_runtime.jsx)("span", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: TrajectoryTable_module_css_default.toolCatalogDescription,
 								children: tool.description
 							})
 						]
-					}), (0, react_jsx_runtime.jsxs)("div", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryTable_module_css_default.toolCatalogDefinition,
-						children: [tool.description !== "" && (0, react_jsx_runtime.jsx)("p", {
+						children: [tool.description !== "" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 							className: TrajectoryTable_module_css_default.toolCatalogFullDescription,
 							children: tool.description
-						}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
 							data: tool.parameters,
 							label: `${tool.name} parameters JSON`,
 							className: TrajectoryTable_module_css_default.toolCatalogTree
@@ -4003,14 +4001,14 @@ window.__ModuleLoader__.load({
 		function PromptDiffSection({ title, before, after }) {
 			const lines = promptDiffLines(before, after);
 			if (lines.length === 0) return null;
-			return (0, react_jsx_runtime.jsxs)("section", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 				className: TrajectoryTable_module_css_default.promptDiffSection,
-				children: [(0, react_jsx_runtime.jsx)("h3", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
 					className: TrajectoryTable_module_css_default.promptDiffTitle,
 					children: title
-				}), (0, react_jsx_runtime.jsx)("pre", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 					className: TrajectoryTable_module_css_default.promptDiff,
-					children: lines.map((line, index) => (0, react_jsx_runtime.jsxs)("span", {
+					children: lines.map((line, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 						className: TrajectoryTable_module_css_default[`promptDiffLine${line.kind}`],
 						children: [line.text || " ", "\n"]
 					}, index))
@@ -4020,13 +4018,13 @@ window.__ModuleLoader__.load({
 		function SystemPromptDiff({ before, after }) {
 			const toolsBefore = JSON.stringify(before.tools, null, 2);
 			const toolsAfter = JSON.stringify(after.tools, null, 2);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: TrajectoryTable_module_css_default.promptDiffSections,
-				children: [before.system !== after.system && (0, react_jsx_runtime.jsx)(PromptDiffSection, {
+				children: [before.system !== after.system && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PromptDiffSection, {
 					title: "System Prompt",
 					before: before.system,
 					after: after.system
-				}), toolsBefore !== toolsAfter && (0, react_jsx_runtime.jsx)(PromptDiffSection, {
+				}), toolsBefore !== toolsAfter && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PromptDiffSection, {
 					title: "Tools",
 					before: toolsBefore,
 					after: toolsAfter
@@ -4034,68 +4032,68 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function ToolOutputBlocks({ blocks, error, preview }) {
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: [
 					TrajectoryTable_module_css_default.resultBlocks,
 					preview ? TrajectoryTable_module_css_default.resultBlocksPreview : void 0,
 					error ? TrajectoryTable_module_css_default.errorPayload : void 0
 				].filter((value) => value !== void 0).join(" "),
-				children: blocks.map((block, index) => block.imageSrc !== void 0 ? (0, react_jsx_runtime.jsx)(PanelImage, {
+				children: blocks.map((block, index) => block.imageSrc !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PanelImage, {
 					block,
 					preview
-				}, index) : block.content !== "" ? (0, react_jsx_runtime.jsx)("pre", {
+				}, index) : block.content !== "" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 					className: TrajectoryTable_module_css_default.resultBlockText,
 					children: block.content
 				}, index) : null)
 			});
 		}
 		function MarkdownRecordContent({ record, rendered, preview = false, thinkingExpanded, onThinkingExpandedChange, onOpenCall }) {
-			if (!rendered && record.cell.sourceBlocks && record.cell.sourceBlocks.length > 0) return (0, react_jsx_runtime.jsx)(SourceBlocks, {
+			if (!rendered && record.cell.sourceBlocks && record.cell.sourceBlocks.length > 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SourceBlocks, {
 				blocks: record.cell.sourceBlocks,
 				onOpenCall
 			});
 			if (record.cell.thinkingDetail) {
-				if (!rendered) return (0, react_jsx_runtime.jsx)(MarkdownFragment, {
+				if (!rendered) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownFragment, {
 					text: [record.cell.thinkingDetail, record.cell.outputDetail].filter((value) => value !== void 0 && value !== "").join("\n\n"),
 					rendered: false,
 					preview
 				});
-				return (0, react_jsx_runtime.jsxs)("div", {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: `${TrajectoryTable_module_css_default.assistantContent} ${TrajectoryTable_module_css_default.assistantContentRendered}`,
 					children: [
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: preview && !record.cell.outputDetail ? `${TrajectoryTable_module_css_default.thinkingQuote} ${TrajectoryTable_module_css_default.thinkingQuoteOnlyPreview}` : TrajectoryTable_module_css_default.thinkingQuote,
-							children: [(0, react_jsx_runtime.jsxs)("button", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: TrajectoryTable_module_css_default.thinkingToggle,
 								"aria-expanded": thinkingExpanded,
 								onClick: () => {
 									onThinkingExpandedChange(!thinkingExpanded);
 								},
-								children: ["Thinking", (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+								children: ["Thinking", /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 									className: TrajectoryTable_module_css_default.thinkingChevron,
 									size: 12
 								})]
-							}), thinkingExpanded && (0, react_jsx_runtime.jsx)(MarkdownFragment, {
+							}), thinkingExpanded && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownFragment, {
 								text: record.cell.thinkingDetail,
 								rendered,
 								preview
 							})]
 						}),
-						record.cell.outputDetail && (0, react_jsx_runtime.jsx)("div", {
+						record.cell.outputDetail && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: TrajectoryTable_module_css_default.assistantOutput,
-							children: (0, react_jsx_runtime.jsx)(MarkdownFragment, {
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownFragment, {
 								text: record.cell.outputDetail,
 								rendered,
 								preview
 							})
 						}),
-						(0, react_jsx_runtime.jsx)(AssistantToolCalls, {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AssistantToolCalls, {
 							blocks: record.cell.sourceBlocks,
 							preview,
 							onOpenCall
 						}),
-						(0, react_jsx_runtime.jsx)(MessageImages, {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(MessageImages, {
 							blocks: record.cell.sourceBlocks,
 							preview
 						})
@@ -4107,65 +4105,65 @@ window.__ModuleLoader__.load({
 			const hasToolCalls = record.cell.kind === "message" && record.cell.sourceBlocks?.some((block) => block.type === "tool-call") === true;
 			if (!source && !hasImages && !hasToolCalls) {
 				const emptyLabel = isToolCallOnly(record.cell) ? "Tool call only" : record.cell.text || "No content";
-				return (0, react_jsx_runtime.jsx)("p", {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 					className: TrajectoryTable_module_css_default.noPayload,
 					children: emptyLabel
 				});
 			}
-			if (!rendered || !hasImages && !hasToolCalls) return (0, react_jsx_runtime.jsx)(MarkdownFragment, {
+			if (!rendered || !hasImages && !hasToolCalls) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownFragment, {
 				text: source ?? "",
 				rendered,
 				preview
 			});
-			return (0, react_jsx_runtime.jsxs)("div", { children: [
-				source && (0, react_jsx_runtime.jsx)(MarkdownFragment, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [
+				source && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownFragment, {
 					text: source,
 					rendered: true,
 					preview
 				}),
-				record.cell.kind === "message" && (0, react_jsx_runtime.jsx)(AssistantToolCalls, {
+				record.cell.kind === "message" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AssistantToolCalls, {
 					blocks: record.cell.sourceBlocks,
 					preview,
 					onOpenCall
 				}),
-				(0, react_jsx_runtime.jsx)(MessageImages, {
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)(MessageImages, {
 					blocks: record.cell.sourceBlocks,
 					preview
 				})
 			] });
 		}
 		function RecordTiming({ record }) {
-			return record.cell.kind === "message" && record.cell.assistantMetrics !== void 0 ? (0, react_jsx_runtime.jsx)(AssistantTimingPanel, { metrics: record.cell.assistantMetrics }) : (0, react_jsx_runtime.jsxs)("dl", {
+			return record.cell.kind === "message" && record.cell.assistantMetrics !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AssistantTimingPanel, { metrics: record.cell.assistantMetrics }) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dl", {
 				className: TrajectoryTable_module_css_default.overview,
 				children: [
-					(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Started" }), (0, react_jsx_runtime.jsx)(StartedAtValue, { timestamp: record.cell.startedAt ?? null })] }),
-					(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(record.cell.timeSeconds) })] }),
-					(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Timing source" }), (0, react_jsx_runtime.jsx)("dd", { children: record.cell.timeSeconds === null ? "Not available" : "Session timestamps" })] })
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Started" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StartedAtValue, { timestamp: record.cell.startedAt ?? null })] }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(record.cell.timeSeconds) })] }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Timing source" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: record.cell.timeSeconds === null ? "Not available" : "Session timestamps" })] })
 				]
 			});
 		}
 		function RequestTiming({ assistant, anchor, request }) {
-			if (assistant !== void 0) return (0, react_jsx_runtime.jsx)(RecordTiming, { record: assistant });
+			if (assistant !== void 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordTiming, { record: assistant });
 			if (request?.startedAt !== void 0) {
 				const duration = request.completedAt === null || request.completedAt === void 0 ? null : Math.max(0, (request.completedAt - request.startedAt) / 1e3);
-				return (0, react_jsx_runtime.jsxs)("dl", {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dl", {
 					className: TrajectoryTable_module_css_default.overview,
 					children: [
-						(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Started" }), (0, react_jsx_runtime.jsx)(StartedAtValue, { timestamp: request.startedAt })] }),
-						(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(duration) })] }),
-						(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Timing source" }), (0, react_jsx_runtime.jsx)("dd", { children: duration === null ? "Session timestamps (running)" : "Session timestamps" })] })
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Started" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StartedAtValue, { timestamp: request.startedAt })] }),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(duration) })] }),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Timing source" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: duration === null ? "Session timestamps (running)" : "Session timestamps" })] })
 					]
 				});
 			}
-			return (0, react_jsx_runtime.jsxs)("dl", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dl", {
 				className: TrajectoryTable_module_css_default.overview,
-				children: [(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Started" }), (0, react_jsx_runtime.jsx)(StartedAtValue, { timestamp: anchor?.cell.startedAt ?? null })] }), (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(null) })] })]
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Started" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StartedAtValue, { timestamp: anchor?.cell.startedAt ?? null })] }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(null) })] })]
 			});
 		}
 		function RecordPayload({ record, direction, preview = false }) {
 			const value = direction === "input" ? record.cell.inputDetail : record.cell.outputDetail;
 			const missing = direction === "input" ? "No payload captured" : "No result captured";
-			if (!value) return (0, react_jsx_runtime.jsx)("p", {
+			if (!value) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: TrajectoryTable_module_css_default.noPayload,
 				children: missing
 			});
@@ -4173,26 +4171,26 @@ window.__ModuleLoader__.load({
 			const payloadClass = preview ? TrajectoryTable_module_css_default.jsonPreview : TrajectoryTable_module_css_default.jsonPayload;
 			const payloadClassName = error ? `${payloadClass} ${TrajectoryTable_module_css_default.errorPayload}` : payloadClass;
 			const json = parseJsonContainer(value);
-			if (direction === "output" && record.cell.outputBlocks?.length === 1 && record.cell.outputBlocks[0]?.type === "text" && json !== void 0) return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
+			if (direction === "output" && record.cell.outputBlocks?.length === 1 && record.cell.outputBlocks[0]?.type === "text" && json !== void 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
 				data: json,
 				label: "Result JSON",
 				className: payloadClassName
 			});
-			if (direction === "output" && record.cell.outputBlocks?.some((block) => block.imageSrc !== void 0 || block.content !== "") === true) return (0, react_jsx_runtime.jsx)(ToolOutputBlocks, {
+			if (direction === "output" && record.cell.outputBlocks?.some((block) => block.imageSrc !== void 0 || block.content !== "") === true) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolOutputBlocks, {
 				blocks: record.cell.outputBlocks,
 				error,
 				preview
 			});
-			if (direction === "input" && (record.cell.kind === "user" || record.cell.kind === "context") || direction === "output" && record.cell.kind === "message") return (0, react_jsx_runtime.jsx)("div", {
+			if (direction === "input" && (record.cell.kind === "user" || record.cell.kind === "context") || direction === "output" && record.cell.kind === "message") return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: [preview ? TrajectoryTable_module_css_default.markdownPreview : TrajectoryTable_module_css_default.markdownPayload, error ? TrajectoryTable_module_css_default.errorPayload : void 0].filter((className) => className !== void 0).join(" "),
-				children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text: value })
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text: value })
 			});
-			if (json !== void 0) return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
+			if (json !== void 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
 				data: json,
 				label: `${direction === "input" ? "Payload" : "Result"} JSON`,
 				className: payloadClassName
 			});
-			return (0, react_jsx_runtime.jsx)("pre", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 				className: [
 					TrajectoryTable_module_css_default.payload,
 					preview ? TrajectoryTable_module_css_default.payloadPreview : void 0,
@@ -4203,35 +4201,35 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function RecordSchema({ record, preview = false }) {
-			if (!record.cell.schemaDetail) return (0, react_jsx_runtime.jsx)("p", {
+			if (!record.cell.schemaDetail) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: TrajectoryTable_module_css_default.noPayload,
 				children: "Schema unavailable"
 			});
 			const schema = parseToolSchema(record.cell.schemaDetail);
-			if (schema !== void 0) return (0, react_jsx_runtime.jsxs)("div", {
+			if (schema !== void 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: preview ? `${TrajectoryTable_module_css_default.schema} ${TrajectoryTable_module_css_default.schemaPreview}` : TrajectoryTable_module_css_default.schema,
-				children: [(0, react_jsx_runtime.jsxs)("header", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("header", {
 					className: TrajectoryTable_module_css_default.schemaIntro,
-					children: [(0, react_jsx_runtime.jsx)("h3", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
 						className: TrajectoryTable_module_css_default.schemaName,
 						children: schema.name
-					}), (0, react_jsx_runtime.jsx)("p", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: TrajectoryTable_module_css_default.schemaDescription,
 						children: schema.description
 					})]
-				}), (0, react_jsx_runtime.jsxs)("section", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 					className: TrajectoryTable_module_css_default.schemaParameters,
-					children: [(0, react_jsx_runtime.jsx)("h4", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h4", {
 						className: TrajectoryTable_module_css_default.schemaParametersTitle,
 						children: "Parameters"
-					}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.JsonTree, {
 						data: schema.parameters,
 						label: `${schema.name} parameters JSON`,
 						className: TrajectoryTable_module_css_default.schemaTree
 					})]
 				})]
 			});
-			return (0, react_jsx_runtime.jsx)("pre", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 				className: `${TrajectoryTable_module_css_default.payload} ${preview ? TrajectoryTable_module_css_default.payloadPreview : ""}`,
 				children: record.cell.schemaDetail
 			});
@@ -4260,20 +4258,20 @@ window.__ModuleLoader__.load({
 			}
 		}
 		function OverviewSection({ label, onOpen, children }) {
-			return (0, react_jsx_runtime.jsxs)("section", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 				className: TrajectoryTable_module_css_default.overviewSection,
-				children: [(0, react_jsx_runtime.jsx)("h3", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
 					className: TrajectoryTable_module_css_default.overviewHeading,
-					children: (0, react_jsx_runtime.jsxs)("button", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: TrajectoryTable_module_css_default.overviewTitle,
 						onClick: onOpen,
-						children: [(0, react_jsx_runtime.jsx)("span", { children: label }), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: label }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 							className: TrajectoryTable_module_css_default.overviewTitleIcon,
 							size: 12
 						})]
 					})
-				}), (0, react_jsx_runtime.jsx)("div", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: `${TrajectoryTable_module_css_default.overviewPreview} ${TrajectoryTable_module_css_default.summaryScrollRegion}`,
 					"data-summary-scroll-region": "",
 					children
@@ -4630,11 +4628,11 @@ window.__ModuleLoader__.load({
 			const olderBusy = olderHistoryLoading || olderLoading;
 			const showInitialLoading = historyLoading || !tableScrollReady;
 			const historyRowOffset = hasOlderRecords ? 1 : 0;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				ref: rootRef,
 				className: TrajectoryTable_module_css_default.split,
 				style: splitStyle,
-				children: [(0, react_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					ref: tablePaneRef,
 					className: TrajectoryTable_module_css_default.tablePane,
 					"data-trajectory-scroll": "",
@@ -4646,29 +4644,29 @@ window.__ModuleLoader__.load({
 					onClick: (event) => {
 						if (event.target === event.currentTarget) clearAllSelections();
 					},
-					children: [showInitialLoading && (0, react_jsx_runtime.jsx)("div", {
+					children: [showInitialLoading && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: TrajectoryTable_module_css_default.historyLoading,
 						role: "status",
 						"aria-live": "polite",
-						children: (0, react_jsx_runtime.jsxs)("span", {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 							className: TrajectoryTable_module_css_default.historyLoadingBar,
-							children: [(0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: TrajectoryTable_module_css_default.historyLoadingSpinner,
 								"aria-hidden": "true"
 							}), "Loading trajectory…"]
 						})
-					}), (0, react_jsx_runtime.jsxs)("table", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("table", {
 						className: TrajectoryTable_module_css_default.table,
 						"data-scroll-ready": tableScrollReady || void 0,
 						"aria-rowcount": records.length + historyRowOffset,
-						children: [(0, react_jsx_runtime.jsxs)("colgroup", { children: [(0, react_jsx_runtime.jsx)("col", { className: TrajectoryTable_module_css_default.eventColumn }), (0, react_jsx_runtime.jsx)("col", { className: TrajectoryTable_module_css_default.contentColumn })] }), (0, react_jsx_runtime.jsxs)("tbody", { children: [
-							hasOlderRecords && (0, react_jsx_runtime.jsx)("tr", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("colgroup", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("col", { className: TrajectoryTable_module_css_default.eventColumn }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("col", { className: TrajectoryTable_module_css_default.contentColumn })] }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tbody", { children: [
+							hasOlderRecords && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("tr", {
 								className: TrajectoryTable_module_css_default.historyLoadRow,
 								"data-history-load": "",
 								"aria-rowindex": 1,
-								children: (0, react_jsx_runtime.jsx)("td", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
 									colSpan: 2,
-									children: (0, react_jsx_runtime.jsxs)("button", {
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 										type: "button",
 										className: TrajectoryTable_module_css_default.historyLoadButton,
 										disabled: olderBusy || onLoadOlder === void 0,
@@ -4678,15 +4676,15 @@ window.__ModuleLoader__.load({
 											if (pane !== null) requestOlder(pane, false);
 										},
 										children: [
-											olderBusy && (0, react_jsx_runtime.jsx)("span", {
+											olderBusy && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 												className: TrajectoryTable_module_css_default.historyLoadingSpinner,
 												"aria-hidden": "true"
 											}),
-											(0, react_jsx_runtime.jsx)("span", {
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 												"aria-hidden": "true",
 												children: olderBusy ? "Loading earlier history…" : "Load earlier history"
 											}),
-											(0, react_jsx_runtime.jsx)("span", {
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 												className: TrajectoryTable_module_css_default.visuallyHidden,
 												role: "status",
 												"aria-live": "polite",
@@ -4696,16 +4694,16 @@ window.__ModuleLoader__.load({
 									})
 								})
 							}),
-							virtualTop > 0 && (0, react_jsx_runtime.jsx)("tr", {
+							virtualTop > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("tr", {
 								className: TrajectoryTable_module_css_default.virtualSpacer,
 								"data-virtual-spacer": "top",
 								"aria-hidden": "true",
-								children: (0, react_jsx_runtime.jsx)("td", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
 									colSpan: 2,
 									style: { "--trajectory-virtual-spacer-height": `${virtualTop}px` }
 								})
 							}),
-							renderedRecords.map(({ record, position, terminalRequestBoundary }) => (0, react_jsx_runtime.jsx)(RecordPresentation, {
+							renderedRecords.map(({ record, position, terminalRequestBoundary }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordPresentation, {
 								cell: record.cell,
 								children: ({ displayText, listDisplayText, resultText, toolCallOnly, toolCallText }) => {
 									const isCollapsedSummary = record.collapsedSummary !== void 0;
@@ -4720,7 +4718,7 @@ window.__ModuleLoader__.load({
 									const requestLabel = request === void 0 ? void 0 : `Request #${request}${requestInfo?.purpose === "compaction" ? " · Compaction" : ""}`;
 									const requestSelected = request !== void 0 && selectedRequest?.turn === record.turn && selectedRequest.group === record.group;
 									const sectionActive = record.turn === null ? activeSection === record.section : activeTurn === record.turn;
-									return (0, react_jsx_runtime.jsxs)("tr", {
+									return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
 										tabIndex: isRequestOnly ? -1 : 0,
 										"aria-rowindex": position + 1 + historyRowOffset,
 										"aria-label": isCollapsedSummary ? `Collapsed ${record.collapsedSummaryKind} summary, ${record.collapsedSummary}` : isRequestOnly ? `Request ${request ?? ""}, compaction` : `${request === void 0 ? "" : `Request ${request}, `}${KIND_LABEL[record.cell.kind]}, ${listDisplayText || "no content"}`,
@@ -4774,10 +4772,10 @@ window.__ModuleLoader__.load({
 											}
 											selectRecord(record.cell.index);
 										},
-										children: [(0, react_jsx_runtime.jsxs)("td", {
+										children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("td", {
 											className: TrajectoryTable_module_css_default.event,
 											children: [
-												request !== void 0 && (0, react_jsx_runtime.jsx)("button", {
+												request !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 													type: "button",
 													className: requestSelected ? `${TrajectoryTable_module_css_default.requestBoundaryControl} ${TrajectoryTable_module_css_default.requestBoundaryControlActive}` : TrajectoryTable_module_css_default.requestBoundaryControl,
 													"aria-label": requestLabel,
@@ -4798,43 +4796,43 @@ window.__ModuleLoader__.load({
 														event.stopPropagation();
 													}
 												}),
-												record.turn !== null && activeTurn === record.turn && !isInitialSystem && (0, react_jsx_runtime.jsx)("span", {
+												record.turn !== null && activeTurn === record.turn && !isInitialSystem && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 													className: TrajectoryTable_module_css_default.turnRail,
 													"aria-hidden": "true"
 												}),
-												!isCollapsedSummary && selectedIndex === record.cell.index && (0, react_jsx_runtime.jsx)("span", {
+												!isCollapsedSummary && selectedIndex === record.cell.index && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 													className: TrajectoryTable_module_css_default.selectionRail,
 													"aria-hidden": "true"
 												}),
-												!isCollapsedSummary && !isRequestOnly && record.turnStart && (0, react_jsx_runtime.jsx)("span", {
+												!isCollapsedSummary && !isRequestOnly && record.turnStart && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 													className: sectionActive ? `${TrajectoryTable_module_css_default.turnLabel} ${TrajectoryTable_module_css_default.turnLabelActive}` : TrajectoryTable_module_css_default.turnLabel,
 													"aria-label": sectionLabel(record.turn),
-													children: record.turn === null ? sectionLabel(record.turn) : (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("span", {
+													children: record.turn === null ? sectionLabel(record.turn) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 														className: TrajectoryTable_module_css_default.turnLabelFull,
 														"aria-hidden": "true",
 														children: sectionLabel(record.turn)
-													}), (0, react_jsx_runtime.jsxs)("span", {
+													}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 														className: TrajectoryTable_module_css_default.turnLabelCompact,
 														"aria-hidden": "true",
 														children: ["#", record.turn]
 													})] })
 												}),
-												(0, react_jsx_runtime.jsx)("div", {
+												/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 													className: TrajectoryTable_module_css_default.eventInner,
-													children: !isCollapsedSummary && !isRequestOnly && (0, react_jsx_runtime.jsx)("span", {
+													children: !isCollapsedSummary && !isRequestOnly && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 														className: TrajectoryTable_module_css_default.kindSlot,
-														children: (0, react_jsx_runtime.jsxs)("span", {
+														children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 															className: `${TrajectoryTable_module_css_default.kindTag} ${record.cell.kind === "system" ? TrajectoryTable_module_css_default.systemNeutral : record.cell.kind === "context" ? TrajectoryTable_module_css_default.contextGreen : record.cell.kind === "compacted" ? TrajectoryTable_module_css_default.compacted : record.cell.kind === "tool" ? TrajectoryTable_module_css_default.toolAmber : record.cell.kind === "message" ? TrajectoryTable_module_css_default.assistantVioletBright : record.cell.kind === "subtool" ? TrajectoryTable_module_css_default.subtoolAmber : TrajectoryTable_module_css_default[record.cell.kind]}`,
 															"data-role-kind": record.cell.kind,
-															children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+															children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 																label: KIND_LABEL[record.cell.kind],
 																side: "right",
-																children: (0, react_jsx_runtime.jsx)("span", {
+																children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 																	className: TrajectoryTable_module_css_default.kindTagIcon,
 																	"aria-hidden": "true",
 																	children: KIND_ICON[record.cell.kind]
 																})
-															}), (0, react_jsx_runtime.jsx)("span", {
+															}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 																className: TrajectoryTable_module_css_default.kindTagLabel,
 																children: KIND_LABEL[record.cell.kind]
 															})]
@@ -4842,34 +4840,34 @@ window.__ModuleLoader__.load({
 													})
 												})
 											]
-										}), (0, react_jsx_runtime.jsx)("td", {
+										}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
 											className: TrajectoryTable_module_css_default.content,
-											children: isRequestOnly ? null : record.collapsedSummary !== void 0 ? (0, react_jsx_runtime.jsxs)("span", {
+											children: isRequestOnly ? null : record.collapsedSummary !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 												className: TrajectoryTable_module_css_default.collapsedTurnContent,
 												title: record.collapsedSummary,
-												children: [(0, react_jsx_runtime.jsx)("span", {
+												children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 													className: TrajectoryTable_module_css_default.collapsedTurnEllipsis,
 													children: "…"
-												}), (0, react_jsx_runtime.jsx)("span", {
+												}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 													className: TrajectoryTable_module_css_default.collapsedTurnText,
 													children: record.collapsedSummary
 												})]
-											}) : (0, react_jsx_runtime.jsxs)("span", {
+											}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 												className: resultText === void 0 ? TrajectoryTable_module_css_default.contentText : TrajectoryTable_module_css_default.resultPreview,
 												title: resultText === void 0 ? listDisplayText : `${listDisplayText} → ${resultText}`,
-												children: [(0, react_jsx_runtime.jsx)("span", {
+												children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 													className: resultText === void 0 ? void 0 : TrajectoryTable_module_css_default.resultRequest,
-													children: (0, react_jsx_runtime.jsx)(RecordListText, {
+													children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordListText, {
 														displayText,
 														toolCallOnly,
 														toolCallText
 													})
-												}), resultText !== void 0 && (0, react_jsx_runtime.jsxs)("span", {
+												}), resultText !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 													className: record.cell.isError ? `${TrajectoryTable_module_css_default.inlineResult} ${TrajectoryTable_module_css_default.error}` : TrajectoryTable_module_css_default.inlineResult,
-													children: [(0, react_jsx_runtime.jsx)("span", {
+													children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 														className: TrajectoryTable_module_css_default.arrow,
 														children: "→"
-													}), (0, react_jsx_runtime.jsx)("span", {
+													}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 														className: resultText === "No output" ? `${TrajectoryTable_module_css_default.inlineResultText} ${TrajectoryTable_module_css_default.noOutputText}` : TrajectoryTable_module_css_default.inlineResultText,
 														children: resultText
 													})]
@@ -4879,23 +4877,23 @@ window.__ModuleLoader__.load({
 									});
 								}
 							}, trajectoryVirtualRecordKey(record))),
-							virtualBottom > 0 && (0, react_jsx_runtime.jsx)("tr", {
+							virtualBottom > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("tr", {
 								className: TrajectoryTable_module_css_default.virtualSpacer,
 								"data-virtual-spacer": "bottom",
 								"aria-hidden": "true",
-								children: (0, react_jsx_runtime.jsx)("td", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
 									colSpan: 2,
 									style: { "--trajectory-virtual-spacer-height": `${virtualBottom}px` }
 								})
 							})
 						] })]
 					})]
-				}), (selectedRequest !== null || promptSelected || selected !== void 0 && selectedState !== void 0) && (0, react_jsx_runtime.jsxs)("aside", {
+				}), (selectedRequest !== null || promptSelected || selected !== void 0 && selectedState !== void 0) && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("aside", {
 					className: TrajectoryTable_module_css_default.details,
 					"aria-label": "Event details",
 					style: detailsWidth === null ? void 0 : { width: detailsWidth },
 					children: [
-						(0, react_jsx_runtime.jsx)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: TrajectoryTable_module_css_default.detailsResizeHandle,
 							role: "separator",
 							"aria-label": "Resize event details",
@@ -4955,52 +4953,52 @@ window.__ModuleLoader__.load({
 								event.preventDefault();
 							}
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: TrajectoryTable_module_css_default.detailsHeader,
-							children: [(0, react_jsx_runtime.jsx)("div", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: TrajectoryTable_module_css_default.detailsTitle,
-								children: selectedRequest !== null ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-									(0, react_jsx_runtime.jsx)("span", {
+								children: selectedRequest !== null ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: TrajectoryTable_module_css_default.requestDetailsDot,
 										"aria-hidden": "true"
 									}),
-									(0, react_jsx_runtime.jsxs)("span", {
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 										className: TrajectoryTable_module_css_default.requestDetailsName,
 										children: ["Request #", selectedRequestNumber ?? "—"]
 									}),
-									(0, react_jsx_runtime.jsx)("span", {
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: TrajectoryTable_module_css_default.detailsLocation,
 										children: selectedRequestInfo?.purpose === "compaction" ? `Compaction · ${sectionLabel(selectedRequest.turn)}` : sectionLabel(selectedRequest.turn)
 									})
-								] }) : promptSelected ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("span", {
+								] }) : promptSelected ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: `${TrajectoryTable_module_css_default.kindTag} ${TrajectoryTable_module_css_default.systemNeutral}`,
 									children: "SYSTEM"
-								}), (0, react_jsx_runtime.jsx)("span", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: TrajectoryTable_module_css_default.detailsLocation,
 									children: selected?.cell.text
-								})] }) : selected !== void 0 && (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("span", {
+								})] }) : selected !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: `${TrajectoryTable_module_css_default.kindTag} ${selected.cell.kind === "context" ? TrajectoryTable_module_css_default.contextGreen : selected.cell.kind === "compacted" ? TrajectoryTable_module_css_default.compacted : selected.cell.kind === "tool" ? TrajectoryTable_module_css_default.toolAmber : selected.cell.kind === "message" ? TrajectoryTable_module_css_default.assistantVioletBright : selected.cell.kind === "subtool" ? TrajectoryTable_module_css_default.subtoolAmber : TrajectoryTable_module_css_default[selected.cell.kind]}`,
 									children: KIND_LABEL[selected.cell.kind]
-								}), (0, react_jsx_runtime.jsx)("span", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: TrajectoryTable_module_css_default.detailsLocation,
 									children: selected.cell.kind === "compacted" ? sectionLabel(selected.turn) : `${sectionLabel(selected.turn)} · ${selected.group}`
 								})] })
-							}), (0, react_jsx_runtime.jsx)("button", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								type: "button",
 								className: TrajectoryTable_module_css_default.close,
 								"aria-label": "Close details",
 								onClick: clearInspectorSelection,
-								children: (0, react_jsx_runtime.jsx)("span", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									"aria-hidden": "true",
 									children: "×"
 								})
 							})]
 						}),
-						(0, react_jsx_runtime.jsx)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: TrajectoryTable_module_css_default.detailTabs,
 							role: "tablist",
 							"aria-label": "Event details",
-							children: selectedTabs.map((tab) => (0, react_jsx_runtime.jsx)("button", {
+							children: selectedTabs.map((tab) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								id: `trajectory-detail-${tab.id}`,
 								type: "button",
 								role: "tab",
@@ -5013,76 +5011,76 @@ window.__ModuleLoader__.load({
 								children: tab.label
 							}, tab.id))
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							id: "trajectory-detail-panel",
 							className: activeTab === "overview" ? `${TrajectoryTable_module_css_default.detailBody} ${TrajectoryTable_module_css_default.detailBodySummary}` : TrajectoryTable_module_css_default.detailBody,
 							role: "tabpanel",
 							"aria-labelledby": `trajectory-detail-${activeTab}`,
 							children: [
-								selectedRequest !== null && selectedRequestState !== void 0 && activeTab === "overview" && (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsxs)("dl", {
+								selectedRequest !== null && selectedRequestState !== void 0 && activeTab === "overview" && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dl", {
 									className: `${TrajectoryTable_module_css_default.overview} ${TrajectoryTable_module_css_default.summaryScrollRegion}`,
 									"data-summary-scroll-region": "",
 									children: [
-										(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Status" }), (0, react_jsx_runtime.jsx)("dd", {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Status" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", {
 											className: selectedRequestState === "error" ? TrajectoryTable_module_css_default.error : void 0,
 											children: statusLabel(selectedRequestState)
 										})] }),
-										selectedRequestInfo?.purpose === "compaction" && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Purpose" }), (0, react_jsx_runtime.jsx)("dd", { children: "Compaction" })] }),
-										(selectedRequestInfo?.provider ?? selectedRequestInfo?.requestConfig?.provider) !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Provider" }), (0, react_jsx_runtime.jsx)("dd", { children: selectedRequestInfo?.provider ?? selectedRequestInfo?.requestConfig?.provider })] }),
-										(selectedRequestInfo?.model ?? selectedRequestInfo?.requestConfig?.model) !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Model" }), (0, react_jsx_runtime.jsx)("dd", { children: selectedRequestInfo?.model ?? selectedRequestInfo?.requestConfig?.model })] }),
-										(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Tool calls" }), (0, react_jsx_runtime.jsx)("dd", { children: selectedRequestToolCalls })] }),
-										selectedRequestSubtoolCalls > 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Subtool calls" }), (0, react_jsx_runtime.jsx)("dd", { children: selectedRequestSubtoolCalls })] }),
-										selectedRequestInfo?.error !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Error" }), (0, react_jsx_runtime.jsx)("dd", {
+										selectedRequestInfo?.purpose === "compaction" && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Purpose" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: "Compaction" })] }),
+										(selectedRequestInfo?.provider ?? selectedRequestInfo?.requestConfig?.provider) !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Provider" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: selectedRequestInfo?.provider ?? selectedRequestInfo?.requestConfig?.provider })] }),
+										(selectedRequestInfo?.model ?? selectedRequestInfo?.requestConfig?.model) !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Model" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: selectedRequestInfo?.model ?? selectedRequestInfo?.requestConfig?.model })] }),
+										/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Tool calls" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: selectedRequestToolCalls })] }),
+										selectedRequestSubtoolCalls > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Subtool calls" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: selectedRequestSubtoolCalls })] }),
+										selectedRequestInfo?.error !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Error" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", {
 											className: TrajectoryTable_module_css_default.error,
 											children: selectedRequestInfo.error
 										})] }),
-										selectedRequestInfo?.retry !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Retry" }), (0, react_jsx_runtime.jsxs)("dd", { children: [
+										selectedRequestInfo?.retry !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Retry" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", { children: [
 											"Scheduled ",
 											selectedRequestInfo.retry,
 											selectedRequestInfo.maxRetries === void 0 ? "" : ` of ${selectedRequestInfo.maxRetries}`
 										] })] }),
-										selectedRequestInfo?.retryDelayMs !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Retry delay" }), (0, react_jsx_runtime.jsx)("dd", { children: formatDurationMs(selectedRequestInfo.retryDelayMs) })] }),
-										selectedRequestResult !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Result" }), (0, react_jsx_runtime.jsx)("dd", {
+										selectedRequestInfo?.retryDelayMs !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Retry delay" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: formatDurationMs(selectedRequestInfo.retryDelayMs) })] }),
+										selectedRequestResult !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Result" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", {
 											className: TrajectoryTable_module_css_default.overviewParentLinks,
-											children: (0, react_jsx_runtime.jsxs)("button", {
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 												type: "button",
 												className: TrajectoryTable_module_css_default.overviewHierarchyNavLink,
 												onClick: () => {
 													openRecordSummary(selectedRequestResult);
 												},
-												children: [(0, react_jsx_runtime.jsx)("span", { children: selectedRequestInfo?.purpose === "compaction" ? "Compacted" : "Assistant Message" }), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+												children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: selectedRequestInfo?.purpose === "compaction" ? "Compacted" : "Assistant Message" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 													className: TrajectoryTable_module_css_default.overviewHierarchyJumpIconTight,
 													size: 11
 												})]
 											})
 										})] })
 									]
-								}), (0, react_jsx_runtime.jsxs)("div", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: TrajectoryTable_module_css_default.overviewSections,
 									children: [
-										selectedRequestOptions !== void 0 && (0, react_jsx_runtime.jsx)(OverviewSection, {
+										selectedRequestOptions !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 											label: "Options",
 											onOpen: () => {
 												activateTab("options");
 											},
-											children: (0, react_jsx_runtime.jsx)(RequestOptions, {
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RequestOptions, {
 												options: selectedRequestOptions,
 												preview: true
 											})
 										}),
-										(0, react_jsx_runtime.jsx)(OverviewSection, {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 											label: "Usage",
 											onOpen: () => {
 												activateTab("usage");
 											},
-											children: (0, react_jsx_runtime.jsx)(UsageRows, { usage: selectedRequestUsage })
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(UsageRows, { usage: selectedRequestUsage })
 										}),
-										(0, react_jsx_runtime.jsx)(OverviewSection, {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 											label: "Timing",
 											onOpen: () => {
 												activateTab("timing");
 											},
-											children: (0, react_jsx_runtime.jsx)(RequestTiming, {
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RequestTiming, {
 												assistant: selectedRequestAssistant,
 												anchor: selectedRequestAnchor,
 												request: selectedRequestInfo
@@ -5090,43 +5088,43 @@ window.__ModuleLoader__.load({
 										})
 									]
 								})] }),
-								selectedRequest !== null && activeTab === "options" && (0, react_jsx_runtime.jsx)(RequestOptions, { options: selectedRequestOptions }),
-								selectedRequest !== null && activeTab === "usage" && (0, react_jsx_runtime.jsx)(RequestUsagePanel, {
+								selectedRequest !== null && activeTab === "options" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RequestOptions, { options: selectedRequestOptions }),
+								selectedRequest !== null && activeTab === "usage" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RequestUsagePanel, {
 									usage: selectedRequestUsage,
 									cumulative: selectedRequestCumulativeUsage
 								}),
-								selectedRequest !== null && activeTab === "timing" && (0, react_jsx_runtime.jsx)(RequestTiming, {
+								selectedRequest !== null && activeTab === "timing" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RequestTiming, {
 									assistant: selectedRequestAssistant,
 									anchor: selectedRequestAnchor,
 									request: selectedRequestInfo
 								}),
-								promptSelected && selectedPreviousPrompt !== void 0 && activeTab === "diff" && (0, react_jsx_runtime.jsx)(SystemPromptDiff, {
+								promptSelected && selectedPreviousPrompt !== void 0 && activeTab === "diff" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SystemPromptDiff, {
 									before: selectedPreviousPrompt,
 									after: selectedPrompt
 								}),
-								promptSelected && activeTab === "system-prompt" && (selectedPrompt.system === "" ? (0, react_jsx_runtime.jsx)("p", {
+								promptSelected && activeTab === "system-prompt" && (selectedPrompt.system === "" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 									className: TrajectoryTable_module_css_default.noPayload,
 									children: "No system prompt in this request"
-								}) : (0, react_jsx_runtime.jsx)("div", {
+								}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: `${TrajectoryTable_module_css_default.markdownPayload} ${TrajectoryTable_module_css_default.systemPrompt}`,
-									children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text: selectedPrompt.system })
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text: selectedPrompt.system })
 								})),
-								promptSelected && activeTab === "tools" && (0, react_jsx_runtime.jsx)(ToolCatalog, { tools: selectedPrompt.tools }),
-								!promptSelected && selected?.cell.kind === "compacted" && selectedState !== void 0 && activeTab === "overview" && (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsxs)("dl", {
+								promptSelected && activeTab === "tools" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolCatalog, { tools: selectedPrompt.tools }),
+								!promptSelected && selected?.cell.kind === "compacted" && selectedState !== void 0 && activeTab === "overview" && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dl", {
 									className: `${TrajectoryTable_module_css_default.overview} ${TrajectoryTable_module_css_default.summaryScrollRegion}`,
 									"data-summary-scroll-region": "",
 									children: [
-										(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Status" }), (0, react_jsx_runtime.jsx)("dd", {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Status" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", {
 											className: selectedState === "error" ? TrajectoryTable_module_css_default.error : void 0,
 											children: statusLabel(selectedState)
 										})] }),
-										(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(selected.cell.timeSeconds) })] }),
-										(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Tokens" }), (0, react_jsx_runtime.jsx)("dd", { children: "—" })] })
+										/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(selected.cell.timeSeconds) })] }),
+										/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Tokens" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: "—" })] })
 									]
-								}), selected.cell.outputDetail !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+								}), selected.cell.outputDetail !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: `${TrajectoryTable_module_css_default.compactedSummary} ${TrajectoryTable_module_css_default.summaryScrollRegion}`,
 									"data-summary-scroll-region": "",
-									children: (0, react_jsx_runtime.jsx)(MarkdownRecordContent, {
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownRecordContent, {
 										record: selected,
 										rendered: true,
 										thinkingExpanded,
@@ -5134,78 +5132,78 @@ window.__ModuleLoader__.load({
 										onOpenCall: openCallSummary
 									})
 								})] }),
-								!promptSelected && selected !== void 0 && selected.cell.kind !== "compacted" && selectedState !== void 0 && activeTab === "overview" && (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsxs)("dl", {
+								!promptSelected && selected !== void 0 && selected.cell.kind !== "compacted" && selectedState !== void 0 && activeTab === "overview" && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dl", {
 									className: `${TrajectoryTable_module_css_default.overview} ${TrajectoryTable_module_css_default.summaryScrollRegion}`,
 									"data-summary-scroll-region": "",
 									children: [
-										selected.cell.messageSource !== void 0 && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Source" }), (0, react_jsx_runtime.jsx)("dd", {
+										selected.cell.messageSource !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Source" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", {
 											className: TrajectoryTable_module_css_default.overviewParentLinks,
-											children: (0, react_jsx_runtime.jsxs)("button", {
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 												type: "button",
 												className: TrajectoryTable_module_css_default.overviewHierarchyNavLink,
 												onClick: () => {
 													activateTab("source");
 												},
-												children: [(0, react_jsx_runtime.jsx)("span", { children: messageSourceLabel(selected.cell.messageSource) }), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+												children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: messageSourceLabel(selected.cell.messageSource) }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 													className: TrajectoryTable_module_css_default.overviewHierarchyJumpIconTight,
 													size: 11
 												})]
 											})
 										})] }),
-										hasSelectedHierarchy && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: selectedAssistantRequestTarget !== void 0 ? "Source" : "Hierarchy" }), (0, react_jsx_runtime.jsxs)("dd", {
+										hasSelectedHierarchy && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: selectedAssistantRequestTarget !== void 0 ? "Source" : "Hierarchy" }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("dd", {
 											className: TrajectoryTable_module_css_default.overviewParentLinks,
 											children: [
-												selectedAssistantRequestTarget !== void 0 && (0, react_jsx_runtime.jsxs)("button", {
+												selectedAssistantRequestTarget !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 													type: "button",
 													className: TrajectoryTable_module_css_default.overviewHierarchyNavLink,
 													onClick: () => {
 														selectRequest(selectedAssistantRequestTarget);
 													},
-													children: [(0, react_jsx_runtime.jsxs)("span", { children: ["Request #", selectedAssistantRequest ?? "—"] }), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+													children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { children: ["Request #", selectedAssistantRequest ?? "—"] }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 														className: TrajectoryTable_module_css_default.overviewHierarchyJumpIconTight,
 														size: 11
 													})]
 												}),
-												selectedParentMessage !== void 0 && (0, react_jsx_runtime.jsxs)("button", {
+												selectedParentMessage !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 													type: "button",
 													className: TrajectoryTable_module_css_default.overviewHierarchyNavLink,
 													onClick: () => {
 														openRecordSummary(selectedParentMessage);
 													},
-													children: [(0, react_jsx_runtime.jsx)("span", { children: "Assistant Message" }), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+													children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Assistant Message" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 														className: TrajectoryTable_module_css_default.overviewHierarchyJumpIconTight,
 														size: 11
 													})]
 												}),
-												selectedParentTool !== void 0 && (0, react_jsx_runtime.jsxs)("button", {
+												selectedParentTool !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 													type: "button",
 													className: TrajectoryTable_module_css_default.overviewHierarchyNavLink,
 													onClick: () => {
 														openRecordSummary(selectedParentTool);
 													},
-													children: [(0, react_jsx_runtime.jsx)("span", { children: "Tool Call" }), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+													children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Tool Call" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 														className: TrajectoryTable_module_css_default.overviewHierarchyJumpIconTight,
 														size: 11
 													})]
 												})
 											]
 										})] }),
-										(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Status" }), (0, react_jsx_runtime.jsx)("dd", {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Status" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", {
 											className: selectedState === "error" ? TrajectoryTable_module_css_default.error : void 0,
 											children: statusLabel(selectedState)
 										})] }),
-										selected.cell.kind === "message" && (0, react_jsx_runtime.jsx)(TokenRows, { cell: selected.cell }),
-										(selected.cell.kind === "user" || selected.cell.kind === "context") && (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(selected.cell.timeSeconds) })] })
+										selected.cell.kind === "message" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TokenRows, { cell: selected.cell }),
+										(selected.cell.kind === "user" || selected.cell.kind === "context") && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("dt", { children: "Duration" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("dd", { children: formatElapsedSeconds(selected.cell.timeSeconds) })] })
 									]
-								}), (0, react_jsx_runtime.jsxs)("div", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: TrajectoryTable_module_css_default.overviewSections,
 									children: [
-										isMarkdownRecord(selected) ? (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: (0, react_jsx_runtime.jsx)(OverviewSection, {
+										isMarkdownRecord(selected) ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 											label: "Preview",
 											onOpen: () => {
 												activateTab("rendered");
 											},
-											children: (0, react_jsx_runtime.jsx)(MarkdownRecordContent, {
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownRecordContent, {
 												record: selected,
 												rendered: true,
 												preview: true,
@@ -5213,81 +5211,81 @@ window.__ModuleLoader__.load({
 												onThinkingExpandedChange: setThinkingExpanded,
 												onOpenCall: openCallSummary
 											})
-										}) }) : (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-											selected.cell.inputDetail && (0, react_jsx_runtime.jsx)(OverviewSection, {
+										}) }) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+											selected.cell.inputDetail && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 												label: "Payload",
 												onOpen: () => {
 													activateTab("input");
 												},
-												children: (0, react_jsx_runtime.jsx)(RecordPayload, {
+												children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordPayload, {
 													record: selected,
 													direction: "input",
 													preview: true
 												})
 											}),
-											selected.cell.outputDetail && (0, react_jsx_runtime.jsx)(OverviewSection, {
+											selected.cell.outputDetail && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 												label: "Result",
 												onOpen: () => {
 													activateTab("output");
 												},
-												children: (0, react_jsx_runtime.jsx)(RecordPayload, {
+												children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordPayload, {
 													record: selected,
 													direction: "output",
 													preview: true
 												})
 											}),
-											(0, react_jsx_runtime.jsx)(OverviewSection, {
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 												label: "Schema",
 												onOpen: () => {
 													activateTab("schema");
 												},
-												children: (0, react_jsx_runtime.jsx)(RecordSchema, {
+												children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordSchema, {
 													record: selected,
 													preview: true
 												})
 											})
 										] }),
-										selectedAssistantRequestTarget !== void 0 && (0, react_jsx_runtime.jsx)(OverviewSection, {
+										selectedAssistantRequestTarget !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 											label: "Request Timing",
 											onOpen: () => {
 												selectRequest(selectedAssistantRequestTarget, "timing");
 											},
-											children: (0, react_jsx_runtime.jsx)(RecordTiming, { record: selected })
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordTiming, { record: selected })
 										}),
-										(selected.cell.kind === "tool" || selected.cell.kind === "subtool") && (0, react_jsx_runtime.jsx)(OverviewSection, {
+										(selected.cell.kind === "tool" || selected.cell.kind === "subtool") && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(OverviewSection, {
 											label: "Timing",
 											onOpen: () => {
 												activateTab("timing");
 											},
-											children: (0, react_jsx_runtime.jsx)(RecordTiming, { record: selected })
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordTiming, { record: selected })
 										})
 									]
 								})] }),
-								!promptSelected && selected !== void 0 && activeTab === "rendered" && (0, react_jsx_runtime.jsx)(MarkdownRecordContent, {
+								!promptSelected && selected !== void 0 && activeTab === "rendered" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownRecordContent, {
 									record: selected,
 									rendered: true,
 									thinkingExpanded,
 									onThinkingExpandedChange: setThinkingExpanded,
 									onOpenCall: openCallSummary
 								}),
-								!promptSelected && selected !== void 0 && activeTab === "raw" && (0, react_jsx_runtime.jsx)(MarkdownRecordContent, {
+								!promptSelected && selected !== void 0 && activeTab === "raw" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MarkdownRecordContent, {
 									record: selected,
 									rendered: false,
 									thinkingExpanded,
 									onThinkingExpandedChange: setThinkingExpanded,
 									onOpenCall: openCallSummary
 								}),
-								!promptSelected && selected !== void 0 && activeTab === "source" && (0, react_jsx_runtime.jsx)(MessageSource, { record: selected }),
-								!promptSelected && selected !== void 0 && activeTab === "input" && (0, react_jsx_runtime.jsx)(RecordPayload, {
+								!promptSelected && selected !== void 0 && activeTab === "source" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MessageSource, { record: selected }),
+								!promptSelected && selected !== void 0 && activeTab === "input" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordPayload, {
 									record: selected,
 									direction: "input"
 								}),
-								!promptSelected && selected !== void 0 && activeTab === "output" && (0, react_jsx_runtime.jsx)(RecordPayload, {
+								!promptSelected && selected !== void 0 && activeTab === "output" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordPayload, {
 									record: selected,
 									direction: "output"
 								}),
-								!promptSelected && selected !== void 0 && activeTab === "schema" && (0, react_jsx_runtime.jsx)(RecordSchema, { record: selected }),
-								!promptSelected && selected !== void 0 && activeTab === "timing" && (0, react_jsx_runtime.jsx)(RecordTiming, { record: selected })
+								!promptSelected && selected !== void 0 && activeTab === "schema" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordSchema, { record: selected }),
+								!promptSelected && selected !== void 0 && activeTab === "timing" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RecordTiming, { record: selected })
 							]
 						})
 					]
@@ -5306,38 +5304,38 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var TrajectoryToolbar_module_css_default = {
-			"root": "_5nUH5q_root",
-			"search": "_5nUH5q_search",
-			"searchIcon": "_5nUH5q_searchIcon",
+			"toggle": "_5nUH5q_toggle",
 			"action": "_5nUH5q_action",
-			"control": "_5nUH5q_control",
+			"root": "_5nUH5q_root",
 			"actionIcon": "_5nUH5q_actionIcon",
-			"toggleIcon": "_5nUH5q_toggleIcon",
+			"control": "_5nUH5q_control",
+			"actions": "_5nUH5q_actions",
+			"searchIcon": "_5nUH5q_searchIcon",
 			"controlTrack": "_5nUH5q_controlTrack",
 			"inner": "_5nUH5q_inner",
+			"toggleIcon": "_5nUH5q_toggleIcon",
 			"controlThumb": "_5nUH5q_controlThumb",
-			"searchInput": "_5nUH5q_searchInput",
-			"actions": "_5nUH5q_actions",
-			"toggle": "_5nUH5q_toggle"
+			"search": "_5nUH5q_search",
+			"searchInput": "_5nUH5q_searchInput"
 		};
 		//#endregion
-		//#region lib/types/client/TrajectoryToolbar.js
+		//#region src/client/TrajectoryToolbar.tsx
 		/**
 		* Render the sticky trajectory toolbar.
 		* @param props - rendered counts and whole-list fold state.
 		* @returns the toolbar element.
 		*/
 		function TrajectoryToolbar({ actualDuration, onActualDurationChange, actualTime, onActualTimeChange, allTurnsCollapsed, onToggleAllTurns, allAssistantsCollapsed, onToggleAllAssistants, searchQuery, onSearchQueryChange, t }) {
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: TrajectoryToolbar_module_css_default.root,
 				role: "toolbar",
 				"aria-label": t("toolbar.aria"),
-				children: (0, react_jsx_runtime.jsxs)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: TrajectoryToolbar_module_css_default.inner,
-					children: [(0, react_jsx_runtime.jsxs)("div", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryToolbar_module_css_default.actions,
 						children: [
-							(0, react_jsx_runtime.jsxs)("button", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: TrajectoryToolbar_module_css_default.toggle,
 								"aria-label": t("toolbar.useActualDuration"),
@@ -5346,19 +5344,19 @@ window.__ModuleLoader__.load({
 								onClick: () => {
 									onActualDurationChange(!actualDuration);
 								},
-								children: [(0, react_jsx_runtime.jsxs)("svg", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
 									className: TrajectoryToolbar_module_css_default.toggleIcon,
 									viewBox: "0 0 16 16",
 									fill: "none",
 									"aria-hidden": "true",
-									children: [(0, react_jsx_runtime.jsx)("circle", {
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
 										cx: "8",
 										cy: "8",
 										r: "5.25"
-									}), (0, react_jsx_runtime.jsx)("path", { d: "M8 4.75V8l2.25 1.5" })]
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M8 4.75V8l2.25 1.5" })]
 								}), t("toolbar.duration")]
 							}),
-							(0, react_jsx_runtime.jsxs)("button", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: TrajectoryToolbar_module_css_default.control,
 								role: "switch",
@@ -5367,46 +5365,46 @@ window.__ModuleLoader__.load({
 								onClick: () => {
 									onActualTimeChange(!actualTime);
 								},
-								children: [(0, react_jsx_runtime.jsx)("span", { children: t("toolbar.actualTime") }), (0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: t("toolbar.actualTime") }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: TrajectoryToolbar_module_css_default.controlTrack,
 									"data-on": actualTime || void 0,
 									"aria-hidden": "true",
-									children: (0, react_jsx_runtime.jsx)("span", { className: TrajectoryToolbar_module_css_default.controlThumb })
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: TrajectoryToolbar_module_css_default.controlThumb })
 								})]
 							}),
-							(0, react_jsx_runtime.jsxs)("button", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: TrajectoryToolbar_module_css_default.action,
 								"aria-label": allTurnsCollapsed ? t("toolbar.expandTurns") : t("toolbar.collapseTurns"),
 								"aria-pressed": allTurnsCollapsed,
 								title: allTurnsCollapsed ? t("toolbar.expandTurns") : t("toolbar.collapseTurns"),
 								onClick: onToggleAllTurns,
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: TrajectoryToolbar_module_css_default.actionIcon,
 									"aria-hidden": "true",
 									children: allTurnsCollapsed ? "⊞" : "⊟"
 								}), t("toolbar.turns")]
 							}),
-							(0, react_jsx_runtime.jsxs)("button", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: TrajectoryToolbar_module_css_default.action,
 								"aria-label": allAssistantsCollapsed ? t("toolbar.expandCalls") : t("toolbar.collapseCalls"),
 								"aria-pressed": allAssistantsCollapsed,
 								title: allAssistantsCollapsed ? t("toolbar.expandCalls") : t("toolbar.collapseCalls"),
 								onClick: onToggleAllAssistants,
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: TrajectoryToolbar_module_css_default.actionIcon,
 									"aria-hidden": "true",
 									children: allAssistantsCollapsed ? "⊞" : "⊟"
 								}), t("toolbar.calls")]
 							})
 						]
-					}), (0, react_jsx_runtime.jsxs)("div", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryToolbar_module_css_default.search,
-						children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSearchOutline16, {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSearchOutline16, {
 							size: 11,
 							className: TrajectoryToolbar_module_css_default.searchIcon
-						}), (0, react_jsx_runtime.jsx)("input", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 							type: "search",
 							className: TrajectoryToolbar_module_css_default.searchInput,
 							"aria-label": t("toolbar.search"),
@@ -5421,8 +5419,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/timeline.js
-		/** Operation-sequence and recorded-time projections for the trajectory overview. */
+		//#region src/client/timeline.ts
 		/**
 		* Format a timeline duration as an integer-millisecond label.
 		* @param milliseconds - Non-negative duration in milliseconds.
@@ -5558,22 +5555,22 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var TrajectoryTimeline_module_css_default = {
-			"track": "cg4vmG_track",
-			"selectionEdges": "cg4vmG_selectionEdges",
-			"lanes": "cg4vmG_lanes",
 			"root": "cg4vmG_root",
-			"labels": "cg4vmG_labels",
-			"plot": "cg4vmG_plot",
-			"turnBoundary": "cg4vmG_turnBoundary",
-			"earlierHistory": "cg4vmG_earlierHistory",
 			"turnBoundaries": "cg4vmG_turnBoundaries",
+			"turnBoundary": "cg4vmG_turnBoundary",
 			"span": "cg4vmG_span",
+			"plot": "cg4vmG_plot",
+			"labels": "cg4vmG_labels",
+			"selectionEdges": "cg4vmG_selectionEdges",
+			"hoverLine": "cg4vmG_hoverLine",
+			"track": "cg4vmG_track",
+			"lanes": "cg4vmG_lanes",
 			"empty": "cg4vmG_empty",
-			"selection": "cg4vmG_selection",
-			"hoverLine": "cg4vmG_hoverLine"
+			"earlierHistory": "cg4vmG_earlierHistory",
+			"selection": "cg4vmG_selection"
 		};
 		//#endregion
-		//#region lib/types/client/TrajectoryTimeline.js
+		//#region src/client/TrajectoryTimeline.tsx
 		/** Chrome-Network-style overview timeline for focusing the trajectory ledger. */
 		const MINIMUM_DRAG_PX = 3;
 		const MINIMUM_ZOOM_OPERATIONS = 4;
@@ -5657,22 +5654,22 @@ window.__ModuleLoader__.load({
 			};
 		}
 		function LaneLabels() {
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: TrajectoryTimeline_module_css_default.labels,
 				"aria-hidden": "true",
 				children: [
-					(0, react_jsx_runtime.jsx)("span", { children: "Input" }),
-					(0, react_jsx_runtime.jsx)("span", { children: "Model" }),
-					(0, react_jsx_runtime.jsx)("span", { children: "Tools" })
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Input" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Model" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Tools" })
 				]
 			});
 		}
 		function EarlierHistoryBoundary({ loading, onHover, onLoad }) {
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 				label: loading ? "Loading earlier history…" : "Click to load earlier history",
 				side: "right",
 				delayMs: TIMELINE_TOOLTIP_DELAY_MS,
-				children: (0, react_jsx_runtime.jsx)("button", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 					type: "button",
 					className: TrajectoryTimeline_module_css_default.earlierHistory,
 					"data-earlier-history": true,
@@ -5790,18 +5787,18 @@ window.__ModuleLoader__.load({
 				mode,
 				model
 			]);
-			if (model === null) return (0, react_jsx_runtime.jsx)("section", {
+			if (model === null) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("section", {
 				ref: rootRef,
 				className: TrajectoryTimeline_module_css_default.root,
 				"aria-label": "Trajectory timeline",
-				children: (0, react_jsx_runtime.jsxs)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: TrajectoryTimeline_module_css_default.plot,
-					children: [(0, react_jsx_runtime.jsx)(LaneLabels, {}), (0, react_jsx_runtime.jsxs)("div", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(LaneLabels, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: TrajectoryTimeline_module_css_default.track,
-						children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: TrajectoryTimeline_module_css_default.empty,
 							children: "No timing data"
-						}), hasEarlierRecords && (0, react_jsx_runtime.jsx)(EarlierHistoryBoundary, {
+						}), hasEarlierRecords && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(EarlierHistoryBoundary, {
 							loading: loadingEarlier,
 							onHover: () => {
 								setHover(null);
@@ -5950,13 +5947,13 @@ window.__ModuleLoader__.load({
 				setHover(null);
 				setPanning(false);
 			};
-			return (0, react_jsx_runtime.jsx)("section", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("section", {
 				ref: rootRef,
 				className: TrajectoryTimeline_module_css_default.root,
 				"aria-label": "Trajectory timeline",
-				children: (0, react_jsx_runtime.jsxs)("div", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: TrajectoryTimeline_module_css_default.plot,
-					children: [(0, react_jsx_runtime.jsx)(LaneLabels, {}), (0, react_jsx_runtime.jsxs)("div", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(LaneLabels, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						ref: trackRef,
 						className: TrajectoryTimeline_module_css_default.track,
 						"data-panning": panning || void 0,
@@ -5978,20 +5975,20 @@ window.__ModuleLoader__.load({
 							event.preventDefault();
 						},
 						children: [
-							showsEarlierBoundary && (0, react_jsx_runtime.jsx)(EarlierHistoryBoundary, {
+							showsEarlierBoundary && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(EarlierHistoryBoundary, {
 								loading: loadingEarlier,
 								onHover: () => {
 									setHover(null);
 								},
 								onLoad: loadEarlier
 							}),
-							hover !== null && hover.recordIndex === null && draft === null && (0, react_jsx_runtime.jsx)("div", {
+							hover !== null && hover.recordIndex === null && draft === null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: TrajectoryTimeline_module_css_default.hoverLine,
 								"data-timeline-hover-line": true,
 								"aria-hidden": "true",
 								style: { "--trajectory-hover-left": `${hover.fraction * 100}%` }
 							}),
-							visibleRange !== null && (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("div", {
+							visibleRange !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: TrajectoryTimeline_module_css_default.selection,
 								"data-dragging": draft === null ? void 0 : "true",
 								"aria-hidden": "true",
@@ -5999,7 +5996,7 @@ window.__ModuleLoader__.load({
 									"--trajectory-selection-left": `${visibleRange.start * 100}%`,
 									"--trajectory-selection-width": `${(visibleRange.end - visibleRange.start) * 100}%`
 								}
-							}), (0, react_jsx_runtime.jsx)("div", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: TrajectoryTimeline_module_css_default.selectionEdges,
 								"data-dragging": draft === null ? void 0 : "true",
 								"aria-hidden": "true",
@@ -6008,18 +6005,18 @@ window.__ModuleLoader__.load({
 									"--trajectory-selection-width": `${(visibleRange.end - visibleRange.start) * 100}%`
 								}
 							})] }),
-							(0, react_jsx_runtime.jsx)("div", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: TrajectoryTimeline_module_css_default.turnBoundaries,
 								"data-animate-viewport": animateViewport || void 0,
 								"aria-hidden": "true",
 								style: projectedDomainStyle,
-								children: model.turnBoundaries.filter((boundary) => boundary.time > model.start && boundary.time >= domainStart && boundary.time <= domainStart + domainDuration).map((boundary) => (0, react_jsx_runtime.jsx)("span", {
+								children: model.turnBoundaries.filter((boundary) => boundary.time > model.start && boundary.time >= domainStart && boundary.time <= domainStart + domainDuration).map((boundary) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: TrajectoryTimeline_module_css_default.turnBoundary,
 									"data-turn": boundary.turn,
 									style: { "--trajectory-turn-left": `${(boundary.time - model.start) / fullDuration * 100}%` }
 								}, boundary.turn))
 							}),
-							(0, react_jsx_runtime.jsx)("div", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: TrajectoryTimeline_module_css_default.lanes,
 								"data-animate-viewport": animateViewport || void 0,
 								"data-timeline-domain": true,
@@ -6031,11 +6028,11 @@ window.__ModuleLoader__.load({
 									const ttftMs = detail?.ttftMs;
 									const decodingMs = detail?.decodingMs;
 									const ttftFraction = ttftMs === void 0 || decodingMs === void 0 || ttftMs + decodingMs <= 0 ? null : ttftMs / (ttftMs + decodingMs);
-									return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+									return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 										label: () => timelineTooltipLabel(span.kind, detail),
 										side: "bottom",
 										delayMs: TIMELINE_TOOLTIP_DELAY_MS,
-										children: (0, react_jsx_runtime.jsx)("span", {
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 											"aria-hidden": "true",
 											className: TrajectoryTimeline_module_css_default.span,
 											"data-timeline-span": span.kind,
@@ -6064,7 +6061,7 @@ window.__ModuleLoader__.load({
 			});
 		});
 		//#endregion
-		//#region lib/types/client/layout.js
+		//#region src/client/layout.ts
 		function layoutEntryOrder(entry) {
 			return entry.kind === "system" && entry.change.kind === "initial" ? Number.NEGATIVE_INFINITY : entry.seq;
 		}
@@ -6834,8 +6831,7 @@ window.__ModuleLoader__.load({
 			return previewMarkdown === void 0 ? {} : { previewMarkdown };
 		}
 		//#endregion
-		//#region lib/types/client/trajectory-search-index.js
-		/** Incremental full-text index for the trajectory ledger. */
+		//#region src/client/trajectory-search-index.ts
 		function searchableJson(value) {
 			if (value === void 0) return "";
 			try {
@@ -6945,7 +6941,7 @@ window.__ModuleLoader__.load({
 			"root": "Hs8kMW_root"
 		};
 		//#endregion
-		//#region lib/types/client/TrajectoryView.js
+		//#region src/client/TrajectoryView.tsx
 		/** Trajectory view: compact summary over a turn-aware event ledger. */
 		const EMPTY_TURN_IDS = /* @__PURE__ */ new Set();
 		const EMPTY_RECORD_IDS = /* @__PURE__ */ new Set();
@@ -7243,11 +7239,11 @@ window.__ModuleLoader__.load({
 			const loadEarlierHistory = (0, react.useCallback)(() => {
 				return loadOlder();
 			}, [loadOlder]);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: views_module_css_default.root,
 				"data-conversation-composer-overlay": "",
 				children: [
-					(0, react_jsx_runtime.jsx)(TrajectoryToolbar, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TrajectoryToolbar, {
 						actualDuration,
 						onActualDurationChange: (nextActualDuration) => {
 							setActualDuration(nextActualDuration);
@@ -7266,7 +7262,7 @@ window.__ModuleLoader__.load({
 						onSearchQueryChange: setSearchQuery,
 						t
 					}),
-					(0, react_jsx_runtime.jsx)(TrajectoryTimeline, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TrajectoryTimeline, {
 						turns: timelineTurns,
 						mode: timelineMode,
 						range: timelineRange,
@@ -7278,9 +7274,9 @@ window.__ModuleLoader__.load({
 						onRecordSelect: handleTimelineRecordSelect,
 						onRecordFocus: handleTimelineRecordFocus
 					}),
-					(0, react_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: views_module_css_default.ledger,
-						children: (0, react_jsx_runtime.jsx)(TrajectoryTable, {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TrajectoryTable, {
 							requestNumbers,
 							turns: timelineTurns,
 							streamingCells,
@@ -7310,7 +7306,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services: the conversation slot, registries, ordinary Session paging, and the locale service. */
 		const inject = [
 			"slots",

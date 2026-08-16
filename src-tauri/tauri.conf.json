@@ -6,7 +6,7 @@
   "build": {
     "beforeDevCommand": "pnpm --dir frontend dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "pnpm --dir frontend build",
+    "beforeBuildCommand": "",
     "frontendDist": "../frontend/dist"
   },
   "app": {
@@ -35,7 +35,7 @@
       "dsh"
     ],
     "icon": [
-      "icons/icon.png"
+      "icons/icon.icns"
     ]
   }
 }

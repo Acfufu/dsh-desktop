@@ -4,9 +4,9 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
 		//#region ../../../vendor/cosmokit/src/misc.ts
 		/** Return true when a value is `null` or `undefined`. */
@@ -800,7 +800,7 @@ window.__ModuleLoader__.load({
 			"preserve"
 		], ({ inner }, isInner) => inner.toString(isInner));
 		//#endregion
-		//#region lib/types/locale-settings.js
+		//#region src/locale-settings.ts
 		/** Locale preference stored in the Host user-settings document. */
 		/** Settings namespace owned by the locale plugin. */
 		const LOCALE_SETTINGS_NAMESPACE = "locale";
@@ -810,7 +810,7 @@ window.__ModuleLoader__.load({
 		const LOCALE_IDS = ["zh", "en"];
 		Schema.object({ [LOCALE_PREFERENCE_FIELD]: Schema.union([...LOCALE_IDS]).required(false) });
 		//#endregion
-		//#region lib/types/locales/zh.js
+		//#region src/locales/zh.ts
 		/** zh base dictionary for the common namespace: cross-feature standard words. */
 		const zh$1 = {
 			"ok": "确定",
@@ -839,7 +839,7 @@ window.__ModuleLoader__.load({
 			"truncated": "已截断"
 		};
 		//#endregion
-		//#region lib/types/locales/en.js
+		//#region src/locales/en.ts
 		/** en base dictionary for the common namespace, checked complete against the zh key set. */
 		const en$1 = {
 			"ok": "OK",
@@ -868,7 +868,7 @@ window.__ModuleLoader__.load({
 			"truncated": "Truncated"
 		};
 		//#endregion
-		//#region lib/types/locales/settings.js
+		//#region src/locales/settings.ts
 		/** `settings.locale` namespace dictionaries (the Language row's copy). */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = { "language.title": "语言" };
@@ -886,14 +886,14 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var LanguageRow_module_css_default = {
+			"title": "cyd_2q_title",
 			"row": "cyd_2q_row",
-			"selector": "cyd_2q_selector",
-			"rowText": "cyd_2q_rowText",
 			"chevron": "cyd_2q_chevron",
-			"title": "cyd_2q_title"
+			"rowText": "cyd_2q_rowText",
+			"selector": "cyd_2q_selector"
 		};
 		//#endregion
-		//#region lib/types/client/LanguageRow.js
+		//#region src/client/LanguageRow.tsx
 		/**
 		* Language preference row registered into the General section item slot
 		* (figma 501:30011 'Setting-Cell'): title + selector pill opening the locale
@@ -910,15 +910,15 @@ window.__ModuleLoader__.load({
 			const options = useStore((s) => s.options);
 			const [open, setOpen] = (0, react.useState)(false);
 			const activeLabel = options.find((o) => o.id === active)?.label ?? active;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: LanguageRow_module_css_default.row,
-				children: [(0, react_jsx_runtime.jsx)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: LanguageRow_module_css_default.rowText,
-					children: (0, react_jsx_runtime.jsx)("div", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: LanguageRow_module_css_default.title,
 						children: t("language.title")
 					})
-				}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Menu, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Menu, {
 					open,
 					onClose: () => {
 						setOpen(false);
@@ -934,7 +934,7 @@ window.__ModuleLoader__.load({
 					},
 					align: "end",
 					portal: true,
-					anchor: (0, react_jsx_runtime.jsxs)("button", {
+					anchor: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: LanguageRow_module_css_default.selector,
 						"aria-haspopup": "menu",
@@ -942,13 +942,13 @@ window.__ModuleLoader__.load({
 						onClick: () => {
 							setOpen((v) => !v);
 						},
-						children: [activeLabel, (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: LanguageRow_module_css_default.chevron })]
+						children: [activeLabel, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: LanguageRow_module_css_default.chevron })]
 					})
 				})]
 			});
 		}
 		//#endregion
-		//#region lib/types/client/settings-store.js
+		//#region src/client/settings-store.ts
 		/**
 		* Language row slot store: a mirror of the locale service snapshot. The
 		* plugin's apply-world change listener is the only writer; the row component
@@ -974,7 +974,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Fallback locale consulted after the active locale misses (also the last-resort initial locale). */
 		const FALLBACK_LOCALE = "zh";
 		/** Shared namespace for shell-level texts. */

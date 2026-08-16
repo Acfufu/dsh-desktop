@@ -4,11 +4,10 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
-		//#region lib/types/client/card-model.js
-		/** Replay-stable view models for Cordis lifecycle Tool calls. */
+		//#region src/client/card-model.ts
 		function firstLine(text) {
 			const newline = text.indexOf("\n");
 			return newline === -1 ? text : text.slice(0, newline);
@@ -124,66 +123,65 @@ window.__ModuleLoader__.load({
 		}
 		var CordisRunRow_module_css_default = {
 			"title": "_1pRGNa_title",
-			"separator": "_1pRGNa_separator",
-			"summary": "_1pRGNa_summary",
-			"status": "_1pRGNa_status",
-			"inspect": "_1pRGNa_inspect",
-			"row": "_1pRGNa_row",
-			"message": "_1pRGNa_message",
-			"error": "_1pRGNa_error",
-			"card": "_1pRGNa_card",
-			"business": "_1pRGNa_business",
 			"output": "_1pRGNa_output",
-			"icon": "_1pRGNa_icon"
+			"summary": "_1pRGNa_summary",
+			"message": "_1pRGNa_message",
+			"separator": "_1pRGNa_separator",
+			"row": "_1pRGNa_row",
+			"status": "_1pRGNa_status",
+			"card": "_1pRGNa_card",
+			"icon": "_1pRGNa_icon",
+			"error": "_1pRGNa_error",
+			"business": "_1pRGNa_business",
+			"inspect": "_1pRGNa_inspect"
 		};
 		//#endregion
-		//#region lib/types/client/CordisActionRow.js
+		//#region src/client/CordisActionRow.tsx
 		/** Localized cards for `cordis_stop` and `cordis_undefine`. */
 		/** Render one Stop or Remove call with Cordis-owned localized copy. */
 		function CordisActionRow({ callId, toolName, block, inspect, t }) {
 			const card = cordisActionCard(block);
 			const remove = toolName === "cordis_undefine";
 			const summary = card.errorSummary ?? card.pluginId ?? callId;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: CordisRunRow_module_css_default.card,
 				"data-tool": toolName,
 				"data-state": card.state,
-				children: [(0, react_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: CordisRunRow_module_css_default.row,
 					children: [
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisRunRow_module_css_default.icon,
-							children: card.state === "error" ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" }) : card.state === "stopped" ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" }) : remove ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, { size: 14 }) : (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconStopFill16, { size: 14 })
+							children: card.state === "error" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" }) : card.state === "stopped" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" }) : remove ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, { size: 14 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconStopFill16, { size: 14 })
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisRunRow_module_css_default.title,
 							children: t(remove ? "row.removeTitle" : "row.stopTitle")
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisRunRow_module_css_default.separator,
 							"aria-hidden": true
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: card.errorSummary === null ? CordisRunRow_module_css_default.summary : CordisRunRow_module_css_default.error,
 							children: summary
 						}),
-						inspect !== void 0 && (0, react_jsx_runtime.jsx)("button", {
+						inspect !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: CordisRunRow_module_css_default.inspect,
 							"aria-label": "Inspect",
 							onClick: inspect,
-							children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {})
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {})
 						})
 					]
-				}), card.output !== null && (0, react_jsx_runtime.jsx)("pre", {
+				}), card.output !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 					className: CordisRunRow_module_css_default.output,
 					children: card.output
 				})]
 			});
 		}
 		//#endregion
-		//#region lib/types/client/status.js
-		/** Shared status derivation over Host inventory and this page's Client live set. */
+		//#region src/client/status.ts
 		/**
 		* Locate one immutable Package inside a Plugin row.
 		* @param row - owning Plugin inventory row.
@@ -218,36 +216,36 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var CordisDefineRow_module_css_default = {
-			"purpose": "SNQn2q_purpose",
+			"name": "SNQn2q_name",
 			"readout": "SNQn2q_readout",
+			"purpose": "SNQn2q_purpose",
+			"switch": "SNQn2q_switch",
+			"card": "SNQn2q_card",
+			"chevron": "SNQn2q_chevron",
+			"bodyWrap": "SNQn2q_bodyWrap",
+			"sourcePanel": "SNQn2q_sourcePanel",
+			"sourceTabs": "SNQn2q_sourceTabs",
+			"sourceCode": "SNQn2q_sourceCode",
+			"codeSection": "SNQn2q_codeSection",
 			"title": "SNQn2q_title",
 			"notice": "SNQn2q_notice",
-			"sourcePanel": "SNQn2q_sourcePanel",
-			"inspectButton": "SNQn2q_inspectButton",
-			"requestError": "SNQn2q_requestError",
-			"bodyWrap": "SNQn2q_bodyWrap",
 			"errorSummary": "SNQn2q_errorSummary",
-			"row": "SNQn2q_row",
-			"card": "SNQn2q_card",
-			"sourceCode": "SNQn2q_sourceCode",
-			"panelHint": "SNQn2q_panelHint",
 			"output": "SNQn2q_output",
-			"visuallyHidden": "SNQn2q_visuallyHidden",
-			"chevron": "SNQn2q_chevron",
 			"separator": "SNQn2q_separator",
-			"name": "SNQn2q_name",
-			"approvalPrompt": "SNQn2q_approvalPrompt",
-			"sourceTabs": "SNQn2q_sourceTabs",
-			"sourceTab": "SNQn2q_sourceTab",
-			"codeSection": "SNQn2q_codeSection",
-			"sourceCard": "SNQn2q_sourceCard",
 			"sourceTabActive": "SNQn2q_sourceTabActive",
+			"sourceCard": "SNQn2q_sourceCard",
+			"inspectButton": "SNQn2q_inspectButton",
+			"approvalPrompt": "SNQn2q_approvalPrompt",
+			"visuallyHidden": "SNQn2q_visuallyHidden",
 			"sectionLabel": "SNQn2q_sectionLabel",
-			"statusLabel": "SNQn2q_statusLabel",
-			"switch": "SNQn2q_switch"
+			"panelHint": "SNQn2q_panelHint",
+			"sourceTab": "SNQn2q_sourceTab",
+			"row": "SNQn2q_row",
+			"requestError": "SNQn2q_requestError",
+			"statusLabel": "SNQn2q_statusLabel"
 		};
 		//#endregion
-		//#region lib/types/client/CordisDefineRow.js
+		//#region src/client/CordisDefineRow.tsx
 		/** Read-only `cordis_define` card with Host and Client source tabs. */
 		const READING_LABELS$1 = {
 			idle: "status.idle",
@@ -265,9 +263,9 @@ window.__ModuleLoader__.load({
 		}
 		function leadingFor(state) {
 			switch (state) {
-				case "error": return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" });
-				case "stopped": return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" });
-				default: return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCodeOutline16, { size: 14 });
+				case "error": return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" });
+				case "stopped": return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" });
+				default: return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCodeOutline16, { size: 14 });
 			}
 		}
 		/** Render one immutable Package definition. */
@@ -287,7 +285,7 @@ window.__ModuleLoader__.load({
 			const hasSource = card.clientCode !== null || card.hostCode !== null;
 			const activeSource = selectedSource === "client" && card.clientCode !== null ? "client" : selectedSource === "host" && card.hostCode !== null ? "host" : card.clientCode !== null ? "client" : "host";
 			const activeCode = activeSource === "client" ? card.clientCode : card.hostCode;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: CordisDefineRow_module_css_default.card,
 				"data-tool": "cordis_define",
 				"data-state": card.state,
@@ -295,10 +293,10 @@ window.__ModuleLoader__.load({
 				"data-cordis-plugin-id": card.pluginId ?? void 0,
 				"data-cordis-package-id": card.packageId ?? void 0,
 				"data-cordis-status": reading,
-				children: [a11yState !== null && (0, react_jsx_runtime.jsx)("span", {
+				children: [a11yState !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: CordisDefineRow_module_css_default.visuallyHidden,
 					children: t(a11yState)
-				}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DisclosureRow, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DisclosureRow, {
 					rowClassName: CordisDefineRow_module_css_default.row,
 					titleClassName: CordisDefineRow_module_css_default.title,
 					chevronClassName: CordisDefineRow_module_css_default.chevron,
@@ -311,39 +309,39 @@ window.__ModuleLoader__.load({
 					onToggle: () => {
 						setExpanded((value) => !value);
 					},
-					collapsedContent: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-						(0, react_jsx_runtime.jsx)("span", {
+					collapsedContent: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisDefineRow_module_css_default.separator,
 							"aria-hidden": true
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: card.errorSummary === null ? CordisDefineRow_module_css_default.name : CordisDefineRow_module_css_default.errorSummary,
 							children: card.errorSummary ?? name
 						}),
-						card.errorSummary === null && (0, react_jsx_runtime.jsx)("span", {
+						card.errorSummary === null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisDefineRow_module_css_default.purpose,
 							children: card.purpose ?? t("purpose.missing")
 						}),
-						card.pluginId !== null && (0, react_jsx_runtime.jsx)("span", {
+						card.pluginId !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisDefineRow_module_css_default.readout,
-							children: (0, react_jsx_runtime.jsx)("span", {
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: CordisDefineRow_module_css_default.statusLabel,
 								children: t(READING_LABELS$1[reading])
 							})
 						})
 					] }),
-					children: (0, react_jsx_runtime.jsxs)("div", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: CordisDefineRow_module_css_default.bodyWrap,
 						children: [
-							hasSource && activeCode !== null && (0, react_jsx_runtime.jsxs)("section", {
+							hasSource && activeCode !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 								className: CordisDefineRow_module_css_default.sourceCard,
-								children: [(0, react_jsx_runtime.jsx)("div", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: CordisDefineRow_module_css_default.sourceTabs,
 									role: "tablist",
 									"aria-label": t("body.source"),
 									children: ["client", "host"].map((source) => {
 										const available = source === "client" ? card.clientCode !== null : card.hostCode !== null;
-										return (0, react_jsx_runtime.jsx)("button", {
+										return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 											id: `${sourcePanelId}-${source}`,
 											type: "button",
 											role: "tab",
@@ -357,12 +355,12 @@ window.__ModuleLoader__.load({
 											children: t(source === "client" ? "body.clientCode" : "body.hostCode")
 										}, source);
 									})
-								}), (0, react_jsx_runtime.jsx)("div", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									id: sourcePanelId,
 									className: CordisDefineRow_module_css_default.sourcePanel,
 									role: "tabpanel",
 									"aria-labelledby": `${sourcePanelId}-${activeSource}`,
-									children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.CodeBlock, {
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.CodeBlock, {
 										code: activeCode,
 										lang: "javascript",
 										copyLabel: t("body.copy"),
@@ -371,26 +369,26 @@ window.__ModuleLoader__.load({
 									})
 								})]
 							}),
-							card.output !== null && (0, react_jsx_runtime.jsxs)("section", {
+							card.output !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 								className: CordisDefineRow_module_css_default.codeSection,
-								children: [(0, react_jsx_runtime.jsx)("div", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: CordisDefineRow_module_css_default.sectionLabel,
 									children: t("body.output")
-								}), (0, react_jsx_runtime.jsx)("pre", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 									className: CordisDefineRow_module_css_default.output,
 									"data-error": card.state === "error" || void 0,
 									children: card.output
 								})]
 							}),
-							card.pluginId !== null && (0, react_jsx_runtime.jsx)("div", {
+							card.pluginId !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: CordisDefineRow_module_css_default.panelHint,
 								children: t("panel.hint")
 							}),
-							inspect !== void 0 && (0, react_jsx_runtime.jsxs)("button", {
+							inspect !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: CordisDefineRow_module_css_default.inspectButton,
 								onClick: inspect,
-								children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {}), "Inspect"]
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {}), "Inspect"]
 							})
 						]
 					})
@@ -398,8 +396,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/run-card-index.js
-		/** Session-local ownership index for Package business views on `cordis_run` cards. */
+		//#region src/client/run-card-index.ts
 		function createStore() {
 			const pointers = /* @__PURE__ */ new Map();
 			const listeners = /* @__PURE__ */ new Set();
@@ -448,7 +445,7 @@ window.__ModuleLoader__.load({
 			return `${pluginId}.${packageId}`;
 		}
 		//#endregion
-		//#region lib/types/client/CordisRunRow.js
+		//#region src/client/CordisRunRow.tsx
 		/** `cordis_run` card and the host seat for Package-owned interactive UI. */
 		const READING_LABELS = {
 			idle: "status.idle",
@@ -492,7 +489,7 @@ window.__ModuleLoader__.load({
 			const status = t(READING_LABELS[reading]);
 			const summary = card.errorSummary ?? (card.pluginId === null ? callId : `${card.pluginId}${card.packageId === null ? "" : ` · ${card.packageId}`}`);
 			const showBusiness = reading === "running" && key !== null;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: CordisRunRow_module_css_default.card,
 				"data-tool": "cordis_run",
 				"data-state": card.state,
@@ -501,51 +498,51 @@ window.__ModuleLoader__.load({
 				"data-cordis-run-id": card.pluginRunId ?? void 0,
 				"data-cordis-status": reading,
 				children: [
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: CordisRunRow_module_css_default.row,
 						children: [
-							(0, react_jsx_runtime.jsx)("span", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: CordisRunRow_module_css_default.icon,
-								children: card.state === "error" ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" }) : card.state === "stopped" ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" }) : (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCodeOutline16, { size: 14 })
+								children: card.state === "error" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" }) : card.state === "stopped" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCodeOutline16, { size: 14 })
 							}),
-							(0, react_jsx_runtime.jsx)("span", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: CordisRunRow_module_css_default.title,
 								children: t(card.mode === "update" ? "row.updateTitle" : "row.runTitle")
 							}),
-							(0, react_jsx_runtime.jsx)("span", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: CordisRunRow_module_css_default.separator,
 								"aria-hidden": true
 							}),
-							(0, react_jsx_runtime.jsx)("span", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: card.errorSummary === null ? CordisRunRow_module_css_default.summary : CordisRunRow_module_css_default.error,
 								children: summary
 							}),
-							(0, react_jsx_runtime.jsx)("span", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: CordisRunRow_module_css_default.status,
 								children: status
 							}),
-							inspect !== void 0 && (0, react_jsx_runtime.jsx)("button", {
+							inspect !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								type: "button",
 								className: CordisRunRow_module_css_default.inspect,
 								"aria-label": "Inspect",
 								onClick: inspect,
-								children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {})
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {})
 							})
 						]
 					}),
-					reading === "removed" && (0, react_jsx_runtime.jsx)("div", {
+					reading === "removed" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: CordisRunRow_module_css_default.message,
 						children: t("run.removed")
 					}),
-					reading === "superseded" && (0, react_jsx_runtime.jsx)("div", {
+					reading === "superseded" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: CordisRunRow_module_css_default.message,
 						children: t("run.superseded")
 					}),
-					reading === "failed" && attempt?.error !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+					reading === "failed" && attempt?.error !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: CordisRunRow_module_css_default.message,
 						children: attempt.error.message
 					}),
-					showBusiness && card.pluginId !== null && card.packageId !== null && card.pluginRunId !== null && (0, react_jsx_runtime.jsx)("div", {
+					showBusiness && card.pluginId !== null && card.packageId !== null && card.pluginRunId !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: CordisRunRow_module_css_default.business,
 						"data-cordis-business-view": key,
 						children: renderSlot("tool.view.cordis", {
@@ -554,13 +551,13 @@ window.__ModuleLoader__.load({
 							pluginRunId: card.pluginRunId
 						}, {
 							entryKey: key,
-							fallback: card.output === null ? null : (0, react_jsx_runtime.jsx)("pre", {
+							fallback: card.output === null ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 								className: CordisRunRow_module_css_default.output,
 								children: card.output
 							})
 						})
 					}),
-					!showBusiness && reading !== "removed" && reading !== "superseded" && card.output !== null && (0, react_jsx_runtime.jsx)("pre", {
+					!showBusiness && reading !== "removed" && reading !== "superseded" && card.output !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 						className: CordisRunRow_module_css_default.output,
 						children: card.output
 					})
@@ -579,38 +576,38 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var CordisPanel_module_css_default = {
-			"badgeLabel": "Yz16Wa_badgeLabel",
-			"rail": "Yz16Wa_rail",
-			"rowActions": "Yz16Wa_rowActions",
-			"badgeCount": "Yz16Wa_badgeCount",
-			"title": "Yz16Wa_title",
-			"activeVersion": "Yz16Wa_activeVersion",
+			"transitionActions": "Yz16Wa_transitionActions",
 			"actionButton": "Yz16Wa_actionButton",
+			"rail": "Yz16Wa_rail",
+			"rowHead": "Yz16Wa_rowHead",
+			"title": "Yz16Wa_title",
+			"rowError": "Yz16Wa_rowError",
+			"versionPicker": "Yz16Wa_versionPicker",
+			"badgeLabel": "Yz16Wa_badgeLabel",
+			"note": "Yz16Wa_note",
+			"rowPurpose": "Yz16Wa_rowPurpose",
+			"rows": "Yz16Wa_rows",
+			"activeVersion": "Yz16Wa_activeVersion",
+			"transition": "Yz16Wa_transition",
+			"rowDetail": "Yz16Wa_rowDetail",
+			"header": "Yz16Wa_header",
+			"rowActions": "Yz16Wa_rowActions",
+			"readError": "Yz16Wa_readError",
+			"panel": "Yz16Wa_panel",
 			"footerButtons": "Yz16Wa_footerButtons",
 			"rowName": "Yz16Wa_rowName",
-			"rowStatus": "Yz16Wa_rowStatus",
-			"doubleCheck": "Yz16Wa_doubleCheck",
-			"header": "Yz16Wa_header",
-			"transition": "Yz16Wa_transition",
-			"rowPurpose": "Yz16Wa_rowPurpose",
-			"body": "Yz16Wa_body",
-			"versionPicker": "Yz16Wa_versionPicker",
-			"rowHead": "Yz16Wa_rowHead",
-			"group": "Yz16Wa_group",
-			"readError": "Yz16Wa_readError",
-			"rowId": "Yz16Wa_rowId",
-			"rowError": "Yz16Wa_rowError",
-			"layer": "Yz16Wa_layer",
-			"rows": "Yz16Wa_rows",
-			"row": "Yz16Wa_row",
-			"note": "Yz16Wa_note",
-			"rowDetail": "Yz16Wa_rowDetail",
-			"transitionActions": "Yz16Wa_transitionActions",
+			"badgeCount": "Yz16Wa_badgeCount",
 			"badge": "Yz16Wa_badge",
-			"panel": "Yz16Wa_panel"
+			"rowStatus": "Yz16Wa_rowStatus",
+			"group": "Yz16Wa_group",
+			"rowId": "Yz16Wa_rowId",
+			"layer": "Yz16Wa_layer",
+			"body": "Yz16Wa_body",
+			"row": "Yz16Wa_row",
+			"doubleCheck": "Yz16Wa_doubleCheck"
 		};
 		//#endregion
-		//#region lib/types/client/CordisPanel.js
+		//#region src/client/CordisPanel.tsx
 		/** Frame-wide dynamic Plugin inventory, approvals, versions, and lifecycle actions. */
 		const STATUS_LABELS = {
 			idle: "status.idle",
@@ -640,11 +637,11 @@ window.__ModuleLoader__.load({
 			return [...rows.filter((row) => row.activity?.phase === "awaiting-approval"), ...rows.filter((row) => row.activity?.phase !== "awaiting-approval")];
 		}
 		function RowAction({ label, children, ...props }) {
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 				label,
 				side: "bottom",
 				delayMs: 500,
-				children: (0, react_jsx_runtime.jsx)("button", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 					type: "button",
 					className: CordisPanel_module_css_default.actionButton,
 					"aria-label": label,
@@ -654,10 +651,10 @@ window.__ModuleLoader__.load({
 			});
 		}
 		function DoubleCheckIcon() {
-			return (0, react_jsx_runtime.jsxs)("span", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 				className: CordisPanel_module_css_default.doubleCheck,
 				"aria-hidden": true,
-				children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 12 }), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 12 })]
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 12 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 12 })]
 			});
 		}
 		/** Render the inventory panel and its unified footer action. */
@@ -750,32 +747,32 @@ window.__ModuleLoader__.load({
 				const nextPackageId = listed?.nextPackageId !== void 0 && listed.nextPackageId !== listed.currentPackageId ? listed.nextPackageId : void 0;
 				const currentPackageId = listed?.currentPackageId;
 				const runMode = listed?.currentPackageId !== void 0 && selectedPackageId !== listed.currentPackageId ? "update" : "run";
-				return (0, react_jsx_runtime.jsxs)("li", {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
 					className: CordisPanel_module_css_default.row,
 					"data-cordis-row": pluginId,
 					"data-cordis-status": status,
 					"data-cordis-awaiting": awaiting !== void 0 || void 0,
 					children: [
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: CordisPanel_module_css_default.rowHead,
 							children: [
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: CordisPanel_module_css_default.rowId,
 									children: pluginId
 								}),
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: CordisPanel_module_css_default.rowName,
 									children: name
 								}),
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: CordisPanel_module_css_default.rowStatus,
 									children: t(STATUS_LABELS[status])
 								})
 							]
 						}),
-						listed !== void 0 && listed.packages.length > 1 && selectedPackageId !== void 0 && (0, react_jsx_runtime.jsxs)("label", {
+						listed !== void 0 && listed.packages.length > 1 && selectedPackageId !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
 							className: CordisPanel_module_css_default.versionPicker,
-							children: [(0, react_jsx_runtime.jsx)("span", { children: t("panel.version") }), (0, react_jsx_runtime.jsx)("select", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: t("panel.version") }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("select", {
 								value: selectedPackageId,
 								disabled: busy,
 								onChange: (event) => {
@@ -784,22 +781,22 @@ window.__ModuleLoader__.load({
 										[pluginId]: event.target.value
 									}));
 								},
-								children: listed.packages.map((pkg) => (0, react_jsx_runtime.jsx)("option", {
+								children: listed.packages.map((pkg) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("option", {
 									value: pkg.packageId,
 									children: `${pkg.name} · ${pkg.packageId}`
 								}, pkg.packageId))
 							})]
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: CordisPanel_module_css_default.rowDetail,
-							children: [(0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: CordisPanel_module_css_default.rowPurpose,
 								children: purpose
-							}), (0, react_jsx_runtime.jsxs)("div", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: CordisPanel_module_css_default.rowActions,
 								children: [
-									awaiting !== void 0 && (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-										(0, react_jsx_runtime.jsx)(RowAction, {
+									awaiting !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowAction, {
 											label: t("action.approveOnce"),
 											"data-cordis-approve": awaiting,
 											disabled: busy,
@@ -809,9 +806,9 @@ window.__ModuleLoader__.load({
 													setOpen(false);
 												});
 											},
-											children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 14 })
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 14 })
 										}),
-										(0, react_jsx_runtime.jsx)(RowAction, {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowAction, {
 											label: t("action.approvePlugin"),
 											"data-cordis-approve-plugin": awaiting,
 											disabled: busy,
@@ -821,9 +818,9 @@ window.__ModuleLoader__.load({
 													setOpen(false);
 												});
 											},
-											children: (0, react_jsx_runtime.jsx)(DoubleCheckIcon, {})
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DoubleCheckIcon, {})
 										}),
-										(0, react_jsx_runtime.jsx)(RowAction, {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowAction, {
 											label: t("action.decline"),
 											"data-cordis-decline": awaiting,
 											disabled: busy,
@@ -833,10 +830,10 @@ window.__ModuleLoader__.load({
 													setOpen(false);
 												});
 											},
-											children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, { size: 14 })
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, { size: 14 })
 										})
 									] }),
-									awaiting === void 0 && listed !== void 0 && selectedPackageId !== void 0 && listed.activeRun === void 0 && (0, react_jsx_runtime.jsx)(RowAction, {
+									awaiting === void 0 && listed !== void 0 && selectedPackageId !== void 0 && listed.activeRun === void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowAction, {
 										label: t("action.run"),
 										"data-cordis-switch": "run",
 										disabled: busy,
@@ -849,9 +846,9 @@ window.__ModuleLoader__.load({
 												hasClientHalf: selectedPackage?.hasClientHalf === true
 											}));
 										},
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlayOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlayOutline16, { size: 14 })
 									}),
-									awaiting === void 0 && listed !== void 0 && listed.activeRun !== void 0 && selectedPackageId !== listed.activeRun.packageId && selectedPackage !== void 0 && (0, react_jsx_runtime.jsx)(RowAction, {
+									awaiting === void 0 && listed !== void 0 && listed.activeRun !== void 0 && selectedPackageId !== listed.activeRun.packageId && selectedPackage !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowAction, {
 										label: t("action.run"),
 										"data-cordis-switch": "run",
 										disabled: busy,
@@ -864,9 +861,9 @@ window.__ModuleLoader__.load({
 												hasClientHalf: selectedPackage.hasClientHalf
 											}));
 										},
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlayOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlayOutline16, { size: 14 })
 									}),
-									awaiting === void 0 && listed !== void 0 && listed.activeRun !== void 0 && status === "client-pending" && activePackage !== void 0 && selectedPackageId === listed.activeRun.packageId && (0, react_jsx_runtime.jsx)(RowAction, {
+									awaiting === void 0 && listed !== void 0 && listed.activeRun !== void 0 && status === "client-pending" && activePackage !== void 0 && selectedPackageId === listed.activeRun.packageId && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowAction, {
 										label: t("action.run"),
 										"data-cordis-switch": "run",
 										disabled: busy,
@@ -879,37 +876,37 @@ window.__ModuleLoader__.load({
 												hasClientHalf: true
 											}));
 										},
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlayOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlayOutline16, { size: 14 })
 									}),
-									awaiting === void 0 && listed !== void 0 && listed.activeRun !== void 0 && (0, react_jsx_runtime.jsx)(RowAction, {
+									awaiting === void 0 && listed !== void 0 && listed.activeRun !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowAction, {
 										label: t("action.stop"),
 										"data-cordis-switch": "stop",
 										disabled: busy,
 										onClick: () => {
 											runAction(pluginId, () => onStop(listed.agentId, pluginId));
 										},
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconStopFill16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconStopFill16, { size: 14 })
 									}),
-									awaiting === void 0 && listed !== void 0 && (0, react_jsx_runtime.jsx)(RowAction, {
+									awaiting === void 0 && listed !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowAction, {
 										label: t("action.remove"),
 										"data-cordis-remove": pluginId,
 										disabled: busy,
 										onClick: () => {
 											runAction(pluginId, () => onRemove(listed.agentId, pluginId));
 										},
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, { size: 14 })
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, { size: 14 })
 									})
 								]
 							})]
 						}),
-						awaiting === void 0 && nextPackageId !== void 0 && listed !== void 0 && (0, react_jsx_runtime.jsxs)("div", {
+						awaiting === void 0 && nextPackageId !== void 0 && listed !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: CordisPanel_module_css_default.transition,
 							children: [
-								(0, react_jsx_runtime.jsx)("span", { children: currentPackageId === void 0 ? "" : t("panel.current", { packageId: currentPackageId }) }),
-								(0, react_jsx_runtime.jsx)("span", { children: t("panel.next", { packageId: nextPackageId }) }),
-								(0, react_jsx_runtime.jsxs)("div", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: currentPackageId === void 0 ? "" : t("panel.current", { packageId: currentPackageId }) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: t("panel.next", { packageId: nextPackageId }) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: CordisPanel_module_css_default.transitionActions,
-									children: [(0, react_jsx_runtime.jsx)("button", {
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 										type: "button",
 										disabled: busy,
 										onClick: () => {
@@ -922,7 +919,7 @@ window.__ModuleLoader__.load({
 											}));
 										},
 										children: t("action.retry")
-									}), currentPackageId !== void 0 && (0, react_jsx_runtime.jsx)("button", {
+									}), currentPackageId !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 										type: "button",
 										disabled: busy,
 										onClick: () => {
@@ -939,82 +936,82 @@ window.__ModuleLoader__.load({
 								})
 							]
 						}),
-						failure !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+						failure !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: CordisPanel_module_css_default.rowError,
 							role: "alert",
 							children: `${failure.message} (${failure.reason})`
 						}),
-						failure === void 0 && hostFailure !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+						failure === void 0 && hostFailure !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: CordisPanel_module_css_default.rowError,
 							role: "alert",
 							children: `${hostFailure.message} (${hostFailure.phase})`
 						}),
-						actionError !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+						actionError !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: CordisPanel_module_css_default.rowError,
 							role: "alert",
 							children: actionError
 						}),
-						renderFailure !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+						renderFailure !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: CordisPanel_module_css_default.rowError,
 							role: "alert",
 							"data-cordis-render-failure": renderFailure.slot,
 							"data-cordis-render-abdicated": renderFailure.abdicated || void 0,
 							children: `${t(RENDER_FAILURE_LABELS[renderFailure.abdicated ? "abdicated" : "held"], { slot: renderFailure.slot })} ${renderFailure.message}`
 						}),
-						activePackage !== void 0 && activePackage.packageId !== selectedPackageId && (0, react_jsx_runtime.jsx)("span", {
+						activePackage !== void 0 && activePackage.packageId !== selectedPackageId && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisPanel_module_css_default.activeVersion,
 							children: `${t("status.running")}: ${activePackage.name} · ${activePackage.packageId}`
 						})
 					]
 				}, pluginId);
 			};
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: wide ? CordisPanel_module_css_default.layer : `${CordisPanel_module_css_default.layer} ${CordisPanel_module_css_default.rail}`,
-				children: [open && (0, react_jsx_runtime.jsxs)("section", {
+				children: [open && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 					className: CordisPanel_module_css_default.panel,
 					"data-cordis-panel": true,
 					"aria-label": t("panel.title"),
-					children: [(0, react_jsx_runtime.jsx)("header", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("header", {
 						className: CordisPanel_module_css_default.header,
-						children: (0, react_jsx_runtime.jsx)("span", {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisPanel_module_css_default.title,
 							children: t("panel.title")
 						})
-					}), (0, react_jsx_runtime.jsxs)("div", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: CordisPanel_module_css_default.body,
 						children: [
-							inventory.error !== void 0 && (0, react_jsx_runtime.jsx)("p", {
+							inventory.error !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 								className: CordisPanel_module_css_default.readError,
 								role: "alert",
 								children: t("panel.readFailed", { message: inventory.error })
 							}),
-							!inventory.read && inventory.error === void 0 && (0, react_jsx_runtime.jsx)("p", {
+							!inventory.read && inventory.error === void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 								className: CordisPanel_module_css_default.note,
 								children: t("panel.loading")
 							}),
-							inventory.read && all.length === 0 && (0, react_jsx_runtime.jsx)("p", {
+							inventory.read && all.length === 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 								className: CordisPanel_module_css_default.note,
 								children: t("panel.empty")
 							}),
-							mine.length > 0 && (0, react_jsx_runtime.jsxs)("section", { children: [(0, react_jsx_runtime.jsx)("h3", {
+							mine.length > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
 								className: CordisPanel_module_css_default.group,
 								children: t("panel.group.current")
-							}), (0, react_jsx_runtime.jsx)("ul", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 								className: CordisPanel_module_css_default.rows,
 								children: mine.map(renderRow)
 							})] }),
-							theirs.length > 0 && (0, react_jsx_runtime.jsxs)("section", { children: [(0, react_jsx_runtime.jsx)("h3", {
+							theirs.length > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
 								className: CordisPanel_module_css_default.group,
 								children: t("panel.group.others")
-							}), (0, react_jsx_runtime.jsx)("ul", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 								className: CordisPanel_module_css_default.rows,
 								children: theirs.map(renderRow)
 							})] })
 						]
 					})]
-				}), (0, react_jsx_runtime.jsx)("div", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: CordisPanel_module_css_default.footerButtons,
-					children: (0, react_jsx_runtime.jsxs)("button", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: CordisPanel_module_css_default.badge,
 						"data-cordis-badge": all.length,
@@ -1025,10 +1022,10 @@ window.__ModuleLoader__.load({
 						onClick: () => {
 							setOpen((value) => !value);
 						},
-						children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCordisPluginOutline14, {}), wide && (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("span", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCordisPluginOutline14, {}), wide && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisPanel_module_css_default.badgeLabel,
 							children: t("panel.trigger")
-						}), (0, react_jsx_runtime.jsx)("span", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: CordisPanel_module_css_default.badgeCount,
 							children: t("panel.runningCount", { count: running })
 						})] })]
@@ -1037,25 +1034,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/inventory.js
-		/**
-		* The host's definition registry as this page last read it, owned by the
-		* plugin's apply closure.
-		*
-		* The panel is a frame-wide surface, so it cannot derive this from any session:
-		* the registry is global and the read is a single global call. The rows are
-		* re-read rather than patched, because the wire announcements
-		* (`cordis/dynamic-package` / `/retract`) carry no labels and a definition
-		* can appear or disappear between them — a patch-in-place cache would drift into
-		* showing definitions the host no longer holds.
-		*
-		* Reads are single-flight: several announcements settling at once, or a badge
-		* opening while a reconnect re-reads, must not multiply the call. Single-flight
-		* alone would be wrong across a reconnect, though — the in-flight read belongs to
-		* the previous connection, so a reset both discards its answer and frees the slot
-		* for a fresh one. Without that, a reconnect either loses its re-read to the old
-		* call or has the old host's rows published on top of it.
-		*/
+		//#region src/client/inventory.ts
 		/**
 		* Create the inventory source.
 		* @param port - the RPC seam the read goes through.
@@ -1130,7 +1109,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** Cordis dynamic-plugin UI dictionaries. */
 		const NS = "cordis";
 		/** Simplified Chinese Cordis UI messages. */
@@ -1238,8 +1217,7 @@ window.__ModuleLoader__.load({
 			"body.copied": "Copied"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
-		/** Cordis dynamic-plugin cards, inventory panel, business-view host, and `@pluginId` source. */
+		//#region src/client/index.ts
 		/** Required services for the two Tool cards, panel, Remote lifecycle, and Slash source. */
 		const inject = [
 			"slots",

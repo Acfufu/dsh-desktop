@@ -4,11 +4,11 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
-		//#region lib/types/client/tool/models/tool-call-model.js
+		let react_jsx_runtime = require("react/jsx-runtime");
+		//#region src/client/tool/models/tool-call-model.ts
 		/** Figma row titles per variant (design literals, not translatable copy). */
 		const VARIANT_TITLES = {
 			search: "Search",
@@ -186,7 +186,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region lib/types/client/tool/models/read-card-model.js
+		//#region src/client/tool/models/read-card-model.ts
 		/**
 		* Derive the read-card props for a tool call, or null when this call is not a
 		* read card and belongs on the generic path.
@@ -227,7 +227,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region lib/types/client/tool/models/diff-card-model.js
+		//#region src/client/tool/models/diff-card-model.ts
 		/**
 		* Narrow a wire `card:'diff'` view's `diffs` to well-formed hunks. The event
 		* view crosses the wire and `toolEventViewSchema` validates only the `card`
@@ -288,7 +288,7 @@ window.__ModuleLoader__.load({
 			return diffs === null ? null : { card: { diffs } };
 		}
 		//#endregion
-		//#region lib/types/client/tool/models/search-card-model.js
+		//#region src/client/tool/models/search-card-model.ts
 		/**
 		* Whether every file group in a matches view is structurally valid: the wire
 		* frame carries `shape` and `card` as strings the host schema checks, but not the
@@ -364,7 +364,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region lib/types/client/tool/models/terminal-card-model.js
+		//#region src/client/tool/models/terminal-card-model.ts
 		/**
 		* Pure derivation of the terminal-card props from a frozen call slice: the
 		* `card:'terminal'` render intent the shell tools declare arrives on the
@@ -533,7 +533,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region lib/types/client/tool/models/web-card-model.js
+		//#region src/client/tool/models/web-card-model.ts
 		/**
 		* Derive the web-card props for a tool call, or null when this call is not a
 		* web card and belongs on the generic path.
@@ -605,43 +605,43 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var ToolRow_module_css_default = {
-			"ioText": "spW6IW_ioText",
+			"webBody": "spW6IW_webBody",
+			"summary": "spW6IW_summary",
+			"codeBody": "spW6IW_codeBody",
+			"bodyScroll": "spW6IW_bodyScroll",
+			"readBody": "spW6IW_readBody",
 			"searchRecovery": "spW6IW_searchRecovery",
 			"visuallyHidden": "spW6IW_visuallyHidden",
+			"root": "spW6IW_root",
+			"row": "spW6IW_row",
 			"inspectButton": "spW6IW_inspectButton",
-			"chevron": "spW6IW_chevron",
-			"errorSummary": "spW6IW_errorSummary",
-			"ioCard": "spW6IW_ioCard",
-			"searchBody": "spW6IW_searchBody",
-			"ioLabel": "spW6IW_ioLabel",
-			"title": "spW6IW_title",
-			"leading": "spW6IW_leading",
-			"sep": "spW6IW_sep",
-			"codeBody": "spW6IW_codeBody",
+			"ioText": "spW6IW_ioText",
+			"ioDivider": "spW6IW_ioDivider",
 			"terminalBody": "spW6IW_terminalBody",
 			"ioSection": "spW6IW_ioSection",
-			"summarySuffix": "spW6IW_summarySuffix",
-			"ioDivider": "spW6IW_ioDivider",
-			"summary": "spW6IW_summary",
-			"root": "spW6IW_root",
-			"readBody": "spW6IW_readBody",
-			"fileLink": "spW6IW_fileLink",
-			"row": "spW6IW_row",
-			"dsh-tool-row-sweep": "spW6IW_dsh-tool-row-sweep",
+			"title": "spW6IW_title",
+			"leading": "spW6IW_leading",
 			"diffBody": "spW6IW_diffBody",
-			"webBody": "spW6IW_webBody",
-			"bodyScroll": "spW6IW_bodyScroll",
-			"bodyWrap": "spW6IW_bodyWrap"
+			"summarySuffix": "spW6IW_summarySuffix",
+			"sep": "spW6IW_sep",
+			"errorSummary": "spW6IW_errorSummary",
+			"ioCard": "spW6IW_ioCard",
+			"ioLabel": "spW6IW_ioLabel",
+			"dsh-tool-row-sweep": "spW6IW_dsh-tool-row-sweep",
+			"fileLink": "spW6IW_fileLink",
+			"bodyWrap": "spW6IW_bodyWrap",
+			"searchBody": "spW6IW_searchBody",
+			"chevron": "spW6IW_chevron"
 		};
 		//#endregion
-		//#region lib/types/client/tool/components/ToolRow.js
+		//#region src/client/tool/components/ToolRow.tsx
 		/** Leading-slot state substitution: the tool icon yields to the terminal state
 		*  semantic (error = red, interrupted = amber halo). Running keeps the icon —
 		*  the row sweep (CSS on data-state) carries the in-flight signal. */
 		function leadingFor$1(state, icon) {
 			switch (state) {
-				case "error": return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" });
-				case "stopped": return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" });
+				case "error": return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" });
+				case "stopped": return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" });
 				default: return icon;
 			}
 		}
@@ -683,15 +683,15 @@ window.__ModuleLoader__.load({
 				if (event.key === "Enter" || event.key === " ") event.stopPropagation();
 			};
 			const cardBody = variant === "code" ? null : body;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: ToolRow_module_css_default.root,
 				"data-variant": variant,
 				"data-tool": toolName,
 				"data-state": state,
-				children: [status !== null && (0, react_jsx_runtime.jsx)("span", {
+				children: [status !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: ToolRow_module_css_default.visuallyHidden,
 					children: status
-				}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DisclosureRow, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DisclosureRow, {
 					rowClassName: ToolRow_module_css_default.row,
 					leadingClassName: ToolRow_module_css_default.leading,
 					titleClassName: ToolRow_module_css_default.title,
@@ -703,110 +703,110 @@ window.__ModuleLoader__.load({
 					expandOnRowClick: true,
 					keepContentWhenOpen: true,
 					onToggle: toggleExpand,
-					collapsedContent: summaryText !== "" && (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-						(0, react_jsx_runtime.jsx)("span", {
+					collapsedContent: summaryText !== "" && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ToolRow_module_css_default.sep,
 							"aria-hidden": true
 						}),
-						fileLink ? (0, react_jsx_runtime.jsx)("button", {
+						fileLink ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: ToolRow_module_css_default.fileLink,
 							onClick: openFile,
 							onKeyDown: fileLinkKeyDown,
 							children: summaryText
-						}) : (0, react_jsx_runtime.jsx)("span", {
+						}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: clsx(ToolRow_module_css_default.summary, failureLine !== null && ToolRow_module_css_default.errorSummary),
 							children: summaryText
 						}),
-						suffix !== null && (0, react_jsx_runtime.jsx)("span", {
+						suffix !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: ToolRow_module_css_default.summarySuffix,
 							children: suffix
 						})
 					] }),
-					children: (0, react_jsx_runtime.jsxs)("div", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: ToolRow_module_css_default.bodyWrap,
-						children: [terminalBody !== null ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.TerminalBlock, {
+						children: [terminalBody !== null ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.TerminalBlock, {
 							...terminalBody.card,
 							maxLines: Infinity,
 							labels: terminalBlockLabels(t),
 							className: ToolRow_module_css_default.terminalBody
-						}) : diffBody !== null ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DiffBlock, {
+						}) : diffBody !== null ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DiffBlock, {
 							...diffBody.card,
 							maxLines: 8,
 							className: ToolRow_module_css_default.diffBody
-						}) : readBody !== null ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.ReadBlock, {
+						}) : readBody !== null ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.ReadBlock, {
 							...readBody,
 							maxLines: 8,
 							className: ToolRow_module_css_default.readBody
-						}) : searchBody !== null ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.SearchBlock, {
+						}) : searchBody !== null ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.SearchBlock, {
 							...searchBody.card,
 							maxLines: 8,
 							className: ToolRow_module_css_default.searchBody
-						}), searchBody.recovery !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+						}), searchBody.recovery !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: ToolRow_module_css_default.searchRecovery,
 							children: searchBody.recovery
-						})] }) : webBody !== null ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.WebBlock, {
+						})] }) : webBody !== null ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.WebBlock, {
 							...webBody,
 							className: ToolRow_module_css_default.webBody
-						}) : (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [variant === "code" && body !== null && (0, react_jsx_runtime.jsx)("div", {
+						}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [variant === "code" && body !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: ToolRow_module_css_default.bodyScroll,
-							children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.CodeBlock, {
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.CodeBlock, {
 								code: body,
 								lang: "typescript",
 								copyLabel: t("copy"),
 								copiedLabel: t("copied"),
 								className: ToolRow_module_css_default.codeBody
 							})
-						}), (cardBody !== null || outputText !== null) && (0, react_jsx_runtime.jsxs)("div", {
+						}), (cardBody !== null || outputText !== null) && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: ToolRow_module_css_default.ioCard,
 							children: [
-								cardBody !== null && (0, react_jsx_runtime.jsxs)("div", {
+								cardBody !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: ToolRow_module_css_default.ioSection,
-									children: [(0, react_jsx_runtime.jsx)("span", {
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: ToolRow_module_css_default.ioLabel,
 										children: "IN"
-									}), (0, react_jsx_runtime.jsx)("span", {
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: ToolRow_module_css_default.ioText,
 										children: cardBody
 									})]
 								}),
-								cardBody !== null && outputText !== null && (0, react_jsx_runtime.jsx)("span", {
+								cardBody !== null && outputText !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: ToolRow_module_css_default.ioDivider,
 									"aria-hidden": true
 								}),
-								outputText !== null && (0, react_jsx_runtime.jsxs)("div", {
+								outputText !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: ToolRow_module_css_default.ioSection,
-									children: [(0, react_jsx_runtime.jsx)("span", {
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: ToolRow_module_css_default.ioLabel,
 										children: "OUT"
-									}), (0, react_jsx_runtime.jsx)("span", {
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: ToolRow_module_css_default.ioText,
 										"data-error": state === "error" || void 0,
 										children: outputText
 									})]
 								})
 							]
-						})] }), inspect !== void 0 && (0, react_jsx_runtime.jsxs)("button", {
+						})] }), inspect !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 							type: "button",
 							className: ToolRow_module_css_default.inspectButton,
 							onClick: inspect,
-							children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {}), "Inspect"]
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {}), "Inspect"]
 						})]
 					})
 				})]
 			});
 		}
 		//#endregion
-		//#region lib/types/client/tool/toolviews/GenericToolCard.js
+		//#region src/client/tool/toolviews/GenericToolCard.tsx
 		/** Variant leading icons (figma table); all glyphs render at 14 inside the 16px leading box. */
 		const VARIANT_ICONS = {
-			search: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSearchOutline16, { size: 14 }),
-			read: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconBrowseOutline16, { size: 14 }),
-			bash: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconApiOutline14, { size: 14 }),
-			write: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 }),
-			edit: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 }),
-			code: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCodeOutline16, { size: 14 }),
-			others: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSparkle16, { size: 14 })
+			search: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSearchOutline16, { size: 14 }),
+			read: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconBrowseOutline16, { size: 14 }),
+			bash: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconApiOutline14, { size: 14 }),
+			write: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 }),
+			edit: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 }),
+			code: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCodeOutline16, { size: 14 }),
+			others: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSparkle16, { size: 14 })
 		};
 		function GenericToolCard({ toolName, block, cwd, openFile, inspect, t }) {
 			const model = toolRowModel(toolName, block, cwd);
@@ -817,7 +817,7 @@ window.__ModuleLoader__.load({
 			const web = webCardModel(block);
 			const state = model.state === "ok" && terminal !== null && terminalFailed(terminal) ? "error" : model.state;
 			const singleFile = model.filePath !== void 0;
-			return (0, react_jsx_runtime.jsx)(ToolRow, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolRow, {
 				t,
 				variant: model.variant,
 				toolName,
@@ -854,7 +854,7 @@ window.__ModuleLoader__.load({
 			"callRow": "_nwa2q_callRow"
 		};
 		//#endregion
-		//#region lib/types/client/tool/ToolCallTree.js
+		//#region src/client/tool/ToolCallTree.tsx
 		/** Root/subcall Tool composition with one keyed atomic dispatch path. */
 		/** Resolve a Tool call's wire name from either lifecycle form. */
 		function callName(node) {
@@ -879,14 +879,14 @@ window.__ModuleLoader__.load({
 				cwd,
 				inspectCall
 			]);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: ToolCallTree_module_css_default.callRow,
 				"data-chat-anchor-key": `call:${callId}`,
 				"data-chat-call-id": callId,
 				"data-selected": selected || void 0,
 				children: [renderSlot("tool.call.toolview", owner, {
 					entryKey: toolName,
-					fallback: (0, react_jsx_runtime.jsx)(GenericToolCard, {
+					fallback: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(GenericToolCard, {
 						...owner,
 						t
 					})
@@ -894,7 +894,7 @@ window.__ModuleLoader__.load({
 			});
 		});
 		const ToolCallBranch = (0, react.memo)(function ToolCallBranch({ renderSlot, block, selectedCallId, cwd, openFile, inspectCall, t }) {
-			return (0, react_jsx_runtime.jsx)(ToolCall, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolCall, {
 				renderSlot,
 				callId: block.callId,
 				toolName: callName(block),
@@ -904,10 +904,10 @@ window.__ModuleLoader__.load({
 				cwd,
 				inspectCall,
 				t,
-				children: block.subCalls.length > 0 ? (0, react_jsx_runtime.jsx)("div", {
+				children: block.subCalls.length > 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: ToolCallTree_module_css_default.subCalls,
 					"data-subcalls": true,
-					children: block.subCalls.map((child) => (0, react_jsx_runtime.jsx)(ToolCallBranch, {
+					children: block.subCalls.map((child) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolCallBranch, {
 						renderSlot,
 						block: child,
 						selectedCallId,
@@ -927,7 +927,7 @@ window.__ModuleLoader__.load({
 		*/
 		function ToolCallTree({ renderSlot, node, selectedCallId, cwd, openFile, inspectCall, t }) {
 			const block = node.data.root;
-			return (0, react_jsx_runtime.jsx)(ToolCallBranch, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolCallBranch, {
 				renderSlot,
 				block,
 				selectedCallId,
@@ -949,16 +949,16 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var ToolDetails_module_css_default = {
-			"web": "m6lxrW_web",
-			"empty": "m6lxrW_empty",
-			"recovery": "m6lxrW_recovery",
-			"cardBody": "m6lxrW_cardBody",
-			"description": "m6lxrW_description",
 			"code": "m6lxrW_code",
-			"read": "m6lxrW_read"
+			"recovery": "m6lxrW_recovery",
+			"empty": "m6lxrW_empty",
+			"read": "m6lxrW_read",
+			"web": "m6lxrW_web",
+			"cardBody": "m6lxrW_cardBody",
+			"description": "m6lxrW_description"
 		};
 		//#endregion
-		//#region lib/types/client/tool/ToolDetails.js
+		//#region src/client/tool/ToolDetails.tsx
 		/** Card-aware output body for the selected Tool call in details. */
 		/**
 		* Render the selected Tool call's structured output when its presentation
@@ -968,59 +968,59 @@ window.__ModuleLoader__.load({
 		*/
 		function ToolDetails({ block, cwd, t }) {
 			const terminal = terminalCardModel(block, cwd);
-			if (terminal !== null) return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [terminal.description !== void 0 ? (0, react_jsx_runtime.jsx)("div", {
+			if (terminal !== null) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [terminal.description !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: ToolDetails_module_css_default.description,
 				children: terminal.description
-			}) : null, (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.TerminalBlock, {
+			}) : null, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.TerminalBlock, {
 				...terminal.card,
 				labels: terminalBlockLabels(t),
 				className: ToolDetails_module_css_default.cardBody
 			})] });
 			const read = readCardModel(block, cwd);
-			if (read !== null) return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.ReadBlock, {
+			if (read !== null) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.ReadBlock, {
 				...read,
 				className: ToolDetails_module_css_default.read
 			});
 			const diff = diffCardModel(block);
-			if (diff !== null) return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DiffBlock, {
+			if (diff !== null) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.DiffBlock, {
 				...diff.card,
 				className: ToolDetails_module_css_default.cardBody
 			});
 			const search = searchCardModel(block);
-			if (search !== null) return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.SearchBlock, {
+			if (search !== null) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.SearchBlock, {
 				...search.card,
 				className: ToolDetails_module_css_default.cardBody
-			}), search.recovery !== void 0 ? (0, react_jsx_runtime.jsx)("div", {
+			}), search.recovery !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: ToolDetails_module_css_default.recovery,
 				children: search.recovery
 			}) : null] });
 			const web = webCardModel(block);
 			if (web !== null) {
 				const body = "kind" in block ? resultText(block) : "";
-				return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.WebBlock, {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.WebBlock, {
 					...web,
 					className: ToolDetails_module_css_default.web
-				}), body !== "" ? (0, react_jsx_runtime.jsx)("pre", {
+				}), body !== "" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 					className: ToolDetails_module_css_default.code,
 					children: body
 				}) : null] });
 			}
-			if (!("kind" in block)) return (0, react_jsx_runtime.jsx)("div", {
+			if (!("kind" in block)) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: ToolDetails_module_css_default.empty,
 				children: t("details.running")
 			});
-			return (0, react_jsx_runtime.jsx)("pre", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 				className: ToolDetails_module_css_default.code,
 				"data-error": block.isError || void 0,
 				children: resultText(block)
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locale.js
+		//#region src/client/locale.ts
 		/** Locale namespace supplied by the conversation owner to Tool renderers. */
 		const CONVERSATION_NS = "conversation";
 		//#endregion
-		//#region lib/types/client/tool/toolviews/ask-question-row.js
+		//#region src/client/tool/toolviews/ask-question-row.tsx
 		function isAnswer(value) {
 			return typeof value === "object" && value !== null;
 		}
@@ -1055,11 +1055,11 @@ window.__ModuleLoader__.load({
 				state = "stopped";
 			} else if (model.state === "running") summary = t("ask.waiting");
 			else if ("kind" in block && model.state === "ok") summary = answeredSummary(block.content.filter((b) => b.type === "text").map((b) => b.text).join(""), t) ?? model.summary;
-			return (0, react_jsx_runtime.jsx)(ToolRow, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolRow, {
 				t,
 				variant: model.variant,
 				toolName,
-				icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconQuestionOutline14, {}),
+				icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconQuestionOutline14, {}),
 				title: t("ask.rowTitle"),
 				summary,
 				body: model.body,
@@ -1099,34 +1099,34 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var bash_sample_module_css_default = {
-			"card": "zwZo4a_card",
-			"terminal": "zwZo4a_terminal",
-			"bodyWrap": "zwZo4a_bodyWrap",
-			"inspectButton": "zwZo4a_inspectButton",
-			"ioText": "zwZo4a_ioText",
-			"ioDivider": "zwZo4a_ioDivider",
-			"summary": "zwZo4a_summary",
 			"visuallyHidden": "zwZo4a_visuallyHidden",
-			"ioSection": "zwZo4a_ioSection",
+			"summary": "zwZo4a_summary",
+			"inspectButton": "zwZo4a_inspectButton",
 			"root": "zwZo4a_root",
-			"leading": "zwZo4a_leading",
+			"bodyWrap": "zwZo4a_bodyWrap",
 			"chevron": "zwZo4a_chevron",
-			"ioLabel": "zwZo4a_ioLabel",
-			"sep": "zwZo4a_sep",
+			"dsh-bash-row-sweep": "zwZo4a_dsh-bash-row-sweep",
+			"card": "zwZo4a_card",
 			"chevronHover": "zwZo4a_chevronHover",
+			"sep": "zwZo4a_sep",
+			"ioSection": "zwZo4a_ioSection",
+			"ioCard": "zwZo4a_ioCard",
+			"leading": "zwZo4a_leading",
 			"iconIdle": "zwZo4a_iconIdle",
 			"errorSummary": "zwZo4a_errorSummary",
-			"ioCard": "zwZo4a_ioCard",
+			"ioLabel": "zwZo4a_ioLabel",
+			"terminal": "zwZo4a_terminal",
+			"ioText": "zwZo4a_ioText",
 			"title": "zwZo4a_title",
-			"dsh-bash-row-sweep": "zwZo4a_dsh-bash-row-sweep"
+			"ioDivider": "zwZo4a_ioDivider"
 		};
 		//#endregion
-		//#region lib/types/client/tool/toolviews/bash-sample.js
+		//#region src/client/tool/toolviews/bash-sample.tsx
 		function leadingFor(state) {
 			switch (state) {
-				case "error": return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" });
-				case "stopped": return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" });
-				default: return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconApiOutline14, { size: 14 });
+				case "error": return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "error" });
+				case "stopped": return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.StateDot, { state: "warning" });
+				default: return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconApiOutline14, { size: 14 });
 			}
 		}
 		/** Visually hidden status — StateDot is aria-hidden; AT needs a text label. */
@@ -1161,13 +1161,13 @@ window.__ModuleLoader__.load({
 				event.preventDefault();
 				toggleExpand();
 			};
-			const leading = open ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: bash_sample_module_css_default.chevron }) : expandable ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("span", {
+			const leading = open ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: bash_sample_module_css_default.chevron }) : expandable ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				className: bash_sample_module_css_default.iconIdle,
 				children: leadingFor(state)
-			}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: clsx(bash_sample_module_css_default.chevron, bash_sample_module_css_default.chevronHover) })] }) : leadingFor(state);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: clsx(bash_sample_module_css_default.chevron, bash_sample_module_css_default.chevronHover) })] }) : leadingFor(state);
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: bash_sample_module_css_default.card,
-				children: [(0, react_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: bash_sample_module_css_default.root,
 					"data-sample": "bash",
 					"data-variant": "bash",
@@ -1179,68 +1179,68 @@ window.__ModuleLoader__.load({
 					onClick: expandable ? toggleExpand : void 0,
 					onKeyDown: expandable ? toggleFromKeyboard : void 0,
 					children: [
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: bash_sample_module_css_default.leading,
 							children: leading
 						}),
-						status !== null && (0, react_jsx_runtime.jsx)("span", {
+						status !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: bash_sample_module_css_default.visuallyHidden,
 							children: status
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: bash_sample_module_css_default.title,
 							children: model.title
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: bash_sample_module_css_default.sep,
 							"aria-hidden": true
 						}),
-						(0, react_jsx_runtime.jsx)("span", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: clsx(bash_sample_module_css_default.summary, failureLine !== null && bash_sample_module_css_default.errorSummary),
 							children: failureLine ?? terminal?.description ?? model.summary
 						})
 					]
-				}), open && (0, react_jsx_runtime.jsxs)("div", {
+				}), open && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: bash_sample_module_css_default.bodyWrap,
-					children: [terminal !== null ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.TerminalBlock, {
+					children: [terminal !== null ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.TerminalBlock, {
 						...terminal.card,
 						maxLines: Infinity,
 						labels: terminalBlockLabels(t),
 						className: bash_sample_module_css_default.terminal
-					}) : (0, react_jsx_runtime.jsxs)("div", {
+					}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: bash_sample_module_css_default.ioCard,
 						children: [
-							model.body !== null && (0, react_jsx_runtime.jsxs)("div", {
+							model.body !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: bash_sample_module_css_default.ioSection,
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: bash_sample_module_css_default.ioLabel,
 									children: "IN"
-								}), (0, react_jsx_runtime.jsx)("span", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: bash_sample_module_css_default.ioText,
 									children: model.body
 								})]
 							}),
-							model.body !== null && model.output !== null && (0, react_jsx_runtime.jsx)("span", {
+							model.body !== null && model.output !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: bash_sample_module_css_default.ioDivider,
 								"aria-hidden": true
 							}),
-							model.output !== null && (0, react_jsx_runtime.jsxs)("div", {
+							model.output !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: bash_sample_module_css_default.ioSection,
-								children: [(0, react_jsx_runtime.jsx)("span", {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: bash_sample_module_css_default.ioLabel,
 									children: "OUT"
-								}), (0, react_jsx_runtime.jsx)("span", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: bash_sample_module_css_default.ioText,
 									"data-error": true,
 									children: model.output
 								})]
 							})
 						]
-					}), inspect !== void 0 && (0, react_jsx_runtime.jsxs)("button", {
+					}), inspect !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: bash_sample_module_css_default.inspectButton,
 						onClick: inspect,
-						children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {}), "Inspect"]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconInspectOutline12, {}), "Inspect"]
 					})]
 				})]
 			});
@@ -1265,7 +1265,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/tool/toolviews/file-mutation-row.js
+		//#region src/client/tool/toolviews/file-mutation-row.tsx
 		/**
 		* File-mutation row: icon + {Edit,Write} · {path} in the shared ToolRow chrome,
 		* with the applied diff as the row's collapsed-by-default card body. The
@@ -1278,11 +1278,11 @@ window.__ModuleLoader__.load({
 		function FileMutationRow({ toolName, block, cwd, openFile, inspect, t }) {
 			const model = toolRowModel(toolName, block, cwd);
 			const diff = diffCardModel(block);
-			return (0, react_jsx_runtime.jsx)(ToolRow, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolRow, {
 				t,
 				variant: model.variant,
 				toolName,
-				icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 }),
+				icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 }),
 				title: model.title,
 				summary: model.summary,
 				body: null,
@@ -1323,7 +1323,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/tool/toolviews/read-row.js
+		//#region src/client/tool/toolviews/read-row.tsx
 		/**
 		* Read row: icon + Read · {path} in the shared ToolRow chrome, with the file's
 		* read card as the row's collapsed-by-default card body. The summary path is an
@@ -1332,11 +1332,11 @@ window.__ModuleLoader__.load({
 		function ReadRow({ toolName, block, cwd, openFile, inspect, t }) {
 			const model = toolRowModel(toolName, block, cwd);
 			const read = readCardModel(block, cwd);
-			return (0, react_jsx_runtime.jsx)(ToolRow, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolRow, {
 				t,
 				variant: model.variant,
 				toolName,
-				icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconBrowseOutline16, { size: 14 }),
+				icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconBrowseOutline16, { size: 14 }),
 				title: model.title,
 				summary: model.summary,
 				body: null,
@@ -1369,7 +1369,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/tool/toolviews/search-row.js
+		//#region src/client/tool/toolviews/search-row.tsx
 		const SEARCH_TITLES = {
 			grep: "Grep",
 			glob: "Glob"
@@ -1385,11 +1385,11 @@ window.__ModuleLoader__.load({
 		function SearchRow({ toolName, block, inspect, t }) {
 			const model = toolRowModel(toolName, block);
 			const search = searchCardModel(block);
-			return (0, react_jsx_runtime.jsx)(ToolRow, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolRow, {
 				t,
 				variant: model.variant,
 				toolName,
-				icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSearchOutline16, { size: 14 }),
+				icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSearchOutline16, { size: 14 }),
 				title: SEARCH_TITLES[toolName] ?? model.title,
 				summary: search?.title ?? model.summary,
 				body: null,
@@ -1429,16 +1429,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/tool/toolviews/plan-summary.js
-		/**
-		* Pure plan derivation for the todo_write row's one-line summary. Several items
-		* may be `in_progress` at once — parallel work runs concurrent tasks, so a
-		* summary built from one active item would silently drop the rest. The plan
-		* strip header derives its own counts inline and shares nothing with this, so
-		* this stays inside the toolviews domain rather than in `contract/` (the
-		* inter-domain face).
-		* @module
-		*/
+		//#region src/client/tool/toolviews/plan-summary.ts
 		/**
 		* Derive the counts and the active summary from a whole-list snapshot. It names
 		* the first `in_progress` item and counts the remaining active ones, so a
@@ -1465,7 +1456,7 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region lib/types/client/tool/toolviews/todo-row.js
+		//#region src/client/tool/toolviews/todo-row.tsx
 		function isItem(value) {
 			return typeof value === "object" && value !== null;
 		}
@@ -1499,11 +1490,11 @@ window.__ModuleLoader__.load({
 				text: model.summary,
 				extra: 0
 			};
-			return (0, react_jsx_runtime.jsx)(ToolRow, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolRow, {
 				t,
 				variant: model.variant,
 				toolName,
-				icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChecklistOutline14, {}),
+				icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChecklistOutline14, {}),
 				title: t("todo.rowTitle"),
 				summary: summary.text,
 				summarySuffix: summary.extra > 0 ? `+${summary.extra}` : null,
@@ -1534,7 +1525,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/tool/toolviews/web-row.js
+		//#region src/client/tool/toolviews/web-row.tsx
 		/** web_fetch reads one URL; web_search queries. Titles are figma literals. */
 		const WEB_TITLES = {
 			web_search: "Search",
@@ -1548,8 +1539,8 @@ window.__ModuleLoader__.load({
 		function WebRow({ toolName, block, inspect, t }) {
 			const model = toolRowModel(toolName, block);
 			const web = webCardModel(block);
-			const icon = toolName === "web_fetch" ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconBrowseOutline16, { size: 14 }) : (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconGlobeOutline14, { size: 14 });
-			return (0, react_jsx_runtime.jsx)(ToolRow, {
+			const icon = toolName === "web_fetch" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconBrowseOutline16, { size: 14 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconGlobeOutline14, { size: 14 });
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolRow, {
 				t,
 				variant: model.variant,
 				toolName,
@@ -1591,7 +1582,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/apply.js
+		//#region src/client/apply.ts
 		/** Required service: the slot registry that owns both Tool render seats. */
 		const inject = ["slots"];
 		/**

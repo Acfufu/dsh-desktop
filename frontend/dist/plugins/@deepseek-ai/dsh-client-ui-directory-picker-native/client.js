@@ -5,7 +5,7 @@ window.__ModuleLoader__.load({
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 		let react = require("react");
-		//#region lib/types/client/flow.js
+		//#region src/client/flow.ts
 		/**
 		* The native picking occupant (package-internal; the `./client` surface
 		* exposes only the Loader exports). Same-package tests exercise it directly
@@ -50,7 +50,7 @@ window.__ModuleLoader__.load({
 			return null;
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Required services (cordis fiber inject): the slot registry and the wire-facing workspace service. */
 		const inject = ["slots", "workspaces"];
 		/**

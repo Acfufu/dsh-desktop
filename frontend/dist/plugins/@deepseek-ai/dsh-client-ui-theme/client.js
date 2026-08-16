@@ -4,8 +4,8 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
 		//#region ../../../node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs
 		function r(e) {
@@ -33,14 +33,14 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var AppearanceRow_module_css_default = {
-			"selected": "cMLH0W_selected",
 			"group": "cMLH0W_group",
 			"title": "cMLH0W_title",
 			"themeCube": "cMLH0W_themeCube",
-			"cubeRow": "cMLH0W_cubeRow"
+			"cubeRow": "cMLH0W_cubeRow",
+			"selected": "cMLH0W_selected"
 		};
 		//#endregion
-		//#region lib/types/client/AppearanceRow.js
+		//#region src/client/AppearanceRow.tsx
 		/**
 		* Appearance preference row registered into the General section item slot
 		* (figma 501:30012 'Frame 2117131228'): title + three preference cubes.
@@ -73,27 +73,27 @@ window.__ModuleLoader__.load({
 		*/
 		function AppearanceRow({ t, setTheme, useStore }) {
 			const preference = useStore((s) => s.preference);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: AppearanceRow_module_css_default.group,
-				children: [(0, react_jsx_runtime.jsx)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: AppearanceRow_module_css_default.title,
 					children: t("appearance.title")
-				}), (0, react_jsx_runtime.jsx)("div", {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: AppearanceRow_module_css_default.cubeRow,
-					children: CUBES.map(({ id, labelKey, Icon }) => (0, react_jsx_runtime.jsxs)("button", {
+					children: CUBES.map(({ id, labelKey, Icon }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 						type: "button",
 						className: clsx(AppearanceRow_module_css_default.themeCube, preference === id && AppearanceRow_module_css_default.selected),
 						"aria-pressed": preference === id,
 						onClick: () => {
 							setTheme(id);
 						},
-						children: [(0, react_jsx_runtime.jsx)(Icon, {}), t(labelKey)]
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Icon, {}), t(labelKey)]
 					}, id))
 				})]
 			});
 		}
 		//#endregion
-		//#region lib/types/client/settings-store.js
+		//#region src/client/settings-store.ts
 		/**
 		* Appearance row slot store: a mirror of the theme service snapshot. The
 		* plugin's apply-world change listener is the only writer; the row component
@@ -117,7 +117,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `settings.theme` namespace dictionaries (the Appearance row's copy). */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -926,7 +926,7 @@ window.__ModuleLoader__.load({
 			"preserve"
 		], ({ inner }, isInner) => inner.toString(isInner));
 		//#endregion
-		//#region lib/types/theme-settings.js
+		//#region src/theme-settings.ts
 		/** Theme preferences stored in the Host user-settings document. */
 		/** Built-in preferences accepted at the registry and settings boundaries. */
 		const THEME_PREFERENCES = [
@@ -950,7 +950,7 @@ window.__ModuleLoader__.load({
 			return THEME_PREFERENCES.some((preference) => preference === value);
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Namespace owning this feature's settings-row copy. */
 		const SETTINGS_NS = "settings.theme";
 		const BUILTIN_THEMES = Object.freeze([Object.freeze({

@@ -4,9 +4,9 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		//#region ../../../node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs
 		function r(e) {
 			var t, f, n = "";
@@ -22,7 +22,7 @@ window.__ModuleLoader__.load({
 			return n;
 		}
 		//#endregion
-		//#region lib/types/client/contract/slots.js
+		//#region src/client/contract/slots.ts
 		/**
 		* Narrow a request to a renderable plan review, or return undefined to leave it
 		* to the generic question flow.
@@ -122,18 +122,18 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var PlanReviewPanel_module_css_default = {
-			"frame": "dYgx0q_frame",
-			"feedback": "dYgx0q_feedback",
 			"dot": "dYgx0q_dot",
-			"strip": "dYgx0q_strip",
-			"body": "dYgx0q_body",
 			"footer": "dYgx0q_footer",
-			"card": "dYgx0q_card",
+			"body": "dYgx0q_body",
+			"frame": "dYgx0q_frame",
+			"strip": "dYgx0q_strip",
+			"actions": "dYgx0q_actions",
 			"discuss": "dYgx0q_discuss",
-			"actions": "dYgx0q_actions"
+			"card": "dYgx0q_card",
+			"feedback": "dYgx0q_feedback"
 		};
 		//#endregion
-		//#region lib/types/client/PlanReviewPanel.js
+		//#region src/client/PlanReviewPanel.tsx
 		/**
 		* Optional-prop spread for a decision button's tooltip: `title` is optional on
 		* the DOM props, and exactOptionalPropertyTypes rejects an explicit undefined.
@@ -168,42 +168,42 @@ window.__ModuleLoader__.load({
 				}] }));
 			};
 			const decline = review.decline;
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: PlanReviewPanel_module_css_default.frame,
 				"data-plan-review-key": pending.key,
-				children: (0, react_jsx_runtime.jsxs)("section", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 					className: PlanReviewPanel_module_css_default.card,
 					"aria-label": review.question,
 					children: [
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: PlanReviewPanel_module_css_default.strip,
-							children: [(0, react_jsx_runtime.jsx)("span", { className: PlanReviewPanel_module_css_default.dot }), t("plan.header")]
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: PlanReviewPanel_module_css_default.dot }), t("plan.header")]
 						}),
-						(0, react_jsx_runtime.jsx)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: PlanReviewPanel_module_css_default.body,
 							"data-plan-review-scroll": true,
-							children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text: review.plan })
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text: review.plan })
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: PlanReviewPanel_module_css_default.footer,
-							children: [(0, react_jsx_runtime.jsx)("div", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: PlanReviewPanel_module_css_default.feedback,
 								role: "status",
 								children: error
-							}), (0, react_jsx_runtime.jsxs)("div", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: PlanReviewPanel_module_css_default.actions,
 								children: [
-									(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 										variant: "ghost",
 										className: PlanReviewPanel_module_css_default.discuss,
-										icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 }),
+										icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 14 }),
 										disabled: busy,
 										onClick: () => {
 											settle(() => pending.cancel());
 										},
 										children: t("plan.discuss")
 									}),
-									decline !== void 0 && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+									decline !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 										variant: "outline",
 										...tooltip(decline.description),
 										disabled: busy,
@@ -212,7 +212,7 @@ window.__ModuleLoader__.load({
 										},
 										children: t("plan.decline")
 									}),
-									(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 										variant: "primary",
 										...tooltip(review.approve.description),
 										disabled: busy,
@@ -240,38 +240,38 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var QuestionComposer_module_css_default = {
-			"frame": "zSt2IG_frame",
-			"footerActions": "zSt2IG_footerActions",
-			"progress": "zSt2IG_progress",
 			"footer": "zSt2IG_footer",
-			"customInput": "zSt2IG_customInput",
-			"customTextarea": "zSt2IG_customTextarea",
-			"optionLabel": "zSt2IG_optionLabel",
-			"description": "zSt2IG_description",
-			"headingBlock": "zSt2IG_headingBlock",
-			"checkbox": "zSt2IG_checkbox",
-			"header": "zSt2IG_header",
-			"options": "zSt2IG_options",
-			"option": "zSt2IG_option",
-			"optionSelected": "zSt2IG_optionSelected",
-			"eyebrow": "zSt2IG_eyebrow",
-			"checkboxChecked": "zSt2IG_checkboxChecked",
-			"customRowActive": "zSt2IG_customRowActive",
-			"customRow": "zSt2IG_customRow",
-			"title": "zSt2IG_title",
-			"number": "zSt2IG_number",
-			"detail": "zSt2IG_detail",
-			"body": "zSt2IG_body",
 			"feedback": "zSt2IG_feedback",
+			"progress": "zSt2IG_progress",
+			"description": "zSt2IG_description",
+			"footerActions": "zSt2IG_footerActions",
 			"pager": "zSt2IG_pager",
-			"badge": "zSt2IG_badge",
-			"optionLine": "zSt2IG_optionLine",
+			"customRowActive": "zSt2IG_customRowActive",
+			"eyebrow": "zSt2IG_eyebrow",
+			"frame": "zSt2IG_frame",
+			"header": "zSt2IG_header",
 			"card": "zSt2IG_card",
+			"customRow": "zSt2IG_customRow",
+			"detail": "zSt2IG_detail",
+			"option": "zSt2IG_option",
+			"customInput": "zSt2IG_customInput",
 			"optionCopy": "zSt2IG_optionCopy",
-			"iconButton": "zSt2IG_iconButton"
+			"headingBlock": "zSt2IG_headingBlock",
+			"body": "zSt2IG_body",
+			"optionLabel": "zSt2IG_optionLabel",
+			"iconButton": "zSt2IG_iconButton",
+			"checkboxChecked": "zSt2IG_checkboxChecked",
+			"badge": "zSt2IG_badge",
+			"options": "zSt2IG_options",
+			"optionLine": "zSt2IG_optionLine",
+			"title": "zSt2IG_title",
+			"customTextarea": "zSt2IG_customTextarea",
+			"checkbox": "zSt2IG_checkbox",
+			"optionSelected": "zSt2IG_optionSelected",
+			"number": "zSt2IG_number"
 		};
 		//#endregion
-		//#region lib/types/client/QuestionComposer.js
+		//#region src/client/QuestionComposer.tsx
 		/**
 		* Split the conventional recommendation suffix without changing the answer value.
 		* @param label - Original option label returned if selected.
@@ -307,10 +307,10 @@ window.__ModuleLoader__.load({
 		function QuestionComposer(props) {
 			const question = (0, react.useMemo)(() => new PendingQuestion(props.matched), [props.matched]);
 			const review = (0, react.useMemo)(() => planReviewOf(question.questions), [question]);
-			return review === void 0 ? (0, react_jsx_runtime.jsx)(QuestionFlow, {
+			return review === void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(QuestionFlow, {
 				pending: question,
 				t: props.t
-			}, question.key) : (0, react_jsx_runtime.jsx)(PlanReviewPanel, {
+			}, question.key) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PlanReviewPanel, {
 				pending: question,
 				review,
 				t: props.t
@@ -428,48 +428,48 @@ window.__ModuleLoader__.load({
 				}
 				submitDrafts(nextDrafts);
 			};
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: QuestionComposer_module_css_default.frame,
 				"data-question-key": pending.key,
-				children: (0, react_jsx_runtime.jsxs)("section", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 					className: QuestionComposer_module_css_default.card,
 					"aria-labelledby": `question-${pending.key}-${String(index)}`,
 					children: [
-						(0, react_jsx_runtime.jsxs)("header", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("header", {
 							className: QuestionComposer_module_css_default.header,
-							children: [(0, react_jsx_runtime.jsxs)("div", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: QuestionComposer_module_css_default.headingBlock,
-								children: [question.header !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+								children: [question.header !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: QuestionComposer_module_css_default.eyebrow,
 									children: question.header
-								}), (0, react_jsx_runtime.jsx)("h2", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 									className: QuestionComposer_module_css_default.title,
 									id: `question-${pending.key}-${String(index)}`,
 									children: question.question
 								})]
-							}), (0, react_jsx_runtime.jsx)("button", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								type: "button",
 								className: QuestionComposer_module_css_default.iconButton,
 								"aria-label": t("nav.cancel"),
 								title: t("nav.cancel"),
 								disabled: busy !== null,
 								onClick: cancelFlow,
-								children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, {})
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, {})
 							})]
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: QuestionComposer_module_css_default.body,
 							"data-question-scroll": true,
-							children: [question.detail !== void 0 && (0, react_jsx_runtime.jsx)("div", {
+							children: [question.detail !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: QuestionComposer_module_css_default.detail,
-								children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text: question.detail })
-							}), (0, react_jsx_runtime.jsxs)("div", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.MarkdownText, { text: question.detail })
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: QuestionComposer_module_css_default.options,
 								role: question.multiSelect === true ? "group" : "radiogroup",
 								children: [(question.options ?? []).map((option, optionIndex) => {
 									const selected = draft.selected.includes(option.label);
 									const display = parseRecommendedLabel(option.label);
-									return (0, react_jsx_runtime.jsxs)("button", {
+									return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 										type: "button",
 										className: clsx(QuestionComposer_module_css_default.option, selected && question.multiSelect !== true && QuestionComposer_module_css_default.optionSelected),
 										role: question.multiSelect === true ? "checkbox" : "radio",
@@ -484,27 +484,27 @@ window.__ModuleLoader__.load({
 											event.preventDefault();
 											submitDrafts(drafts);
 										},
-										children: [question.multiSelect === true ? (0, react_jsx_runtime.jsx)("span", {
+										children: [question.multiSelect === true ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 											className: clsx(QuestionComposer_module_css_default.checkbox, selected && QuestionComposer_module_css_default.checkboxChecked),
 											"aria-hidden": "true",
-											children: selected && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline14, { size: 12 })
-										}) : (0, react_jsx_runtime.jsx)("span", {
+											children: selected && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline14, { size: 12 })
+										}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 											className: QuestionComposer_module_css_default.number,
 											children: optionIndex + 1
-										}), (0, react_jsx_runtime.jsx)("span", {
+										}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 											className: QuestionComposer_module_css_default.optionCopy,
-											children: (0, react_jsx_runtime.jsxs)("span", {
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 												className: QuestionComposer_module_css_default.optionLine,
 												children: [
-													(0, react_jsx_runtime.jsx)("span", {
+													/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 														className: QuestionComposer_module_css_default.optionLabel,
 														children: display.label
 													}),
-													display.recommended && (0, react_jsx_runtime.jsx)("span", {
+													display.recommended && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 														className: QuestionComposer_module_css_default.badge,
 														children: t("option.recommended")
 													}),
-													option.description !== void 0 && (0, react_jsx_runtime.jsx)("span", {
+													option.description !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 														className: QuestionComposer_module_css_default.description,
 														children: option.description
 													})
@@ -512,17 +512,17 @@ window.__ModuleLoader__.load({
 											})
 										})]
 									}, `${option.label}-${String(optionIndex)}`);
-								}), hasOptions ? (0, react_jsx_runtime.jsxs)("div", {
+								}), hasOptions ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: clsx(QuestionComposer_module_css_default.customRow, draft.custom !== "" && QuestionComposer_module_css_default.customRowActive),
-									children: [question.multiSelect === true ? (0, react_jsx_runtime.jsx)("span", {
+									children: [question.multiSelect === true ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: clsx(QuestionComposer_module_css_default.checkbox, draft.custom !== "" && QuestionComposer_module_css_default.checkboxChecked),
 										"aria-hidden": "true",
-										children: draft.custom !== "" && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline14, { size: 12 })
-									}) : (0, react_jsx_runtime.jsx)("span", {
+										children: draft.custom !== "" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline14, { size: 12 })
+									}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										className: QuestionComposer_module_css_default.number,
 										"aria-hidden": "true",
-										children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 12 })
-									}), (0, react_jsx_runtime.jsx)("input", {
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, { size: 12 })
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 										type: "text",
 										className: QuestionComposer_module_css_default.customInput,
 										value: draft.custom,
@@ -531,7 +531,7 @@ window.__ModuleLoader__.load({
 										onChange: draftCustom,
 										onKeyDown: continueFromCustom
 									})]
-								}) : (0, react_jsx_runtime.jsx)("textarea", {
+								}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("textarea", {
 									autoFocus: true,
 									className: QuestionComposer_module_css_default.customTextarea,
 									value: draft.custom,
@@ -543,13 +543,13 @@ window.__ModuleLoader__.load({
 								})]
 							})]
 						}),
-						(0, react_jsx_runtime.jsxs)("footer", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("footer", {
 							className: QuestionComposer_module_css_default.footer,
 							children: [
-								(0, react_jsx_runtime.jsxs)("div", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: QuestionComposer_module_css_default.pager,
 									children: [
-										(0, react_jsx_runtime.jsx)("button", {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 											type: "button",
 											className: QuestionComposer_module_css_default.iconButton,
 											"aria-label": t("nav.prev"),
@@ -558,9 +558,9 @@ window.__ModuleLoader__.load({
 												setIndex(index - 1);
 												setError(null);
 											},
-											children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronLeftOutline14, {})
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronLeftOutline14, {})
 										}),
-										(0, react_jsx_runtime.jsxs)("span", {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 											className: QuestionComposer_module_css_default.progress,
 											children: [
 												index + 1,
@@ -568,7 +568,7 @@ window.__ModuleLoader__.load({
 												questions.length
 											]
 										}),
-										(0, react_jsx_runtime.jsx)("button", {
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 											type: "button",
 											className: QuestionComposer_module_css_default.iconButton,
 											"aria-label": t("nav.next"),
@@ -577,23 +577,23 @@ window.__ModuleLoader__.load({
 												setIndex(index + 1);
 												setError(null);
 											},
-											children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {})
+											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {})
 										})
 									]
 								}),
-								(0, react_jsx_runtime.jsx)("div", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: QuestionComposer_module_css_default.feedback,
 									role: "status",
 									children: error === null ? null : "key" in error ? t(error.key) : error.text
 								}),
-								(0, react_jsx_runtime.jsxs)("div", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: QuestionComposer_module_css_default.footerActions,
-									children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 										variant: "outline",
 										disabled: busy !== null,
 										onClick: skipQuestion,
 										children: t("action.skip")
-									}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 										variant: "primary",
 										disabled: busy !== null || !answered(draft),
 										onClick: continueFlow,
@@ -607,7 +607,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `question` namespace dictionaries. */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -642,7 +642,7 @@ window.__ModuleLoader__.load({
 			"plan.discuss": "Chat about it"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "question";
 		/** Required services: the slot registry and the question composer's copy. */

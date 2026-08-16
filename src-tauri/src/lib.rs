@@ -93,9 +93,22 @@ pub fn run() {
                 tempfiles::age_sweep(&cache, Duration::from_secs(24 * 3600));
             }
 
-            // 启动 sidecar（dev 下 DSH_HOME 未设时用假路径——真实 sidecar 由 M4 Task 5 打包后经 resource_dir 提供）
+            // 启动 sidecar：打包产物经 resource_dir（.app/Contents/Resources/dsh）；dev 用 DSH_SIDECAR_DIR 覆盖
             let pm = app.state::<Arc<ProcessManager>>();
-            let dsh_dir = std::env::var("DSH_SIDECAR_DIR").unwrap_or_default();
+            let bundled = app.path().resource_dir().map(|d| d.join("dsh")).ok().filter(|d| d.join("bin/node").exists());
+            let dsh_dir = std::env::var("DSH_SIDECAR_DIR").unwrap_or_else(|_| bundled.as_ref().map(|d| d.display().to_string()).unwrap_or_default());
+
+            // carrier 预装：loader 从 $DSH_HOME/profiles/web 起解析裸包名——把 bundled carrier 链入 profile
+            // （M1 spike 结论；首次启动 profile 目录尚不存在，必须先建再 spawn）
+            if !dsh_dir.is_empty() {
+                let carrier_src = std::path::Path::new(&dsh_dir).join("node_modules/@dsh-desktop/uds-carrier");
+                let profile_carrier = std::path::Path::new(&dsh_home).join("profiles/web/node_modules/@dsh-desktop/uds-carrier");
+                if carrier_src.exists() && !profile_carrier.exists() {
+                    let parent = profile_carrier.parent().unwrap();
+                    let _ = std::fs::create_dir_all(parent);
+                    let _ = std::os::unix::fs::symlink(&carrier_src, &profile_carrier);
+                }
+            }
             let (node_bin, args, cwd) = if !dsh_dir.is_empty() {
                 let abs_patch = format!("{dsh_dir}/patch/desktop.patch.yml");
                 (

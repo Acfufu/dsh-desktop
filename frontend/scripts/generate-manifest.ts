@@ -10,13 +10,11 @@ export interface ManifestEntry {
   id: string;
   file: string; // lib/client.js 绝对路径
   rev: string;  // sha1-12
-  inject?: boolean;
-  immediately?: boolean;
 }
 
 export interface BootManifest {
   rev: string;
-  entries: Array<{ id: string; url: string; rev: string; inject?: boolean; immediately?: boolean }>;
+  entries: Array<{ id: string; url: string; rev: string }>;
 }
 
 export function revOf(content: Buffer): string {
@@ -28,8 +26,6 @@ export function buildManifest(entries: ManifestEntry[]): BootManifest {
     id: e.id,
     url: `/plugins/${e.id}/client.js?rev=${e.rev}`,
     rev: e.rev,
-    ...(e.inject ? { inject: true } : {}),
-    ...(e.immediately ? { immediately: true } : {}),
   }));
   const rev = revOf(Buffer.from(JSON.stringify(composed.map((e) => e.rev))));
   return { rev, entries: composed };

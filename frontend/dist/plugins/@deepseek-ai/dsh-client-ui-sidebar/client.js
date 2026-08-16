@@ -4,9 +4,9 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		//#region ../../../node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs
 		function r(e) {
 			var t, f, n = "";
@@ -33,30 +33,30 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var SidebarRoot_module_css_default = {
-			"brand": "jBgPWa_brand",
-			"wide-in": "jBgPWa_wide-in",
-			"panelIcon": "jBgPWa_panelIcon",
-			"newSessionLabel": "jBgPWa_newSessionLabel",
-			"newSession": "jBgPWa_newSession",
-			"iconButton": "jBgPWa_iconButton",
-			"root": "jBgPWa_root",
 			"quietBars": "jBgPWa_quietBars",
+			"iconButton": "jBgPWa_iconButton",
+			"wide-in": "jBgPWa_wide-in",
 			"rail-fade-in": "jBgPWa_rail-fade-in",
-			"settingsArea": "jBgPWa_settingsArea",
-			"footArea": "jBgPWa_footArea",
-			"regionArea": "jBgPWa_regionArea",
+			"newSessionLabel": "jBgPWa_newSessionLabel",
 			"rail-in": "jBgPWa_rail-in",
-			"footerActions": "jBgPWa_footerActions",
-			"railFish": "jBgPWa_railFish",
-			"wide": "jBgPWa_wide",
+			"brand": "jBgPWa_brand",
+			"newSession": "jBgPWa_newSession",
 			"railIn": "jBgPWa_railIn",
+			"wide": "jBgPWa_wide",
+			"railFish": "jBgPWa_railFish",
 			"toggle": "jBgPWa_toggle",
-			"logoRow": "jBgPWa_logoRow",
 			"collapsed": "jBgPWa_collapsed",
-			"fading": "jBgPWa_fading"
+			"settingsArea": "jBgPWa_settingsArea",
+			"root": "jBgPWa_root",
+			"footArea": "jBgPWa_footArea",
+			"panelIcon": "jBgPWa_panelIcon",
+			"fading": "jBgPWa_fading",
+			"logoRow": "jBgPWa_logoRow",
+			"footerActions": "jBgPWa_footerActions",
+			"regionArea": "jBgPWa_regionArea"
 		};
 		//#endregion
-		//#region lib/types/client/SidebarRoot.js
+		//#region src/client/SidebarRoot.tsx
 		/**
 		* Sidebar shell: column geometry only. Collapse is a slide plus crossfade:
 		* content freezes at its expanded width (inline style) and fades out in place
@@ -136,7 +136,7 @@ window.__ModuleLoader__.load({
 					cancelLinger();
 				};
 			}, [pointerInside]);
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				ref: column,
 				className: clsx(SidebarRoot_module_css_default.root, !wide && SidebarRoot_module_css_default.collapsed, !wide && everWide.current && SidebarRoot_module_css_default.railIn, collapsed && wide && SidebarRoot_module_css_default.fading, !pointerInside && SidebarRoot_module_css_default.quietBars),
 				style: wide ? { width: collapsed ? lastWideWidth.current : width } : void 0,
@@ -148,54 +148,54 @@ window.__ModuleLoader__.load({
 					armLinger();
 				},
 				children: [
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: SidebarRoot_module_css_default.logoRow,
-						children: [wide && (0, react_jsx_runtime.jsx)("button", {
+						children: [wide && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: clsx(SidebarRoot_module_css_default.brand, SidebarRoot_module_css_default.wide),
 							"aria-label": t("session.new.label"),
 							onClick: () => {
 								startSession();
 							},
-							children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.BrandWordmark, {})
-						}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.BrandWordmark, {})
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 							label: collapsed ? t("toggle.open") : t("toggle.collapse"),
 							delayMs: 500,
-							children: (0, react_jsx_runtime.jsxs)("button", {
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
 								className: clsx(SidebarRoot_module_css_default.iconButton, SidebarRoot_module_css_default.toggle),
 								"aria-label": collapsed ? t("toggle.open") : t("toggle.collapse"),
 								onClick: () => {
 									toggleSidebar();
 								},
-								children: [!wide && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.FishLogo, {
+								children: [!wide && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.FishLogo, {
 									className: SidebarRoot_module_css_default.railFish,
 									size: 24
-								}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPanelLeftOutline16, {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPanelLeftOutline16, {
 									className: SidebarRoot_module_css_default.panelIcon,
 									size: wide ? 16 : 18
 								})]
 							})
 						})]
 					}),
-					(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 						label: t("session.new.label"),
 						delayMs: 500,
 						disabled: wide,
-						children: (0, react_jsx_runtime.jsxs)("button", {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 							type: "button",
 							className: SidebarRoot_module_css_default.newSession,
 							"aria-label": t("session.new.label"),
 							onClick: () => {
 								startSession();
 							},
-							children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconNewChatOutline16, { size: wide ? 14 : 18 }), wide && (0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconNewChatOutline16, { size: wide ? 14 : 18 }), wide && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: clsx(SidebarRoot_module_css_default.newSessionLabel, SidebarRoot_module_css_default.wide),
 								children: t("session.new")
 							})]
 						})
 					}),
-					(0, react_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: SidebarRoot_module_css_default.regionArea,
 						children: renderSlot("sidebar.workspaces", {
 							wide,
@@ -204,12 +204,12 @@ window.__ModuleLoader__.load({
 							}
 						})
 					}),
-					(0, react_jsx_runtime.jsxs)("div", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: SidebarRoot_module_css_default.footArea,
-						children: [(0, react_jsx_runtime.jsx)("div", {
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: SidebarRoot_module_css_default.footerActions,
 							children: renderSlot("sidebar.footer.action", { wide })
-						}), (0, react_jsx_runtime.jsx)("div", {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 							className: SidebarRoot_module_css_default.settingsArea,
 							children: renderSlot("sidebar.settings", { wide })
 						})]
@@ -218,7 +218,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `sidebar` namespace dictionaries: shell controls (brand row, New Session, fold toggle). */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -235,7 +235,7 @@ window.__ModuleLoader__.load({
 			"toggle.collapse": "Collapse sidebar"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin (shell controls copy). */
 		const NS = "sidebar";
 		/** Services required by the sidebar plugin. */

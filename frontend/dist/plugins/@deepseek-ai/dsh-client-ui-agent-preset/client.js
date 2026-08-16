@@ -4,12 +4,11 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
-		//#region lib/types/client/locales.js
-		/** Locale bundles for the agent-preset settings row, hero chip, header label, and management section. */
+		//#region src/client/locales.ts
 		/** English copy. */
 		const en = {
 			title: "Agent preset",
@@ -169,11 +168,11 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var AgentPresetLabel_module_css_default = {
-			"label": "No01Jq_label",
-			"icon": "No01Jq_icon"
+			"icon": "No01Jq_icon",
+			"label": "No01Jq_label"
 		};
 		//#endregion
-		//#region lib/types/client/AgentPresetLabel.js
+		//#region src/client/AgentPresetLabel.tsx
 		/**
 		* The session header's agent-preset label.
 		*
@@ -197,17 +196,17 @@ window.__ModuleLoader__.load({
 			if (preset === void 0) return null;
 			const option = options.find((entry) => entry.id === preset);
 			const text = option === void 0 ? void 0 : presetDisplayText(option, t);
-			return (0, react_jsx_runtime.jsxs)("span", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 				className: AgentPresetLabel_module_css_default.label,
 				title: text?.description ?? t("headerHint"),
-				children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconAgentPresetOutline16, {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconAgentPresetOutline16, {
 					size: 14,
 					className: AgentPresetLabel_module_css_default.icon
 				}), text?.name ?? preset]
 			});
 		}
 		//#endregion
-		//#region lib/types/client/PresetMenu.js
+		//#region src/client/PresetMenu.tsx
 		/**
 		* The preset picker both surfaces render: a menu of presets over a button
 		* naming the current one.
@@ -224,7 +223,7 @@ window.__ModuleLoader__.load({
 		* @returns the menu and its trigger.
 		*/
 		function PresetMenu({ options, selectedId, label, t, buttonClassName, chevronClassName, disabled, open, onOpenChange, onSelect }) {
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Menu, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Menu, {
 				open,
 				onClose: () => {
 					onOpenChange(false);
@@ -243,7 +242,7 @@ window.__ModuleLoader__.load({
 				},
 				align: "end",
 				portal: true,
-				anchor: (0, react_jsx_runtime.jsxs)("button", {
+				anchor: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 					type: "button",
 					className: buttonClassName,
 					"aria-haspopup": "menu",
@@ -252,7 +251,7 @@ window.__ModuleLoader__.load({
 					onClick: () => {
 						onOpenChange(!open);
 					},
-					children: [label, (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: chevronClassName })]
+					children: [label, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: chevronClassName })]
 				})
 			});
 		}
@@ -268,15 +267,15 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var AgentPresetRow_module_css_default = {
+			"rowText": "SxOe2G_rowText",
 			"desc": "SxOe2G_desc",
-			"row": "SxOe2G_row",
-			"chevron": "SxOe2G_chevron",
 			"selector": "SxOe2G_selector",
+			"chevron": "SxOe2G_chevron",
 			"title": "SxOe2G_title",
-			"rowText": "SxOe2G_rowText"
+			"row": "SxOe2G_row"
 		};
 		//#endregion
-		//#region lib/types/client/AgentPresetRow.js
+		//#region src/client/AgentPresetRow.tsx
 		/**
 		* Agent-preset preference row: the preset new sessions are composed from.
 		* A running session keeps the composition it began with, so this row never
@@ -303,19 +302,19 @@ window.__ModuleLoader__.load({
 			const chosenText = chosen === void 0 ? void 0 : presetDisplayText(chosen, t);
 			const label = state.currentValue === "" ? t("loading") : chosenText?.name ?? state.currentValue;
 			const description = state.error ?? t("description");
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: AgentPresetRow_module_css_default.row,
-				children: [(0, react_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: AgentPresetRow_module_css_default.rowText,
-					children: [(0, react_jsx_runtime.jsx)("div", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: AgentPresetRow_module_css_default.title,
 						children: t("title")
-					}), (0, react_jsx_runtime.jsx)("div", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: AgentPresetRow_module_css_default.desc,
 						role: state.error === null ? void 0 : "alert",
 						children: description
 					})]
-				}), (0, react_jsx_runtime.jsx)(PresetMenu, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PresetMenu, {
 					options: state.options,
 					selectedId: state.currentValue,
 					label,
@@ -344,19 +343,19 @@ window.__ModuleLoader__.load({
 		}
 		var AgentPresetSeat_module_css_default = {
 			"introText": "gX1QrW_introText",
-			"seat": "gX1QrW_seat",
 			"seat-char-in": "gX1QrW_seat-char-in",
+			"introIcon": "gX1QrW_introIcon",
+			"item": "gX1QrW_item",
+			"itemDesc": "gX1QrW_itemDesc",
 			"seat-icon-in": "gX1QrW_seat-icon-in",
 			"introChar": "gX1QrW_introChar",
-			"introIcon": "gX1QrW_introIcon",
+			"seatIcon": "gX1QrW_seatIcon",
 			"chevron": "gX1QrW_chevron",
-			"itemDesc": "gX1QrW_itemDesc",
-			"item": "gX1QrW_item",
-			"itemName": "gX1QrW_itemName",
-			"seatIcon": "gX1QrW_seatIcon"
+			"seat": "gX1QrW_seat",
+			"itemName": "gX1QrW_itemName"
 		};
 		//#endregion
-		//#region lib/types/client/AgentPresetSeat.js
+		//#region src/client/AgentPresetSeat.tsx
 		/**
 		* The agent-preset chip on the new-session screen, beside the workspace
 		* picker.
@@ -422,15 +421,15 @@ window.__ModuleLoader__.load({
 			if (!ready) return null;
 			const characters = Array.from(label);
 			const stagger = introStaggerMs(characters.length);
-			const shownLabel = introducing ? (0, react_jsx_runtime.jsx)("span", {
+			const shownLabel = introducing ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				className: AgentPresetSeat_module_css_default.introText,
-				children: characters.map((character, index) => (0, react_jsx_runtime.jsx)("span", {
+				children: characters.map((character, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: AgentPresetSeat_module_css_default.introChar,
 					style: { animationDelay: `${INTRO_TEXT_DELAY_MS + index * stagger}ms` },
 					children: character
 				}, index))
 			}) : label;
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Menu, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Menu, {
 				open,
 				onClose: () => {
 					setOpen(false);
@@ -439,12 +438,12 @@ window.__ModuleLoader__.load({
 					const text = presetDisplayText(option, t);
 					return {
 						id: option.id,
-						label: (0, react_jsx_runtime.jsxs)("span", {
+						label: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 							className: AgentPresetSeat_module_css_default.item,
-							children: [(0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: AgentPresetSeat_module_css_default.itemName,
 								children: text.name
-							}), (0, react_jsx_runtime.jsx)("span", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: AgentPresetSeat_module_css_default.itemDesc,
 								children: text.description ?? t("noDescription")
 							})]
@@ -458,7 +457,7 @@ window.__ModuleLoader__.load({
 				},
 				align: "start",
 				portal: true,
-				anchor: (0, react_jsx_runtime.jsxs)("button", {
+				anchor: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 					type: "button",
 					className: AgentPresetSeat_module_css_default.seat,
 					"aria-haspopup": "menu",
@@ -469,23 +468,15 @@ window.__ModuleLoader__.load({
 						setOpen((value) => !value);
 					},
 					children: [
-						(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconAgentPresetOutline16, { className: introducing ? `${AgentPresetSeat_module_css_default.seatIcon} ${AgentPresetSeat_module_css_default.introIcon}` : AgentPresetSeat_module_css_default.seatIcon }),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconAgentPresetOutline16, { className: introducing ? `${AgentPresetSeat_module_css_default.seatIcon} ${AgentPresetSeat_module_css_default.introIcon}` : AgentPresetSeat_module_css_default.seatIcon }),
 						shownLabel,
-						(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: AgentPresetSeat_module_css_default.chevron })
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: AgentPresetSeat_module_css_default.chevron })
 					]
 				})
 			});
 		}
 		//#endregion
-		//#region lib/types/client/settings-store.js
-		/**
-		* Agent-preset default-settings controller.
-		*
-		* Options and the current default both come from one `agentPreset.list` call:
-		* the roster already reports which id a session with no explicit choice gets,
-		* so the row needs no schema introspection. Writes target the settings
-		* namespace's `default` field, which is what the host resolves at creation.
-		*/
+		//#region src/client/settings-store.ts
 		/** The agent-preset settings namespace on the host wire. */
 		const AGENT_PRESET_SETTINGS_NS = "agent-presets";
 		/**
@@ -681,22 +672,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/section-store.js
-		/**
-		* Agent-preset management controller: the roster as a list, a copy dialog as
-		* the only way a preset is created, and a read-only viewer over the shipped
-		* compositions.
-		*
-		* The browser edits no composition text. A new preset is a host-side copy of
-		* an existing one (`{ from, id, name? }` is all that crosses the wire), and
-		* everything after creation happens in the preset's own files — which is why
-		* the page's other job is getting the user TO those files: open the directory
-		* where the host has a desktop, show its path where it does not.
-		*
-		* The host stays the single fact source. Every mutation writes through the
-		* wire and the page re-reads the roster afterwards, because a copy changes
-		* more than the row it targeted.
-		*/
+		//#region src/client/section-store.ts
 		/** Ids a preset directory may be named, mirroring the host's own rule. */
 		const PRESET_ID = /^[a-z0-9][a-z0-9-]*$/;
 		const INITIAL$1 = {
@@ -984,43 +960,43 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var AgentPresetSection_module_css_default = {
-			"cardId": "nzZ04a_cardId",
-			"input": "nzZ04a_input",
-			"groupHead": "nzZ04a_groupHead",
-			"cards": "nzZ04a_cards",
-			"section": "nzZ04a_section",
-			"dialog": "nzZ04a_dialog",
-			"deleteDialog": "nzZ04a_deleteDialog",
-			"title": "nzZ04a_title",
-			"intro": "nzZ04a_intro",
-			"revealedPathLabel": "nzZ04a_revealedPathLabel",
-			"cardBroken": "nzZ04a_cardBroken",
-			"iconButton": "nzZ04a_iconButton",
-			"cardBrokenReason": "nzZ04a_cardBrokenReason",
-			"badge": "nzZ04a_badge",
 			"cardActive": "nzZ04a_cardActive",
-			"field": "nzZ04a_field",
-			"cardHead": "nzZ04a_cardHead",
-			"cardDesc": "nzZ04a_cardDesc",
-			"brokenBadge": "nzZ04a_brokenBadge",
-			"dialogFields": "nzZ04a_dialogFields",
-			"error": "nzZ04a_error",
+			"badge": "nzZ04a_badge",
+			"groupHead": "nzZ04a_groupHead",
+			"iconButton": "nzZ04a_iconButton",
+			"input": "nzZ04a_input",
+			"deleteDialog": "nzZ04a_deleteDialog",
+			"section": "nzZ04a_section",
 			"deleteConfirm": "nzZ04a_deleteConfirm",
-			"viewerCode": "nzZ04a_viewerCode",
-			"group": "nzZ04a_group",
-			"card": "nzZ04a_card",
-			"cardMain": "nzZ04a_cardMain",
-			"inUse": "nzZ04a_inUse",
-			"creatorButton": "nzZ04a_creatorButton",
-			"cardName": "nzZ04a_cardName",
+			"title": "nzZ04a_title",
+			"field": "nzZ04a_field",
+			"cardBrokenReason": "nzZ04a_cardBrokenReason",
 			"secondaryButton": "nzZ04a_secondaryButton",
+			"dialogFields": "nzZ04a_dialogFields",
+			"cardId": "nzZ04a_cardId",
+			"creatorButton": "nzZ04a_creatorButton",
+			"cardFoot": "nzZ04a_cardFoot",
+			"group": "nzZ04a_group",
+			"cardDesc": "nzZ04a_cardDesc",
+			"viewerCode": "nzZ04a_viewerCode",
 			"fieldLabel": "nzZ04a_fieldLabel",
+			"card": "nzZ04a_card",
+			"brokenBadge": "nzZ04a_brokenBadge",
+			"inUse": "nzZ04a_inUse",
 			"iconDanger": "nzZ04a_iconDanger",
+			"revealedPathLabel": "nzZ04a_revealedPathLabel",
+			"cardHead": "nzZ04a_cardHead",
+			"cardMain": "nzZ04a_cardMain",
 			"revealedPath": "nzZ04a_revealedPath",
-			"cardFoot": "nzZ04a_cardFoot"
+			"error": "nzZ04a_error",
+			"cards": "nzZ04a_cards",
+			"cardBroken": "nzZ04a_cardBroken",
+			"intro": "nzZ04a_intro",
+			"dialog": "nzZ04a_dialog",
+			"cardName": "nzZ04a_cardName"
 		};
 		//#endregion
-		//#region lib/types/client/AgentPresetSection.js
+		//#region src/client/AgentPresetSection.tsx
 		/**
 		* Agent-presets settings section: the roster as cards, a copy dialog as the
 		* only way a preset is created, and a read-only viewer over the shipped
@@ -1038,7 +1014,7 @@ window.__ModuleLoader__.load({
 			const message = draft === null ? null : draft.error ?? (blocker === void 0 ? null : t(blocker));
 			const source = draft === null ? void 0 : state.rows.find((row) => row.id === draft.from);
 			const sourceTitle = source === void 0 ? draft?.fromTitle : presetDisplayText(source, t).name;
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
 				open: draft !== null,
 				onClose: () => {
 					actions.cancelCopy();
@@ -1047,29 +1023,29 @@ window.__ModuleLoader__.load({
 				closeLabel: t("close"),
 				description: t("copyIntro"),
 				className: AgentPresetSection_module_css_default.dialog,
-				footer: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+				footer: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 					variant: "outline",
 					disabled: draft?.saving === true,
 					onClick: () => {
 						actions.cancelCopy();
 					},
 					children: t("cancel")
-				}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 					disabled: draft === null || draft.saving || blocker !== void 0,
 					onClick: () => {
 						actions.confirmCopy();
 					},
 					children: draft?.saving === true ? t("creating") : t("create")
 				})] }),
-				children: draft === null ? null : (0, react_jsx_runtime.jsxs)("div", {
+				children: draft === null ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: AgentPresetSection_module_css_default.dialogFields,
 					children: [
-						(0, react_jsx_runtime.jsxs)("label", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
 							className: AgentPresetSection_module_css_default.field,
-							children: [(0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: AgentPresetSection_module_css_default.fieldLabel,
 								children: t("presetId")
-							}), (0, react_jsx_runtime.jsx)("input", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 								className: AgentPresetSection_module_css_default.input,
 								value: draft.id,
 								autoFocus: true,
@@ -1080,12 +1056,12 @@ window.__ModuleLoader__.load({
 								}
 							})]
 						}),
-						(0, react_jsx_runtime.jsxs)("label", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
 							className: AgentPresetSection_module_css_default.field,
-							children: [(0, react_jsx_runtime.jsx)("span", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: AgentPresetSection_module_css_default.fieldLabel,
 								children: t("displayName")
-							}), (0, react_jsx_runtime.jsx)("input", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 								className: AgentPresetSection_module_css_default.input,
 								value: draft.name,
 								spellCheck: false,
@@ -1095,7 +1071,7 @@ window.__ModuleLoader__.load({
 								}
 							})]
 						}),
-						message === null ? null : (0, react_jsx_runtime.jsx)("p", {
+						message === null ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 							className: AgentPresetSection_module_css_default.error,
 							role: "alert",
 							children: message
@@ -1129,13 +1105,13 @@ window.__ModuleLoader__.load({
 					observer.disconnect();
 				};
 			}, [text]);
-			return (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 				label: text,
 				side: "bottom",
 				delayMs: 400,
 				disabled: !truncated,
 				maxWidth: 360,
-				children: (0, react_jsx_runtime.jsx)("span", {
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					ref,
 					className: AgentPresetSection_module_css_default.cardDesc,
 					title: "",
@@ -1161,13 +1137,13 @@ window.__ModuleLoader__.load({
 			if (state.status === "error") {
 				/* v8 ignore next -- an error status always carries text; the fallback satisfies the nullable type */
 				const detail = state.error ?? "";
-				return (0, react_jsx_runtime.jsxs)("div", {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: AgentPresetSection_module_css_default.section,
-					children: [(0, react_jsx_runtime.jsx)("p", {
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: AgentPresetSection_module_css_default.error,
 						role: "alert",
 						children: `${t("error")} ${detail}`
-					}), (0, react_jsx_runtime.jsx)("button", {
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						type: "button",
 						className: AgentPresetSection_module_css_default.secondaryButton,
 						onClick: () => {
@@ -1177,7 +1153,7 @@ window.__ModuleLoader__.load({
 					})]
 				});
 			}
-			const creatorButton = props.startCreatorDraft !== void 0 && state.rows.some((row) => row.id === "cordis") ? (0, react_jsx_runtime.jsxs)("button", {
+			const creatorButton = props.startCreatorDraft !== void 0 && state.rows.some((row) => row.id === "cordis") ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 				type: "button",
 				className: AgentPresetSection_module_css_default.creatorButton,
 				disabled: !state.authorable,
@@ -1186,20 +1162,20 @@ window.__ModuleLoader__.load({
 					props.startCreatorDraft?.();
 					props.close();
 				},
-				children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }), t("creatorDraft")]
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }), t("creatorDraft")]
 			}) : null;
-			return (0, react_jsx_runtime.jsxs)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: AgentPresetSection_module_css_default.section,
 				children: [
-					(0, react_jsx_runtime.jsx)("h2", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 						className: AgentPresetSection_module_css_default.title,
 						children: t("nav")
 					}),
-					(0, react_jsx_runtime.jsx)("p", {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: AgentPresetSection_module_css_default.intro,
 						children: t("sectionIntro")
 					}),
-					state.error === null ? null : (0, react_jsx_runtime.jsx)("p", {
+					state.error === null ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 						className: AgentPresetSection_module_css_default.error,
 						role: "alert",
 						children: state.error
@@ -1211,19 +1187,19 @@ window.__ModuleLoader__.load({
 						}));
 						const tail = trust === "user" ? creatorButton : null;
 						if (group.length === 0 && tail === null) return null;
-						return (0, react_jsx_runtime.jsxs)("section", {
+						return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 							className: AgentPresetSection_module_css_default.group,
 							children: [
-								(0, react_jsx_runtime.jsx)("h3", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
 									className: AgentPresetSection_module_css_default.groupHead,
 									children: heading
 								}),
-								group.length === 0 ? null : (0, react_jsx_runtime.jsx)("ul", {
+								group.length === 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 									className: AgentPresetSection_module_css_default.cards,
-									children: group.map(({ row, text }) => (0, react_jsx_runtime.jsxs)("li", {
+									children: group.map(({ row, text }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
 										className: row.broken !== void 0 ? `${AgentPresetSection_module_css_default.card} ${AgentPresetSection_module_css_default.cardBroken}` : row.isDefault ? `${AgentPresetSection_module_css_default.card} ${AgentPresetSection_module_css_default.cardActive}` : AgentPresetSection_module_css_default.card,
 										children: [
-											(0, react_jsx_runtime.jsxs)("button", {
+											/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 												type: "button",
 												className: AgentPresetSection_module_css_default.cardMain,
 												"aria-pressed": row.isDefault,
@@ -1234,43 +1210,43 @@ window.__ModuleLoader__.load({
 													props.makeDefault(row.id);
 												},
 												children: [
-													(0, react_jsx_runtime.jsxs)("span", {
+													/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 														className: AgentPresetSection_module_css_default.cardHead,
 														children: [
-															(0, react_jsx_runtime.jsx)("span", {
+															/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 																className: AgentPresetSection_module_css_default.cardName,
 																children: text.name
 															}),
-															row.broken !== void 0 ? (0, react_jsx_runtime.jsx)("span", {
+															row.broken !== void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 																className: AgentPresetSection_module_css_default.brokenBadge,
 																children: t("brokenBadge")
 															}) : null,
-															(0, react_jsx_runtime.jsx)("span", {
+															/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 																className: AgentPresetSection_module_css_default.badge,
 																children: row.trust === "user" ? t("userTrust") : t("builtIn")
 															}),
-															row.isDefault ? (0, react_jsx_runtime.jsx)("span", {
+															row.isDefault ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 																className: AgentPresetSection_module_css_default.inUse,
 																children: t("inUse")
 															}) : null
 														]
 													}),
-													(0, react_jsx_runtime.jsx)(CardDescription, { text: text.description ?? t("noDescription") }),
-													row.broken === void 0 ? null : (0, react_jsx_runtime.jsx)("span", {
+													/* @__PURE__ */ (0, react_jsx_runtime.jsx)(CardDescription, { text: text.description ?? t("noDescription") }),
+													row.broken === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 														className: AgentPresetSection_module_css_default.cardBrokenReason,
 														role: "alert",
 														children: row.broken
 													}),
-													(0, react_jsx_runtime.jsx)("code", {
+													/* @__PURE__ */ (0, react_jsx_runtime.jsx)("code", {
 														className: AgentPresetSection_module_css_default.cardId,
 														children: row.id
 													})
 												]
 											}),
-											(0, react_jsx_runtime.jsxs)("div", {
+											/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 												className: AgentPresetSection_module_css_default.cardFoot,
 												children: [
-													row.trust === "system" ? row.broken === void 0 ? (0, react_jsx_runtime.jsx)("button", {
+													row.trust === "system" ? row.broken === void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 														type: "button",
 														className: AgentPresetSection_module_css_default.iconButton,
 														"data-tip": t("view"),
@@ -1278,8 +1254,8 @@ window.__ModuleLoader__.load({
 														onClick: () => {
 															props.view(row.id);
 														},
-														children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconBrowseOutline16, {})
-													}) : null : (0, react_jsx_runtime.jsx)("button", {
+														children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconBrowseOutline16, {})
+													}) : null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 														type: "button",
 														className: AgentPresetSection_module_css_default.iconButton,
 														"data-tip": state.hasDocument ? t("openLocation") : t("showLocation"),
@@ -1287,9 +1263,9 @@ window.__ModuleLoader__.load({
 														onClick: () => {
 															props.openLocation(row.id);
 														},
-														children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconFolderOpenOutline16, {})
+														children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconFolderOpenOutline16, {})
 													}),
-													(0, react_jsx_runtime.jsx)("button", {
+													/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 														type: "button",
 														className: AgentPresetSection_module_css_default.iconButton,
 														disabled: !state.authorable || row.broken !== void 0,
@@ -1298,9 +1274,9 @@ window.__ModuleLoader__.load({
 														onClick: () => {
 															props.beginCopy(row.id);
 														},
-														children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCopyOutline16, {})
+														children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCopyOutline16, {})
 													}),
-													row.trust === "user" ? (0, react_jsx_runtime.jsx)("button", {
+													row.trust === "user" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 														type: "button",
 														className: `${AgentPresetSection_module_css_default.iconButton} ${AgentPresetSection_module_css_default.iconDanger}`,
 														"data-tip": t("delete"),
@@ -1308,16 +1284,16 @@ window.__ModuleLoader__.load({
 														onClick: () => {
 															props.confirmDelete(row.id);
 														},
-														children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, {})
+														children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconTrashOutline16, {})
 													}) : null
 												]
 											}),
-											state.revealedPaths[row.id] === void 0 ? null : (0, react_jsx_runtime.jsxs)("p", {
+											state.revealedPaths[row.id] === void 0 ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
 												className: AgentPresetSection_module_css_default.revealedPath,
-												children: [(0, react_jsx_runtime.jsx)("span", {
+												children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 													className: AgentPresetSection_module_css_default.revealedPathLabel,
 													children: t("revealedPathLabel")
-												}), (0, react_jsx_runtime.jsx)("code", { children: state.revealedPaths[row.id] })]
+												}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("code", { children: state.revealedPaths[row.id] })]
 											})
 										]
 									}, row.id))
@@ -1326,7 +1302,7 @@ window.__ModuleLoader__.load({
 							]
 						}, trust);
 					}),
-					(0, react_jsx_runtime.jsx)(CopyDialog, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(CopyDialog, {
 						state,
 						t,
 						actions: {
@@ -1336,7 +1312,7 @@ window.__ModuleLoader__.load({
 							setCopyName: props.setCopyName
 						}
 					}),
-					(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
 						open: state.view !== null,
 						onClose: () => {
 							props.closeView();
@@ -1345,7 +1321,7 @@ window.__ModuleLoader__.load({
 						closeLabel: t("close"),
 						description: t("composition"),
 						className: AgentPresetSection_module_css_default.dialog,
-						footer: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+						footer: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 							variant: "outline",
 							autoFocus: true,
 							onClick: () => {
@@ -1353,12 +1329,12 @@ window.__ModuleLoader__.load({
 							},
 							children: t("close")
 						}),
-						children: state.view === null ? null : (0, react_jsx_runtime.jsx)("pre", {
+						children: state.view === null ? null : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 							className: AgentPresetSection_module_css_default.viewerCode,
 							children: state.view.content
 						})
 					}),
-					(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
 						open: state.pendingDelete !== null,
 						onClose: () => {
 							props.confirmDelete(null);
@@ -1367,7 +1343,7 @@ window.__ModuleLoader__.load({
 						closeLabel: t("close"),
 						description: t("deleteDescription"),
 						className: AgentPresetSection_module_css_default.deleteDialog,
-						footer: (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+						footer: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 							variant: "outline",
 							autoFocus: true,
 							disabled: state.deleting,
@@ -1375,7 +1351,7 @@ window.__ModuleLoader__.load({
 								props.confirmDelete(null);
 							},
 							children: t("cancel")
-						}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 							variant: "outline",
 							className: AgentPresetSection_module_css_default.deleteConfirm,
 							disabled: state.deleting,
@@ -1389,18 +1365,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/seat-store.js
-		/**
-		* Hero-chip controller: which preset the NEXT session gets.
-		*
-		* The new-session screen has no session, so a pick is staged rather than
-		* applied. It reaches a session when one becomes current and is still blank —
-		* whether the workspace connect created it or reused an existing blank one,
-		* which is why staging cannot simply ride along on `sessions.create`.
-		*
-		* The stage is forgotten once applied: the next new session starts from the
-		* deployment default again, matching the workspace picker beside it.
-		*/
+		//#region src/client/seat-store.ts
 		const INITIAL = {
 			options: [],
 			current: "",
@@ -1539,19 +1504,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/index.js
-		/**
-		* Agent-preset surface plugin, browser half — four surfaces over one roster:
-		* a General-settings row for the default preset, a chip on the new-session
-		* screen for the session about to start, a read-only label in the session
-		* header, and a settings section that manages the roster (copy, delete,
-		* default, and the way into a preset's own files).
-		*
-		* A running session keeps the composition it began with (the host refuses to
-		* adopt an existing session under a different preset). That is what splits
-		* the choice from the display: the General row and the hero chip are both
-		* before-the-fact, while the header only reports what a session already runs.
-		*/
+		//#region src/client/index.ts
 		/** Required services (cordis fiber inject). */
 		const inject = [
 			"slots",

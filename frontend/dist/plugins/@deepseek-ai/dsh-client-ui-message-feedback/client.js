@@ -4,10 +4,10 @@ window.__ModuleLoader__.load({
 		var module = { exports: {} };
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
-		//#region lib/types/client/controller.js
+		let react_jsx_runtime = require("react/jsx-runtime");
+		//#region src/client/controller.ts
 		const INITIAL_VIEW = Object.freeze({
 			status: "cold",
 			items: /* @__PURE__ */ new Map(),
@@ -335,16 +335,16 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var MessageFeedbackActions_module_css_default = {
+			"noteInput": "KjUwxW_noteInput",
+			"noteSave": "KjUwxW_noteSave",
 			"failure": "KjUwxW_failure",
 			"noteOpen": "KjUwxW_noteOpen",
-			"noteInput": "KjUwxW_noteInput",
+			"action": "KjUwxW_action",
 			"noteEditor": "KjUwxW_noteEditor",
-			"noteSave": "KjUwxW_noteSave",
-			"noteCancel": "KjUwxW_noteCancel",
-			"action": "KjUwxW_action"
+			"noteCancel": "KjUwxW_noteCancel"
 		};
 		//#endregion
-		//#region lib/types/client/MessageFeedbackActions.js
+		//#region src/client/MessageFeedbackActions.tsx
 		/**
 		* Per-message feedback controls: a Like/Dislike pair plus an optional note.
 		* Rendered inside the assistant message's IconActions row, so the buttons
@@ -415,11 +415,11 @@ window.__ModuleLoader__.load({
 			}, [item?.note]);
 			const likeLabel = rating === "positive" ? t("action.likeActive") : t("action.like");
 			const dislikeLabel = rating === "negative" ? t("action.dislikeActive") : t("action.dislike");
-			return (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-				(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 					label: likeLabel,
 					side: "bottom",
-					children: (0, react_jsx_runtime.jsx)("button", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						type: "button",
 						className: MessageFeedbackActions_module_css_default.action,
 						"aria-label": likeLabel,
@@ -431,13 +431,13 @@ window.__ModuleLoader__.load({
 						onClick: () => {
 							onRate("positive");
 						},
-						children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconLikeOutline16, {})
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconLikeOutline16, {})
 					})
 				}),
-				(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Tooltip, {
 					label: dislikeLabel,
 					side: "bottom",
-					children: (0, react_jsx_runtime.jsx)("button", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						type: "button",
 						className: MessageFeedbackActions_module_css_default.action,
 						"aria-label": dislikeLabel,
@@ -449,19 +449,19 @@ window.__ModuleLoader__.load({
 						onClick: () => {
 							onRate("negative");
 						},
-						children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconDislikeOutline16, {})
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconDislikeOutline16, {})
 					})
 				}),
-				rating !== void 0 && !noteOpen && (0, react_jsx_runtime.jsx)("button", {
+				rating !== void 0 && !noteOpen && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 					type: "button",
 					className: MessageFeedbackActions_module_css_default.noteOpen,
 					onClick: openNote,
 					children: item?.note === void 0 ? t("note.open") : item.note
 				}),
-				rating !== void 0 && noteOpen && (0, react_jsx_runtime.jsxs)("span", {
+				rating !== void 0 && noteOpen && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 					className: MessageFeedbackActions_module_css_default.noteEditor,
 					children: [
-						(0, react_jsx_runtime.jsx)("textarea", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("textarea", {
 							className: MessageFeedbackActions_module_css_default.noteInput,
 							"aria-label": t("note.aria"),
 							placeholder: t("note.placeholder"),
@@ -471,7 +471,7 @@ window.__ModuleLoader__.load({
 								setDraft(event.target.value);
 							}
 						}),
-						(0, react_jsx_runtime.jsx)("button", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: MessageFeedbackActions_module_css_default.noteSave,
 							disabled: pending,
@@ -480,7 +480,7 @@ window.__ModuleLoader__.load({
 							},
 							children: t("note.save")
 						}),
-						(0, react_jsx_runtime.jsx)("button", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: MessageFeedbackActions_module_css_default.noteCancel,
 							onClick: () => {
@@ -490,12 +490,12 @@ window.__ModuleLoader__.load({
 						})
 					]
 				}),
-				failure === null && loadFailed && (0, react_jsx_runtime.jsx)("span", {
+				failure === null && loadFailed && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: MessageFeedbackActions_module_css_default.failure,
 					role: "status",
 					children: t("error.load")
 				}),
-				failure !== null && (0, react_jsx_runtime.jsx)("span", {
+				failure !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 					className: MessageFeedbackActions_module_css_default.failure,
 					role: "status",
 					children: failure
@@ -503,7 +503,7 @@ window.__ModuleLoader__.load({
 			] });
 		}
 		//#endregion
-		//#region lib/types/client/locales.js
+		//#region src/client/locales.ts
 		/** `feedback` namespace dictionaries. */
 		/** Simplified Chinese dictionary (the key-set source of truth). */
 		const zh = {
@@ -536,15 +536,7 @@ window.__ModuleLoader__.load({
 			"error.generic": "Could not save feedback"
 		};
 		//#endregion
-		//#region lib/types/client/index.js
-		/**
-		* Message feedback plugin, browser half: the Like/Dislike entry in the
-		* conversation.chat.assistant-actions strip. One MessageFeedbackController per
-		* Session backs every message control in that Session, so a single list read
-		* seeds the whole transcript. Mutations go through the generated
-		* messageFeedback Remote; the Host owns per-item compare-and-set.
-		* @module @deepseek-ai/dsh-client-ui-message-feedback/client
-		*/
+		//#region src/client/index.ts
 		/** Dictionary namespace owned by this plugin. */
 		const NS = "feedback";
 		/** Required services: the slot registry, the Remote namespace, and the copy. */

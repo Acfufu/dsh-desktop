@@ -5,9 +5,9 @@ window.__ModuleLoader__.load({
 		var exports = module.exports;
 		Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 		let react = require("react");
-		let react_jsx_runtime = require("react/jsx-runtime");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
+		let react_jsx_runtime = require("react/jsx-runtime");
 		//#region ../../../node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs
 		function r(e) {
 			var t, f, n = "";
@@ -34,46 +34,46 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var DirectoryBrowser_module_css_default = {
-			"rowName": "_h0GQG_rowName",
-			"rowIconSelected": "_h0GQG_rowIconSelected",
-			"rowChevron": "_h0GQG_rowChevron",
-			"crumbChevron": "_h0GQG_crumbChevron",
-			"crumbTrail": "_h0GQG_crumbTrail",
-			"error": "_h0GQG_error",
-			"header": "_h0GQG_header",
-			"dialog": "_h0GQG_dialog",
-			"title": "_h0GQG_title",
-			"millerRow": "_h0GQG_millerRow",
-			"createIn": "_h0GQG_createIn",
-			"footerAction": "_h0GQG_footerAction",
-			"pathInput": "_h0GQG_pathInput",
-			"status": "_h0GQG_status",
-			"content": "_h0GQG_content",
-			"crumbSeat": "_h0GQG_crumbSeat",
-			"crumbBar": "_h0GQG_crumbBar",
+			"crumb": "_h0GQG_crumb",
 			"loadingFloat": "_h0GQG_loadingFloat",
+			"rowIconSelected": "_h0GQG_rowIconSelected",
+			"rowName": "_h0GQG_rowName",
+			"dialog": "_h0GQG_dialog",
+			"content": "_h0GQG_content",
+			"rowIcon": "_h0GQG_rowIcon",
+			"createDialog": "_h0GQG_createDialog",
+			"crumbSeat": "_h0GQG_crumbSeat",
+			"rowSeat": "_h0GQG_rowSeat",
+			"status": "_h0GQG_status",
+			"error": "_h0GQG_error",
+			"showHiddenToggle": "_h0GQG_showHiddenToggle",
+			"editorScope": "_h0GQG_editorScope",
+			"millerRow": "_h0GQG_millerRow",
+			"title": "_h0GQG_title",
+			"header": "_h0GQG_header",
+			"crumbChevron": "_h0GQG_crumbChevron",
+			"rowSelected": "_h0GQG_rowSelected",
+			"column": "_h0GQG_column",
+			"footerAction": "_h0GQG_footerAction",
+			"footerBar": "_h0GQG_footerBar",
+			"createIn": "_h0GQG_createIn",
+			"crumbTrail": "_h0GQG_crumbTrail",
+			"createActions": "_h0GQG_createActions",
+			"row": "_h0GQG_row",
+			"crumbBar": "_h0GQG_crumbBar",
+			"showHiddenToggleActive": "_h0GQG_showHiddenToggleActive",
+			"createTitle": "_h0GQG_createTitle",
+			"crumbEditZone": "_h0GQG_crumbEditZone",
+			"rowChevron": "_h0GQG_rowChevron",
+			"divider": "_h0GQG_divider",
+			"pathInput": "_h0GQG_pathInput",
+			"crumbEditGlyph": "_h0GQG_crumbEditGlyph",
 			"footerGap": "_h0GQG_footerGap",
 			"createBody": "_h0GQG_createBody",
-			"crumb": "_h0GQG_crumb",
-			"crumbEditGlyph": "_h0GQG_crumbEditGlyph",
-			"column": "_h0GQG_column",
-			"rowSeat": "_h0GQG_rowSeat",
-			"crumbEditZone": "_h0GQG_crumbEditZone",
-			"rowSelected": "_h0GQG_rowSelected",
-			"rowIcon": "_h0GQG_rowIcon",
-			"footerBar": "_h0GQG_footerBar",
-			"createTitle": "_h0GQG_createTitle",
-			"createActions": "_h0GQG_createActions",
-			"showHiddenToggleActive": "_h0GQG_showHiddenToggleActive",
-			"editorScope": "_h0GQG_editorScope",
-			"divider": "_h0GQG_divider",
-			"showHiddenToggle": "_h0GQG_showHiddenToggle",
-			"createInput": "_h0GQG_createInput",
-			"createDialog": "_h0GQG_createDialog",
-			"row": "_h0GQG_row"
+			"createInput": "_h0GQG_createInput"
 		};
 		//#endregion
-		//#region lib/types/client/DirectoryBrowser.js
+		//#region src/client/DirectoryBrowser.tsx
 		/**
 		* The in-app workspace-directory browser (figma Harness 813-23126 family): a
 		* 680×500 dialog (clamped to short/narrow viewports — the Miller row scrolls
@@ -233,15 +233,15 @@ window.__ModuleLoader__.load({
 		/** One column of folder rows (the Miller view renders one or two of these). */
 		function LevelColumn({ entries, selectedPath, busy, onPick, showHidden, filterPrefix, pathEditing }) {
 			const visible = visibleEntries(entries, selectedPath, showHidden, filterPrefix);
-			return (0, react_jsx_runtime.jsx)("div", {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: DirectoryBrowser_module_css_default.column,
 				role: "list",
 				children: visible.map((entry) => {
 					const selected = entry.path === selectedPath;
-					return (0, react_jsx_runtime.jsx)("span", {
+					return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 						role: "listitem",
 						className: DirectoryBrowser_module_css_default.rowSeat,
-						children: (0, react_jsx_runtime.jsxs)("button", {
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 							type: "button",
 							"aria-current": selected || void 0,
 							className: clsx(DirectoryBrowser_module_css_default.row, selected && DirectoryBrowser_module_css_default.rowSelected),
@@ -253,18 +253,18 @@ window.__ModuleLoader__.load({
 								onPick(entry);
 							},
 							children: [
-								selected ? (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconFolderOpen16, {
+								selected ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconFolderOpen16, {
 									size: 16,
 									className: DirectoryBrowser_module_css_default.rowIconSelected
-								}) : (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconFolderClose16, {
+								}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconFolderClose16, {
 									size: 16,
 									className: DirectoryBrowser_module_css_default.rowIcon
 								}),
-								(0, react_jsx_runtime.jsx)("span", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: DirectoryBrowser_module_css_default.rowName,
 									children: entry.name
 								}),
-								(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 									size: 12,
 									className: DirectoryBrowser_module_css_default.rowChevron
 								})
@@ -671,7 +671,7 @@ window.__ModuleLoader__.load({
 			const twoPane = selected !== null;
 			const parentInert = busy || folderDraft !== null;
 			const draftPending = pathDraft !== null;
-			return (0, react_jsx_runtime.jsxs)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
 				open,
 				onClose: () => {
 					if (folderDraft === null && !busy) onClose();
@@ -679,7 +679,7 @@ window.__ModuleLoader__.load({
 				title: t("browser.title"),
 				className: clsx(DirectoryBrowser_module_css_default.dialog),
 				headless: true,
-				children: [(0, react_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 					className: DirectoryBrowser_module_css_default.editorScope,
 					onKeyDown: (event) => {
 						if (event.key !== "Escape" || pathDraft === null) return;
@@ -698,23 +698,23 @@ window.__ModuleLoader__.load({
 						cancelPathEdit();
 					},
 					children: [
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: DirectoryBrowser_module_css_default.header,
-							children: [(0, react_jsx_runtime.jsx)("h2", {
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 								className: DirectoryBrowser_module_css_default.title,
 								children: t("browser.title")
-							}), (0, react_jsx_runtime.jsx)("div", {
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: DirectoryBrowser_module_css_default.crumbBar,
-								children: pathDraft === null ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [(0, react_jsx_runtime.jsx)("span", {
+								children: pathDraft === null ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									className: DirectoryBrowser_module_css_default.crumbTrail,
 									role: "navigation",
 									ref: crumbTrailRef,
-									children: crumbs.map((crumb, index) => (0, react_jsx_runtime.jsxs)("span", {
+									children: crumbs.map((crumb, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 										className: DirectoryBrowser_module_css_default.crumbSeat,
-										children: [index > 0 && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
+										children: [index > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, {
 											size: 12,
 											className: DirectoryBrowser_module_css_default.crumbChevron
-										}), (0, react_jsx_runtime.jsx)("button", {
+										}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 											type: "button",
 											className: DirectoryBrowser_module_css_default.crumb,
 											disabled: parentInert,
@@ -724,7 +724,7 @@ window.__ModuleLoader__.load({
 											children: crumb.name
 										})]
 									}, crumb.path))
-								}), (0, react_jsx_runtime.jsx)("button", {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 									type: "button",
 									className: DirectoryBrowser_module_css_default.crumbEditZone,
 									"aria-label": t("browser.editPath"),
@@ -743,11 +743,11 @@ window.__ModuleLoader__.load({
 										const sep = separatorOf(parent);
 										setPathDraft(base.endsWith(sep) ? base : `${base}${sep}`);
 									},
-									children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, {
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconEditOutline16, {
 										size: 14,
 										className: DirectoryBrowser_module_css_default.crumbEditGlyph
 									})
-								})] }) : (0, react_jsx_runtime.jsx)("input", {
+								})] }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 									className: DirectoryBrowser_module_css_default.pathInput,
 									value: pathDraft,
 									"aria-label": t("browser.editPath"),
@@ -774,14 +774,14 @@ window.__ModuleLoader__.load({
 								})
 							})]
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: DirectoryBrowser_module_css_default.content,
 							children: [
-								(0, react_jsx_runtime.jsxs)("div", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: DirectoryBrowser_module_css_default.millerRow,
 									ref: millerRowRef,
 									children: [
-										parent !== null && (0, react_jsx_runtime.jsx)(LevelColumn, {
+										parent !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(LevelColumn, {
 											entries: parent.entries,
 											selectedPath: selected?.path ?? null,
 											busy: parentInert,
@@ -790,8 +790,8 @@ window.__ModuleLoader__.load({
 											filterPrefix: child === null ? typedPrefix : null,
 											pathEditing: draftPending
 										}),
-										twoPane && (0, react_jsx_runtime.jsx)("span", { className: DirectoryBrowser_module_css_default.divider }),
-										twoPane && child !== null && (0, react_jsx_runtime.jsx)(LevelColumn, {
+										twoPane && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: DirectoryBrowser_module_css_default.divider }),
+										twoPane && child !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(LevelColumn, {
 											entries: child.entries,
 											selectedPath: null,
 											busy: parentInert,
@@ -802,29 +802,29 @@ window.__ModuleLoader__.load({
 										})
 									]
 								}),
-								loading && slowScan && (0, react_jsx_runtime.jsx)("div", {
+								loading && slowScan && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: clsx(DirectoryBrowser_module_css_default.status, DirectoryBrowser_module_css_default.loadingFloat),
 									role: "status",
 									children: t("browser.loading")
 								}),
-								(parent?.truncated === true || child?.truncated === true) && (0, react_jsx_runtime.jsx)("div", {
+								(parent?.truncated === true || child?.truncated === true) && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: DirectoryBrowser_module_css_default.status,
 									role: "status",
 									children: t("browser.truncated")
 								}),
-								error !== null && (0, react_jsx_runtime.jsx)("div", {
+								error !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 									className: DirectoryBrowser_module_css_default.error,
 									role: "alert",
 									children: error
 								})
 							]
 						}),
-						(0, react_jsx_runtime.jsxs)("div", {
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: DirectoryBrowser_module_css_default.footerBar,
 							children: [
-								(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 									variant: "outline",
-									icon: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }),
+									icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconPlusOutline16, { size: 14 }),
 									disabled: parent === null || loading || parentInert || draftPending,
 									onClick: () => {
 										setFolderDraft("");
@@ -832,7 +832,7 @@ window.__ModuleLoader__.load({
 									},
 									children: t("browser.newFolder")
 								}),
-								(0, react_jsx_runtime.jsxs)("button", {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 									type: "button",
 									className: clsx(DirectoryBrowser_module_css_default.showHiddenToggle, showHidden && DirectoryBrowser_module_css_default.showHiddenToggleActive),
 									"aria-pressed": showHidden,
@@ -843,17 +843,17 @@ window.__ModuleLoader__.load({
 									onClick: () => {
 										setShowHidden((prev) => !prev);
 									},
-									children: [t("browser.showHidden"), showHidden && (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 14 })]
+									children: [t("browser.showHidden"), showHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, { size: 14 })]
 								}),
-								(0, react_jsx_runtime.jsx)("span", { className: DirectoryBrowser_module_css_default.footerGap }),
-								(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { className: DirectoryBrowser_module_css_default.footerGap }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 									variant: "outline",
 									className: clsx(DirectoryBrowser_module_css_default.footerAction),
 									disabled: parentInert,
 									onClick: onClose,
 									children: t("browser.cancel")
 								}),
-								(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 									variant: "primary",
 									className: clsx(DirectoryBrowser_module_css_default.footerAction),
 									disabled: targetPath === null || loading || parentInert || draftPending,
@@ -866,7 +866,7 @@ window.__ModuleLoader__.load({
 							]
 						})
 					]
-				}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Modal, {
 					open: folderDraft !== null,
 					onClose: () => {
 						if (!creatingFolder) setFolderDraft(null);
@@ -874,18 +874,18 @@ window.__ModuleLoader__.load({
 					title: t("browser.newFolder"),
 					className: clsx(DirectoryBrowser_module_css_default.createDialog),
 					headless: true,
-					children: (0, react_jsx_runtime.jsxs)("div", {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: DirectoryBrowser_module_css_default.createBody,
 						children: [
-							(0, react_jsx_runtime.jsx)("h3", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
 								className: DirectoryBrowser_module_css_default.createTitle,
 								children: t("browser.newFolder")
 							}),
-							(0, react_jsx_runtime.jsx)("p", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 								className: DirectoryBrowser_module_css_default.createIn,
 								children: t("browser.createIn", { name: targetName })
 							}),
-							(0, react_jsx_runtime.jsx)("input", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 								className: DirectoryBrowser_module_css_default.createInput,
 								value: folderDraft ?? "",
 								"aria-label": t("browser.folderName"),
@@ -907,21 +907,21 @@ window.__ModuleLoader__.load({
 									}
 								}
 							}),
-							createError !== null && (0, react_jsx_runtime.jsx)("div", {
+							createError !== null && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: DirectoryBrowser_module_css_default.error,
 								role: "alert",
 								children: createError
 							}),
-							(0, react_jsx_runtime.jsxs)("div", {
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: DirectoryBrowser_module_css_default.createActions,
-								children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 									variant: "outline",
 									disabled: creatingFolder,
 									onClick: () => {
 										setFolderDraft(null);
 									},
 									children: t("browser.cancel")
-								}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.Button, {
 									variant: "primary",
 									disabled: creatingFolder || folderDraft === null || folderDraft.trim() === "",
 									onClick: confirmCreate,
@@ -934,7 +934,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/flow.js
+		//#region src/client/flow.ts
 		/**
 		* The browse picking occupant (package-internal; the `./client` surface
 		* exposes only the Loader exports). Same-package tests exercise it directly
@@ -961,7 +961,7 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/** Locale namespace owning the browser dialog's copy. */
 		const LOCALE_NS = "directory-browser";
 		/** Required services (cordis fiber inject): the slot registry, the wire-facing workspace service, and locale. */

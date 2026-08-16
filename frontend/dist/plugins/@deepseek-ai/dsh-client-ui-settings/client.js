@@ -7,7 +7,7 @@ window.__ModuleLoader__.load({
 		let _deepseek_ai_cordis = require("@deepseek-ai/cordis");
 		let _deepseek_ai_dsh_client_schema_form = require("@deepseek-ai/dsh-client-schema-form");
 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
-		//#region lib/types/client/settings-scope.js
+		//#region src/client/settings-scope.ts
 		/**
 		* Host transport for the settings-namespace scope contract. The contract types
 		* live in `dsh-client-runtime` (the common dependency of every feature that
@@ -226,7 +226,7 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region lib/types/client/index.js
+		//#region src/client/index.ts
 		/**
 		* Required services: none. The transport is resolved per caller through
 		* `this.ctx` at `bind` time, so this plugin waits for nothing.
