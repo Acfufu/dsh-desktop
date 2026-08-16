@@ -19,15 +19,22 @@ vi.mock('node:fs', () => ({
   lstatSync: vi.fn(() => ({ isSymbolicLink: () => false, uid: process.getuid?.() ?? 0 })),
   writeFileSync: vi.fn(),
 }));
-vi.mock('node:http', () => ({
-  createServer: vi.fn(() => ({
-    on: vi.fn(),
-    once: vi.fn(),
-    listen: vi.fn((p: unknown, cb?: () => void) => { cb?.(); return this; }),
-    close: vi.fn((cb?: () => void) => { cb?.(); }),
-    closeAllConnections: vi.fn(),
-  })),
-}));
+vi.mock('node:http', () => {
+  const handlers: Array<(req: unknown, res: unknown) => void> = [];
+  return {
+    createServer: vi.fn((h: (req: unknown, res: unknown) => void) => {
+      handlers.push(h);
+      return {
+        on: vi.fn(),
+        once: vi.fn(),
+        listen: vi.fn((p: unknown, cb?: () => void) => { cb?.(); return this; }),
+        close: vi.fn((cb?: () => void) => { cb?.(); }),
+        closeAllConnections: vi.fn(),
+      };
+    }),
+    __handlers: handlers,
+  };
+});
 
 describe('uds-carrier start', () => {
   it('starts server, chmod 600 socket, mkdir 0700 dir', async () => {
@@ -47,6 +54,55 @@ describe('uds-carrier start', () => {
 it('selects $DSH_HOME/run path by default', () => {
   const p = selectSocketPath(undefined, 501, os.tmpdir());
   expect(p).toBe(`${os.tmpdir()}/dsh-501/dsh.sock`);
+});
+
+describe('interceptor dual-layer dispatch', () => {
+  function makeSvc() {
+    return new UdsCarrierService(
+      { logger: { info: vi.fn(), error: vi.fn() }, get: vi.fn(() => makeMockApiProxy(async () => ({}))), provide: vi.fn(), on: vi.fn(), reflect: { provide: vi.fn() } } as any, // test-only cast
+      { udsPath: '/tmp/dsh-test/dsh.sock' },
+    );
+  }
+
+  async function startAndGetHandler(svc: UdsCarrierService) {
+    await svc.start();
+    const http = await import('node:http');
+    const handlers = (http as any).__handlers as Array<(req: unknown, res: unknown) => void>; // test-only cast
+    return handlers[handlers.length - 1];
+  }
+
+  it('routes to interceptor when claims matches', async () => {
+    const svc = makeSvc();
+    const fetch = vi.fn(async (_req: unknown, res: any) => { res.end('intercepted'); }); // test-only cast
+    svc.registerInterceptor({ claims: () => true, fetch });
+    const handler = await startAndGetHandler(svc);
+    const res = { statusCode: 0, end: vi.fn() };
+    handler({ url: '/api/commands/execute' }, res);
+    await new Promise((r) => setImmediate(r));
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(res.end).toHaveBeenCalledWith('intercepted');
+  });
+
+  it('falls through to bridge when no interceptor claims', async () => {
+    const svc = makeSvc();
+    const fetch = vi.fn(async () => {});
+    svc.registerInterceptor({ claims: () => false, fetch });
+    const handler = await startAndGetHandler(svc);
+    const res = { statusCode: 0, end: vi.fn() };
+    handler({ url: '/api/host.describe', method: 'POST', headers: {} }, res);
+    await new Promise((r) => setImmediate(r));
+    expect(fetch).not.toHaveBeenCalled();
+    // bridge 路径：伪造 req 无流 → 抛错被捕获 → 500
+    expect(res.statusCode).toBe(500);
+  });
+
+  it('unregisters interceptor', () => {
+    const svc = makeSvc();
+    const fetch = vi.fn(async () => {});
+    const dispose = svc.registerInterceptor({ claims: () => true, fetch });
+    dispose();
+    expect(svc.getSocketPath()).toBe('/tmp/dsh-test/dsh.sock');
+  });
 });
 
 it('refuses to start when chmod 600 unsupported (platform claim) — dirs are 0700', () => {

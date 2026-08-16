@@ -25,12 +25,19 @@ export interface UdsCarrierConfig {
   maxBodyBytes?: number;
 }
 
+/** Typert 等业务远端的分层分发钩子（M1 验收⑥：connection 禁用后 /api/<ns>/<method> 缺口）。 */
+export interface UdsCarrierInterceptor {
+  claims: (pathname: string) => boolean;
+  fetch: (req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) => Promise<void>;
+}
+
 export class UdsCarrierService extends Service {
   static inject = ['apiProxy'];
   private server?: Server;
   private downlinks?: WebSocketDownlinks;
   private socketPath: string;
   private config: UdsCarrierConfig = {}; // R2 修正：显式字段
+  private readonly interceptors: UdsCarrierInterceptor[] = [];
 
   constructor(ctx: Context, config: UdsCarrierConfig = {}) {
     super(ctx, 'udsCarrier');
@@ -42,6 +49,16 @@ export class UdsCarrierService extends Service {
 
   getSocketPath(): string {
     return this.socketPath;
+  }
+
+  registerInterceptor(i: UdsCarrierInterceptor): () => void {
+    this.interceptors.push(i);
+    return () => this.unregisterInterceptor(i);
+  }
+
+  unregisterInterceptor(i: UdsCarrierInterceptor): void {
+    const idx = this.interceptors.indexOf(i);
+    if (idx >= 0) this.interceptors.splice(idx, 1);
   }
 
   async start(): Promise<void> {
@@ -71,7 +88,26 @@ export class UdsCarrierService extends Service {
     this.downlinks = new WebSocketDownlinks(apiProxy);
 
     this.server = httpCreateServer((req, res) => {
-      void bridge(req, res, fetchHandler, maxBody);
+      let pathname: string;
+      try {
+        pathname = new URL(req.url ?? '/', 'http://dsh').pathname;
+      } catch {
+        res.statusCode = 400;
+        res.end();
+        return;
+      }
+      const match = this.interceptors.find((i) => i.claims(pathname));
+      if (match) {
+        void match.fetch(req, res).catch(() => { res.statusCode = 500; res.end(); });
+      } else {
+        void (async () => {
+          try {
+            await bridge(req, res, fetchHandler, maxBody);
+          } catch {
+            if (!res.writableEnded) { res.statusCode = 500; res.end(); }
+          }
+        })();
+      }
     });
 
     this.server.on('upgrade', (req, socket, head) => {
@@ -121,7 +157,6 @@ export class UdsCarrierService extends Service {
 
 export function apply(ctx: Context, config: UdsCarrierConfig = {}): UdsCarrierService {
   const svc = new UdsCarrierService(ctx, config);
-  ctx.provide('udsCarrier', svc);
   ctx.on('dispose', () => { void svc.stop(); });
   // R2 修正：捕获 start() 拒绝，避免 unhandled rejection
   void svc.start().catch((e) => ctx.logger.error(`uds-carrier start failed: ${e}`));

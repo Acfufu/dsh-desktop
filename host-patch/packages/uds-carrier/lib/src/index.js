@@ -16,6 +16,7 @@ export class UdsCarrierService extends Service {
     downlinks;
     socketPath;
     config = {}; // R2 修正：显式字段
+    interceptors = [];
     constructor(ctx, config = {}) {
         super(ctx, 'udsCarrier');
         this.config = config; // R2 修正：存 config，否则 this.config?.maxBodyBytes 恒为 undefined
@@ -25,6 +26,15 @@ export class UdsCarrierService extends Service {
     }
     getSocketPath() {
         return this.socketPath;
+    }
+    registerInterceptor(i) {
+        this.interceptors.push(i);
+        return () => this.unregisterInterceptor(i);
+    }
+    unregisterInterceptor(i) {
+        const idx = this.interceptors.indexOf(i);
+        if (idx >= 0)
+            this.interceptors.splice(idx, 1);
     }
     async start() {
         const apiProxy = this.ctx.get('apiProxy'); // inject 保证存在（api-gateway 行提供）
@@ -50,7 +60,32 @@ export class UdsCarrierService extends Service {
         const fetchHandler = toFetchHandler(apiProxy);
         this.downlinks = new WebSocketDownlinks(apiProxy);
         this.server = httpCreateServer((req, res) => {
-            void bridge(req, res, fetchHandler, maxBody);
+            let pathname;
+            try {
+                pathname = new URL(req.url ?? '/', 'http://dsh').pathname;
+            }
+            catch {
+                res.statusCode = 400;
+                res.end();
+                return;
+            }
+            const match = this.interceptors.find((i) => i.claims(pathname));
+            if (match) {
+                void match.fetch(req, res).catch(() => { res.statusCode = 500; res.end(); });
+            }
+            else {
+                void (async () => {
+                    try {
+                        await bridge(req, res, fetchHandler, maxBody);
+                    }
+                    catch {
+                        if (!res.writableEnded) {
+                            res.statusCode = 500;
+                            res.end();
+                        }
+                    }
+                })();
+            }
         });
         this.server.on('upgrade', (req, socket, head) => {
             // DeepSec L3：new URL 对畸形 req.url 抛异常会崩溃 carrier——try/catch 后直接拒绝
@@ -100,7 +135,6 @@ export class UdsCarrierService extends Service {
 }
 export function apply(ctx, config = {}) {
     const svc = new UdsCarrierService(ctx, config);
-    ctx.provide('udsCarrier', svc);
     ctx.on('dispose', () => { void svc.stop(); });
     // R2 修正：捕获 start() 拒绝，避免 unhandled rejection
     void svc.start().catch((e) => ctx.logger.error(`uds-carrier start failed: ${e}`));
