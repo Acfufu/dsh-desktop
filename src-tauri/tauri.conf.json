@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "identifier": "com.dsh-desktop.app",
   "build": {
-    "beforeDevCommand": "",
+    "beforeDevCommand": "pnpm --dir frontend dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "",
+    "beforeBuildCommand": "pnpm --dir frontend build",
     "frontendDist": "../frontend/dist"
   },
   "app": {
