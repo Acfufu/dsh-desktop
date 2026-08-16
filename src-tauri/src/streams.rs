@@ -82,7 +82,7 @@ pub async fn dsh_open_stream(
     });
 
     {
-        let mut reg = state.registry.lock().map_err(|e| e.to_string())?;
+        let reg = state.registry.lock().map_err(|e| e.to_string())?;
         reg.tasks.lock().map_err(|e| e.to_string())?.insert(id, StreamTask { channel, handle });
     }
     Ok(id)
