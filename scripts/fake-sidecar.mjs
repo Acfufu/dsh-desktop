@@ -19,5 +19,19 @@ const server = createServer((req, res) => {
 server.listen(path, () => {
   console.log(`fake sidecar listening on ${path}`);
 });
+import { WebSocketServer } from 'ws';
+
+const wss = new WebSocketServer({ noServer: true });
+server.on('upgrade', (req, socket, head) => {
+  const pathname = new URL(req.url ?? '/', 'http://dsh').pathname;
+  if (pathname === '/api/events.mux' || pathname === '/api/events.host') {
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      ws.send(JSON.stringify({ type: 'server-request', rpcId: 'fake-1', method: 'host.describe', payload: { ok: true } }));
+      ws.on('message', () => {});
+    });
+  } else {
+    socket.destroy();
+  }
+});
 process.on('SIGTERM', () => { server.close(() => process.exit(0)); });
 process.on('SIGINT', () => { server.close(() => process.exit(0)); });

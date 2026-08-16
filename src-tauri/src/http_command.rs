@@ -137,15 +137,19 @@ mod integration {
     use std::time::Duration;
     use std::sync::{Arc, Mutex};
 
+    fn unique_sock(tag: &str) -> String {
+        format!("/tmp/dsh-uds-test/{}-{}.sock", tag, std::process::id())
+    }
+
     struct Sidecar(Child);
 
     impl Sidecar {
-        fn start() -> Sidecar {
+        fn start(sock: &str) -> Sidecar {
             // R2 修正：用 CARGO_MANIFEST_DIR 锚定绝对路径（cargo test cwd = src-tauri，相对路径找不到根 scripts/）
             let script = concat!(env!("CARGO_MANIFEST_DIR"), "/../scripts/fake-sidecar.mjs");
             let child = Command::new("node")
                 .arg(script)
-                .env("DSH_SOCKET", UDS_PATH)
+                .env("DSH_SOCKET", sock)
                 .spawn()
                 .expect("spawn fake sidecar");
             std::thread::sleep(Duration::from_millis(800)); // 等 socket 就绪
@@ -162,14 +166,15 @@ mod integration {
 
     #[tokio::test]
     async fn uplink_roundtrip_hits_fake_sidecar() {
-        let _sc = Sidecar::start();
+        let sock = unique_sock("uplink");
+        let _sc = Sidecar::start(&sock);
         let client = reqwest::ClientBuilder::new()
-            .unix_socket(UDS_PATH)
+            .unix_socket(sock.as_str())
             .build()
             .unwrap();
         let state = crate::AppState {
             http_client: client,
-            uds_path: UDS_PATH.to_string(),
+            uds_path: sock,
             registry: std::sync::Arc::new(std::sync::Mutex::new(crate::streams::StreamRegistry::new())),
         };
 
