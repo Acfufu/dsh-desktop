@@ -1,0 +1,6 @@
+REPO=deepseek-harness
+COMMIT=47f943859bef60e4160492346772ded9b24f765a
+BRANCH=master
+DATE=2026-08-16
+# 变更记录
+# - 初始 fork：8 包拷贝（web/modules/connection/web-react/ui-slots/ui-primitives/ui-attachment/schema-form）

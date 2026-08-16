@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "types": [
+      "node"
+    ],
+    "allowImportingTsExtensions": true
+  },
+  "include": [
+    "apps/web/src",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "scripts",
+    "apps/web/vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": [
+    "packages/client/connection/src/index.ts",
+    "packages/client/connection/src/http-bridge.ts",
+    "packages/client/connection/src/websocket-downlink.ts",
+    "packages/client/connection/src/api-request-trust.ts",
+    "packages/client/connection/src/rpc-host.ts"
+  ]
+}
