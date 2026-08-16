@@ -903,6 +903,7 @@ dependencies = [
  "tauri-plugin-single-instance",
  "tokio",
  "tokio-tungstenite",
+ "tokio-util",
  "url",
 ]
 
