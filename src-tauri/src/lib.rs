@@ -1,5 +1,9 @@
 mod http_command;
 mod navigation;
+mod logging;
+mod dialogs;
+mod tempfiles;
+
 #[cfg(test)]
 mod bench_test;
 mod streams;
@@ -31,6 +35,9 @@ impl Clone for AppState {
 }
 
 pub fn run() {
+    std::env::set_var("RUST_LOG", "info"); // spec §4.2：App 自身日志
+    let logs_dir = std::path::PathBuf::from(std::env::var("HOME").unwrap_or_default()).join("Library/Logs/dsh-desktop");
+    logging::setup_panic_hook(&logs_dir);
     let uds_path = std::env::var("DSH_SOCKET").unwrap_or_else(|_| http_command::UDS_PATH.to_string());
     let http_client = reqwest::ClientBuilder::new()
         .unix_socket(uds_path.as_str())
@@ -72,7 +79,11 @@ pub fn run() {
                 }
             }
         })
-        .invoke_handler(tauri::generate_handler![dsh_http, dsh_open_stream, dsh_close_stream, dsh_cancel])
+        .invoke_handler(tauri::generate_handler![
+            dsh_http, dsh_open_stream, dsh_close_stream, dsh_cancel,
+            tempfiles::dsh_save_export, tempfiles::dsh_write_temp,
+            tempfiles::dsh_import_dropped, tempfiles::dsh_export_session,
+        ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(|app_handle, event| {

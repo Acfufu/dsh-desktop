@@ -17,6 +17,7 @@ pub fn spawn_sidecar(
     let mut cmd = Command::new(node_bin);
     cmd.args(args)
         .current_dir(cwd)
+        .env("LC_ALL", "en_US.UTF-8") // spec §4.2：显式 locale 防乱码
         .stdout(Stdio::from(log_file.try_clone()?))
         .stderr(Stdio::from(log_file.try_clone()?))
         .process_group(0); // 独立进程组（组长 = sidecar 自身 pid）
