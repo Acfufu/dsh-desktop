@@ -1,8 +1,8 @@
 # dsh-desktop 设计 — DeepSeek Harness 的 Tauri 桌面壳
 
 日期：2026-08-16
-版本：v0.6（5 轮双审修订后）
-状态：approved（用户已确认方向；R1-R5 双审修订完成，作为实施基线）
+版本：v0.7（DeepSec L3 安全审计修订后）
+状态：approved（用户已确认方向；R1-R5 双审 + DeepSec L3 审计修订完成，作为实施基线）
 目标仓库：`~/codehub/dsh-desktop`（独立项目，仓库外）
 
 修订记录：
@@ -12,6 +12,7 @@
 - v0.4：R3 双审（安全/生命周期）——剩余威胁模型、capability 白名单、状态机、进程组、临时文件纪律
 - v0.5：R4 双审（bun 打包 + fork 面）——node 布局主方案（bun 不可行）、fork 文件清单、插件 bundle 管线、调用点超时
 - v0.6：R5 双审（综合终审）——计数修正、opener/fs 收敛、getpeereid 实现路径定案、测试补齐、环境/配置/许可小节
+- v0.7：DeepSec L3 安全审计（威胁模型/XSS→IPC 链/供应链+构建三轴并行，含 npm/上游/构建实证）——capability ACL 前提修正（§3/§4.5）、CSP nonce 化（§4.3）、导航白名单 URL 语义比较（§4.2）、退出序列死锁修正（§4.2/§6）、socket 目录 owner/symlink 校验（§4.1）、$DSH_HOME/.env 权限（§4.2）、body 上限（§4.2/§4.6）、构建产物符号链接解引用 + 捏造依赖剔除（§4.4）、原型污染剥键（§4.3）、日志 0600（§4.2）、重定向禁用（§4.2）
 
 ## 1. 目标与非目标
 
@@ -82,7 +83,7 @@
 
 ### 剩余威胁模型（单用户桌面固有信任）
 
-UDS 端点对浏览器不可达——web 页面无法连接 unix socket（fetch/XHR/WebSocket/EventSource 皆 TCP/QUIC），且无任何 TCP 监听端口，因此 DNS rebinding、跨站简单 POST、confused deputy 三类浏览器攻击与全部网络攻击在桌面载体下不存在。剩余可达者是与本机同 uid 的本地进程：可连接 UDS 调用全部 `/api` 方法（含 settings/credentials 读写与 session.prompt 的 RCE 级能力）、可经 `ps eww` 读取 sidecar 进程环境中的 `DEEPSEEK_API_KEY`、可替换 socket 文件对前端实施中间人。这是单用户桌面应用的固有信任模型——同 uid 进程本就等同用户本人（可直接读 .env、可终止进程），与 dsh 在终端中运行的暴露面一致，desktop 未新增暴露。其他 uid 的本地进程被 socket 文件 0600 + 目录 0700 拒之门外（getpeereid 为纵深防御，实现路径见 §4.1）。App 内 WebView 的 XSS 面与 web 载体同源 XSS 等价（均可驱动 agent），desktop 通过 capability 最小集（§4.5，仅 transport 命令 + 通知 + 自启 + opener）与 asset protocol 严格 scope（§4.6）将新增本地面（文件读、通知、窗口）压至最低。
+UDS 端点对浏览器不可达——web 页面无法连接 unix socket（fetch/XHR/WebSocket/EventSource 皆 TCP/QUIC），且无任何 TCP 监听端口，因此 DNS rebinding、跨站简单 POST、confused deputy 三类浏览器攻击与全部网络攻击在桌面载体下不存在。剩余可达者是与本机同 uid 的本地进程：可连接 UDS 调用全部 `/api` 方法（含 settings/credentials 读写与 session.prompt 的 RCE 级能力）、可经 `ps eww` 读取 sidecar 进程环境中的 `DEEPSEEK_API_KEY`、可替换 socket 文件对前端实施中间人。这是单用户桌面应用的固有信任模型——同 uid 进程本就等同用户本人（可直接读 .env、可终止进程），与 dsh 在终端中运行的暴露面一致，desktop 未新增暴露。其他 uid 的本地进程被 socket 文件 0600 + 目录 0700 拒之门外（getpeereid 为纵深防御，实现路径见 §4.1）。**DeepSec L3 补充：socket 目录必须 lstat（不跟随）校验非 symlink 且 owner == 当前 uid——recursive mkdir 会跟随预置 symlink 使 socket 落于攻击者目录（chmod 只改 mode 不改 owner），击穿「其他 uid 被拒」承诺（见 §4.1）**。App 内 WebView 的 XSS 面与 web 载体同源 XSS 等价（均可驱动 agent），desktop 通过 CSP 的 `script-src` nonce 化（§4.3）+ 导航白名单 URL 语义比较（§4.2）+ asset protocol 严格 scope（§4.6）将新增本地面（文件读、通知、窗口）压至最低。**DeepSec L3 前提修正：Tauri v2 的 capability ACL 不门控 app 自定义命令（invoke_handler 注册的命令对全部窗口可调，官方文档 + GHSA-57fm-592m-34r7 实证）——capability 只挡插件/核心命令；因此 XSS 的真正闸门是 CSP nonce + 导航白名单 + asset scope，capability 仅作纵深（详见 §4.5）**。
 
 ## 4. 组件
 
@@ -96,7 +97,7 @@ UDS 端点对浏览器不可达——web 页面无法连接 unix socket（fetch/
 - **信任机制（M1 定案项）**：实测 node:http 的 unix socket 连接**无任何 peer-cred 暴露**（`remoteAddress` undefined，handle 为 libuv Pipe）——carrier 侧「每连接 getpeereid」无现成 API。M1 二选一定案：(a) node-addon-api 小插件暴露 `getpeereid(fd)`（~50 行）作纵深防御；(b) 显式降级为**纯文件权限信任**（0600 socket + 0700 目录已挡其他 uid 连接，getpeereid 仅为纵深防御）。Rust 侧 client 对 server 的 getpeereid 复核保留（Rust 原生支持，libc::getpeereid）
 - 大 body：沿用 `DEFAULT_MAX_REQUEST_BODY_BYTES` 约束（160 MiB）
 - 生命周期：随 plugin 挂载/卸载；退出时关闭所有连接（参考 webserver 的 `closeAllConnections` 语义）并清理 socket 文件
-- **socket 路径选择（Rust 与插件共享同一逻辑）**：候选路径长度 >100 字节时依次回退 `$DSH_HOME/run/dsh.sock` → `os.tmpdir()/dsh-<uid>/dsh.sock` → `/tmp/dsh-<uid>/dsh.sock`（macOS `sockaddr_un.sun_path` 上限 104；长用户名或自定义 `$DSH_HOME` 可超限）。**目录一律以 0700 创建且属当前 uid**（防其他 uid 替换 socket 文件实施 bind 劫持——0600 只挡连接，不挡文件替换）；0600 socket + 0700 目录已防 /tmp 多用户连接风险
+- **socket 路径选择（Rust 与插件共享同一逻辑）**：候选路径长度 >100 字节时依次回退 `$DSH_HOME/run/dsh.sock` → `os.tmpdir()/dsh-<uid>/dsh.sock` → `/tmp/dsh-<uid>/dsh.sock`（macOS `sockaddr_un.sun_path` 上限 104；长用户名或自定义 `$DSH_HOME` 可超限）。**目录一律以 0700 创建且属当前 uid**（防其他 uid 替换 socket 文件实施 bind 劫持——0600 只挡连接，不挡文件替换）；0600 socket + 0700 目录已防 /tmp 多用户连接风险。**DeepSec L3 加固：mkdir 后必须 lstat（不跟随 symlink）验证目录非 symlink 且 `st_uid == 当前 uid`——recursive mkdir 会跟随预置 symlink，使 socket 落于攻击者拥有的目录（chmod 只改 mode 不改 owner），其他 uid 攻击者即可 unlink 并 bind 假 socket 实施 MITM；验证失败则拒绝启动。listen 期间临时 `process.umask(0o077)` 消除 chmod-after-listen 的权限窗口**
 - **socket 残留清理在 carrier 侧**：`listen` 前先 connect 探测（无活服务则 unlink 旧文件再 bind）；Rust 侧重启前清理仅作兜底（node listen 到残留路径文件会 EADDRINUSE，即使无监听者）
 
 desktop.patch.yml 内容（应用顺序在 web-app bundle 之后）：
@@ -106,14 +107,14 @@ desktop.patch.yml 内容（应用顺序在 web-app bundle 之后）：
 
 ### 4.2 Rust 侧（tauri crate，哑管道）
 
-- **uplink**：`#[tauri::command] dsh_http(method, path, body) -> { status, headers, body }`——**reqwest 0.12.23+**（`ClientBuilder::unix_socket`，docs.rs 已核实 0.12.23 即含）对 UDS 路径发起 HTTP/1.1（URL `http://dsh/api/...`，Host 头自动为 `dsh`，node:http 接受任意 Host）；**不设自身超时**（unary 超时由前端在调用点施加，见 4.3）；**为 POST 固定 `Content-Type: application/json`**（`dsh_http` 无 headers 参数，且上游 415 媒体类型 fence 在 UDS 载体上仍生效，作为纵深防御）；sidecar 重启后重建 client（丢弃连接池死连接）。返回体为原始字节 `Vec<u8>`（二进制保真，前端以 ArrayBuffer 重建 Response body）。同路径共 **3 条独立连接**（1 uplink reqwest + 2 downlink WS），无多路复用需求
+- **uplink**：`#[tauri::command] dsh_http(method, path, body) -> { status, headers, body }`——**reqwest 0.12.23+**（`ClientBuilder::unix_socket`，docs.rs 已核实 0.12.23 即含）对 UDS 路径发起 HTTP/1.1（URL `http://dsh/api/...`，Host 头自动为 `dsh`，node:http 接受任意 Host）；**不设自身超时**（unary 超时由前端在调用点施加，见 4.3）；**为 POST 固定 `Content-Type: application/json`**（`dsh_http` 无 headers 参数，且上游 415 媒体类型 fence 在 UDS 载体上仍生效，作为纵深防御）；sidecar 重启后重建 client（丢弃连接池死连接）。返回体为原始字节 `Vec<u8>`（二进制保真，前端以 ArrayBuffer 重建 Response body）。同路径共 **3 条独立连接**（1 uplink reqwest + 2 downlink WS），无多路复用需求。**DeepSec L3 加固：reqwest `redirect::Policy::none()`（禁用重定向——防侧车响应驱动 reqwest 到非 /api 路径）；body 上限 160 MiB（防 XSS invoke 超大 body 造成 OOM DoS）**
 - **uplink 输入校验（纵深防御，非信任边界）**：method ∈ {POST, GET, HEAD}；path 以 `/api/` 开头且不含控制字符/空白（防 `//` 导致的 URL 语义漂移）；未来 carrier 若新增 /api 外路由不会被通用代理意外暴露（前端本身即 /api 全量权限持有者，此校验只防前端 transport 代码缺陷）
 - **downlink（前端驱动，无自主重连）**：两路 `tokio-tungstenite`（0.28/0.29，关 TLS）over `tokio::net::UnixStream`；**只在收到前端开流请求时建立**（每请求一新连接，按请求 id 跟踪）；帧经 `tauri::ipc::Channel<String>` 按序投递（下行帧全是文本 JSON，免字节数组转换；Channel 是官方推荐 ordered/high-throughput 通道，事件 emit 在异步 listener 下不保证顺序）；**任一流断开 → 不发帧、不重连，直接终止该 channel（`-end` 语义）**，由前端 ConnectionController 按既有代际语义重建——重连节奏唯一归属前端（500ms→10s cap），Rust 不做 WS 层退避；`dsh_close_stream` 对未知/未建立 id **幂等 no-op**（open_stream 未完成即代际失败时）
-- **进程管理**：spawn sidecar（`bin/node lib/bin.js --profile web --patch <abs>/patch/desktop.patch.yml`，`<abs>` 来自 `app.path().resource_dir()`），**cwd 设为 `$DSH_HOME`**（`.env` 的 project 层位置确定；加载序：继承 env > cwd .env > `$DSH_HOME/.env`，GUI 启动无 shell env 时后两层生效，API key 由此进入，不额外处理）；**spawn 时 `setpgid` 建独立进程组**（SIGTERM/SIGKILL 作用于进程组——agent 回合中的 bash/shell 子进程随组收尾，防退出后孤儿进程继续运行/改工作区）；stdout/stderr 捕获（启动失败诊断，日志策略见下）；App 运行期间 sidecar 的任何非 App 驱动的退出（**含 exit 0**）一律按意外退出 → 退避重启（exit code 仅作诊断字段）；退避规则见 §6
+- **进程管理**：spawn sidecar（`bin/node lib/bin.js --profile web --patch <abs>/patch/desktop.patch.yml`，`<abs>` 来自 `app.path().resource_dir()`），**cwd 设为 `$DSH_HOME`**（`.env` 的 project 层位置确定；加载序：继承 env > cwd .env > `$DSH_HOME/.env`，GUI 启动无 shell env 时后两层生效，API key 由此进入，不额外处理）；**DeepSec L3 加固：首次启动时 chmod `$DSH_HOME` 0700、`$DSH_HOME/.env` 0600——否则默认 umask 下 .env 0644，其他本地用户可读 DEEPSEEK_API_KEY**；**spawn 时 `setpgid` 建独立进程组**（SIGTERM/SIGKILL 作用于进程组——agent 回合中的 bash/shell 子进程随组收尾，防退出后孤儿进程继续运行/改工作区）；stdout/stderr 捕获（启动失败诊断，日志策略见下）；App 运行期间 sidecar 的任何非 App 驱动的退出（**含 exit 0**）一律按意外退出 → 退避重启（exit code 仅作诊断字段）；退避规则见 §6
 - **单实例与活体探测**：App 加 `tauri-plugin-single-instance`；Rust spawn 前 connect 探测——**活体服务存在（connect 成功）则弹「dsh-desktop 已在运行」并退出**，仅 ENOENT/ECONNREFUSED 才 unlink 残留再 spawn（防双 sidecar 共享 `$DSH_HOME` 的 SQLite 双写与活体 socket 误删）
-- **退出序列**（`RunEvent::ExitRequested` → `prevent_exit()` → 异步关闭任务）：① 取消挂起的重启定时器/退避 sleep（**期间禁止任何 spawn**）→ ② sidecar 存活则 SIGTERM（进程组，sidecar 优雅 teardown 树杀为第一层）→ ③ 5s grace → ④ SIGKILL（进程组，兜底）→ ⑤ unlink socket + 清临时文件 → ⑥ `exit(0)`。SIGKILL 后 socket 清理由 Rust 执行（parent 可靠）；carrier 自身 teardown 的 unlink 为 best-effort（重复 unlink 幂等）
-- **导航白名单**：`WebviewWindowBuilder` 的 `on_navigation` 仅放行 `tauri://localhost` / `http://ipc.localhost`（dev 构建额外放行 vite dev server URL，`cfg!(debug_assertions)` 门控）；外链统一经 **tauri-plugin-opener** 交系统浏览器（§4.5 例外许可）；fork 侧拦截 `target=_blank`（模型输出 markdown 链接点击不得导航主窗口）
-- **日志**：sidecar stdout/stderr → `~/Library/Logs/dsh-desktop/sidecar.log`（1 MiB × 3 轮转，`from_utf8_lossy` 解码，spawn 时显式设 `LC_ALL=en_US.UTF-8` 防乱码）；诊断对话框展示 tail 20 行；**key 不落盘**（脱敏：日志中不记录 env 值）；App 自身 `RUST_LOG=info` 落 `dsh-desktop.log` + panic hook 写文件
+- **退出序列**（`RunEvent::ExitRequested` → `prevent_exit()` → 异步关闭任务）：① 取消挂起的重启定时器/退避 sleep（**期间禁止任何 spawn**）→ ② sidecar 存活则 SIGTERM（进程组，sidecar 优雅 teardown 树杀为第一层）→ ③ 5s grace → ④ SIGKILL（进程组，兜底）→ ⑤ unlink socket + 清临时文件 → ⑥ `exit(0)`。SIGKILL 后 socket 清理由 Rust 执行（parent 可靠）；carrier 自身 teardown 的 unlink 为 best-effort（重复 unlink 幂等）。**DeepSec L3 修正：watch 循环不得持 child Mutex 跨 `wait().await`（否则退出序列的 `take_child` 死锁 → sidecar 孤儿常驻）——锁内 `take()` 出 child 再 wait；组信号前先 `kill(pid, 0)` 探测存活（防 PID 复用后误杀无关进程组）；SIGKILL 后 wait 加 10s 超时（防不可中断进程挂死退出）**
+- **导航白名单**：`WebviewWindowBuilder` 的 `on_navigation` 仅放行 `tauri://localhost` / `http://ipc.localhost`（dev 构建额外放行 vite dev server URL，`cfg!(debug_assertions)` 门控）；外链统一经 **tauri-plugin-opener** 交系统浏览器（§4.5 例外许可）；fork 侧拦截 `target=_blank`（模型输出 markdown 链接点击不得导航主窗口）。**DeepSec L3 修正：判定必须用 URL 语义比较（解析后 scheme + host 精确匹配，dev 附加端口恰为 1420），禁止字符串前缀匹配——`tauri://localhost.evil.com`、`http://ipc.localhost.evil.com`、`http://127.0.0.1:14200` 等前缀绕过向量已实证；对抗用例必须进单测（§7）**
+- **日志**：sidecar stdout/stderr → `~/Library/Logs/dsh-desktop/sidecar.log`（1 MiB × 3 轮转，`from_utf8_lossy` 解码，spawn 时显式设 `LC_ALL=en_US.UTF-8` 防乱码）；诊断对话框展示 tail 20 行；**key 不落盘**（脱敏：日志中不记录 env 值）；App 自身 `RUST_LOG=info` 落 `dsh-desktop.log` + panic hook 写文件。**DeepSec L3 加固：sidecar.log 与 dsh-desktop.log 以 0600 创建（OpenOptionsExt::mode），防其他本地用户读 sidecar 输出**
 - **通知**：前端经 IPC 调 `@tauri-apps/plugin-notification`（fork 内完成，Rust 不解析协议；macOS 通知无需 Info.plist 权限声明，capability 加 `notification:default`）
 - **托盘**：Tauri v2 内置 tray API（无需插件）（显示/隐藏窗口、退出）；关闭窗口 = 隐藏到托盘（`exitOnLastWindowClosed: false`）
 - **自启**：`tauri-plugin-autostart`（macOS 走 LaunchAgent）
@@ -143,16 +144,16 @@ desktop.patch.yml 内容（应用顺序在 web-app bundle 之后）：
 
 **npm 固定版本（不 fork）**：`@deepseek-ai/dsh-host-apiproxy`（AbstractApiClient + 全部协议 schema/类型，`/client` 子路径公开）、`dsh-session/types`、`dsh-llm`、`dsh-tools/presentation`、`@deepseek-ai/cordis`、react、`@tauri-apps/api`。
 
-**插件 bundle 供给（fork 能否 boot 的命门）**：禁 modules + webserver 后 `/plugins/<id>/client.js` 路由消失，而 boot 按 manifest 行**动态 `<script>` fetch** bundle（system.ts `defaultLoadBundle`）——无 bundle 则条目 import 404 → `assertEntriesActive` 抛错 → 无法 boot。构建管线：vite build 后由 `generate-manifest.ts` 把 **≈33 个 `lib/client.js`**（清单从运行时最终组合派生，非硬编码；npm 发布版或 DSH_REPO 构建产物，与 sidecar 同一版本源）复制到 `dist/plugins/<id>/client.js`，读文件算 sha1-12 rev，`compose()` 同构逻辑生成 `__DSH_BOOT__`（`{ rev, entries }`），`injectBootManifest`（npm 根导出可复用）注入 dist/index.html；插件代码**不进** vite bundle。dev 模式：public/plugins 静态供给 + vite 插件 `transformIndexHtml` 注入 manifest。
+**插件 bundle 供给（fork 能否 boot 的命门）**：禁 modules + webserver 后 `/plugins/<id>/client.js` 路由消失，而 boot 按 manifest 行**动态 `<script>` fetch** bundle（system.ts `defaultLoadBundle`）——无 bundle 则条目 import 404 → `assertEntriesActive` 抛错 → 无法 boot。构建管线：vite build 后由 `generate-manifest.ts` 把 **≈33 个 `lib/client.js`**（清单从运行时最终组合派生，非硬编码；npm 发布版或 DSH_REPO 构建产物，与 sidecar 同一版本源）复制到 `dist/plugins/<id>/client.js`，读文件算 sha1-12 rev，`compose()` 同构逻辑生成 `__DSH_BOOT__`（`{ rev, entries }`），`injectBootManifest`（npm 根导出可复用）注入 dist/index.html；插件代码**不进** vite bundle。dev 模式：public/plugins 静态供给 + vite 插件 `transformIndexHtml` 注入 manifest。**DeepSec L3 加固：注入前将 manifest 的 `JSON.stringify` 结果转义 `<` 为 `\u003c`（JSON.stringify 不转义 `</script>`，防包名等被篡改时脚本逃逸）**
 
 **transport 替换**：
 - **下行 transport 机制（`openMux`/`openHost` 覆写，前端驱动）**：先创建 `Channel` 并注册 `onmessage`，再 `invoke('dsh_open_stream', { stream, channel })`——invoke 返回即 onOpen 信号（readiness 依赖）；帧按到达序经 `serverRequestSchema` 解析 + **逐帧调用 `onEnvelope` tap**（settings/credentials 安全观察依赖）后入队；channel 终止 → 迭代器正常结束 → 代际失败路径；迭代器 finally → `invoke('dsh_close_stream')`（open_stream 未完成即失败时该调用幂等 no-op）。**挂起的 open_stream invoke 绑定代际 AbortSignal**（generation 取消即中止，Rust 侧 open_stream 任务同时观察 sidecar 重启即终止）。帧事件名精确（`dsh:downlink:mux|host` + 终止 `-end`），不用通配符
-- **uplink transport 机制（`doFetch` 覆写）**：前端 AbortSignal 映射为 Rust 侧请求取消（invoke 携带请求 id + 独立取消通道；Rust 不设自身超时）；**doFetch 内不设任何超时**——unary 超时在**调用点**施加（握手 `host.describe` 处传 `AbortSignal.timeout(10s)`，闭合「sidecar 存活但卡死 → 代际循环永久卡死握手」的断点；`caller-signal-only` 方法如 `host.pickDirectory` 不受影响，基类 `AbortSignal.any` 合并语义自然生效）；响应字节以 ArrayBuffer 保真重建 Response body（附件图片等二进制走此路）；**传输错误 vs 业务错误分类**：invoke reject（连接拒绝/IO/超时，带 `kind` 字段）→ 可重试传输错误；HTTP status + body → 业务错误
+- **uplink transport 机制（`doFetch` 覆写）**：前端 AbortSignal 映射为 Rust 侧请求取消（invoke 携带请求 id + 独立取消通道；Rust 不设自身超时）；**DeepSec L3 加固：rpc 响应 `JSON.parse` 后剥除 `__proto__`/`constructor`/`prototype` 键（防下游 Object.assign 原型污染）**；**doFetch 内不设任何超时**——unary 超时在**调用点**施加（握手 `host.describe` 处传 `AbortSignal.timeout(10s)`，闭合「sidecar 存活但卡死 → 代际循环永久卡死握手」的断点；`caller-signal-only` 方法如 `host.pickDirectory` 不受影响，基类 `AbortSignal.any` 合并语义自然生效）；响应字节以 ArrayBuffer 保真重建 Response body（附件图片等二进制走此路）；**传输错误 vs 业务错误分类**：invoke reject（连接拒绝/IO/超时，带 `kind` 字段）→ 可重试传输错误；HTTP status + body → 业务错误
 - **在途 unary 语义**：代际重建**不取消**在途 unary（上游 `stop()`/abort 只中止两路流）——以传输错误 reject，**不吞、不自动重放**，UI 提供重试；代际重建由流终止/握手失败驱动，独立于在途 unary 结果
 
 **`__DSH_BOOT__` 自产**：schema = `{ rev, entries: [{ id, url, rev, inject?, immediately? }] }`；entries 从运行时最终组合派生（≈33 行）；`immediately` 层（connection/locale/runtime/theme）boot 时并行 prefetch。`apps/web/src/main.ts` 仅 8 行壳，不是改造面。
 
-**CSP**：fork `index.html` 加 meta CSP：`default-src 'self'; img-src 'self' data: blob: asset:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost; font-src 'self' data:`（`blob:` 供附件图片 ArrayBuffer 重建；**`asset:` 供 §4.6 下载临时文件的 `convertFileSrc` URL**；`ipc:` 为 Tauri v2 IPC 端点）。dev 模式需显式放行 HMR 的 `ws://localhost:1420`（CSP3 `'self'` 是否覆盖 ws 在 WebKit 15.x 不可靠）
+**CSP**：fork `index.html` 加 meta CSP：`default-src 'self'; img-src 'self' data: blob: asset:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost; font-src 'self' data:; script-src 'self' 'nonce-dshboot'`（`blob:` 供附件图片 ArrayBuffer 重建；**`asset:` 供 §4.6 下载临时文件的 `convertFileSrc` URL**；`ipc:` 为 Tauri v2 IPC 端点）。**DeepSec L3 修正：`script-src` 显式声明并加 `'nonce-dshboot'`——`__DSH_BOOT__` 注入的内联 `<script>` 必须带同 nonce 才能执行，非内联攻击脚本无 nonce 仍被封；若实证上游 `injectBootManifest` 产物为外链 `<script src="/boot.js">` 则移除 nonce（`'self'` 放行外链），二选一必须进构建管线断言（§7）**。dev 模式需显式放行 HMR 的 `ws://localhost:1420`（CSP3 `'self'` 是否覆盖 ws 在 WebKit 15.x 不可靠）
 
 **通知**：订阅 agent 完成/提问事件——复用公开 `api.subscribeEnvelopes`（同一信封流），过滤 `turn/end` / `session-status` ServerRequest → `@tauri-apps/plugin-notification`（零新协议解析）。i18n 自动跟随（locale 是 `dsh.client` 行，字典在 bundle 内）。
 
@@ -167,7 +168,7 @@ desktop.patch.yml 内容（应用顺序在 web-app bundle 之后）：
 bun compile 不可行（§2：插件行运行时动态 import、`import.meta.url` bunfs 虚拟化、hmr fallback 挂 bun）——**零源码改动的形态 = node 二进制 + 包目录**，且 npm 布局本来就是 `lib/` 与 `config/` 同级（`files: ["lib/*.js", "config"]`），保持即免费获得全部 `import.meta.url` 相对解析语义。
 
 - 输入：deepseek-harness checkout（路径可用环境变量 `DSH_REPO` 配置，默认 `~/codehub/deepseek-harness` 或同级），**commit 锁定记录进 `UPSTREAM_PIN`**（与前端 fork 同 pin）
-- 流程：`pnpm install && pnpm run build`（产 `lib/` + `config/`）→ 资源拷贝（见布局）→ `tauri build`
+- 流程：`pnpm install && pnpm run build`（产 `lib/` + `config/`）→ 资源拷贝（见布局；**DeepSec L3：node_modules 用 `pnpm deploy` 从 apps/cli 闭包产出，`cp -rL` 解引用绝对符号链接**）→ `tauri build`
 - **资源布局**（`.app/Contents/Resources/dsh/`，`process.execPath` 为锚点）：
 
 ```
@@ -178,6 +179,9 @@ Resources/dsh/
   config/agent-presets/           # apps/cli/config 拷贝 → SHIPPED_PRESET_ROOT 经 lib/../config 命中
   node_modules/                   # 裁剪安装（web 闭包：pnpm --filter / deploy 或 npm pack 集合）
                                   # 含 dsh-desktop-uds-carrier 本地包（共享依赖树）
+                                  # DeepSec L3：pnpm deploy 对 link: override（cosmokit/schemastery）生成
+                                  # 指向构建机 workspace 的绝对符号链接——拷贝进 bundle 必须 cp -rL 解引用 +
+                                  # 符号链接残留校验，否则本机验证通过、用户机 MODULE_NOT_FOUND
   patch/desktop.patch.yml         # 静态文件（置于 bundle 内 → 裸包名插件从 bundle node_modules 解析；
                                   # 若 loader baseUrl 实测锚定 profile 目录 → 兜底 Rust 物化绝对路径）
 ```
@@ -189,7 +193,7 @@ Resources/dsh/
 
 ### 4.5 IPC 面与 capability 最小集
 
-Tauri v2 的 IPC 面 = capability 白名单（XSS 经 invoke 只能调到白名单内命令）。capability 文件按主窗口 label 绑定，最小集：
+Tauri v2 的 IPC 面 = capability 白名单（**DeepSec L3 前提修正：capability 只门控插件命令与核心 API——app 自定义命令（`invoke_handler` 注册的 dsh_*）对全部窗口可调，官方文档 + GHSA-57fm-592m-34r7 实证；因此 capability 对 XSS 只作纵深，XSS 的真正闸门是 CSP nonce（§4.3）+ 导航白名单（§4.2）+ asset scope（§4.6）**）。capability 文件按主窗口 label 绑定，最小集：
 
 - `core:default`（窗口/事件/托盘）
 - 自定义 transport 命令：`dsh_http`、`dsh_open_stream`、`dsh_close_stream`、`dsh_cancel`、临时文件命令（见 4.6）
@@ -204,7 +208,7 @@ Tauri v2 的 IPC 面 = capability 白名单（XSS 经 invoke 只能调到白名�
 - 目录：app 专属临时子目录（0700，属当前 uid；用 App cache 目录而非 `os.tmpdir()` 裸路径）
 - 文件：0600；**文件名由 Rust 随机生成**（绝不采用 Content-Disposition 或任何用户/前端输入——`session.export` 的 zip 内容与文件名由 host 侧 sessionId 生成，前端/用户输入不进路径，此面已排除）
 - 读取通道：**asset protocol**（`convertFileSrc`），scope 在 tauri.conf.json `app.security.assetProtocol.scope` **严格限定该临时目录**（绝不能含 `$HOME` 或全盘——scope 设错则 XSS → 任意文件读，这是 desktop 相对 web 的新增本地面）
-- **上传通道（v1 收敛）**：入口 = 拖拽与 `<input type=file>`（非沙箱 WKWebView 弹原生选择器，JS 仅得 File/blob 无原生路径）。<10 MiB 走 invoke 直传（File.arrayBuffer）；**>10 MiB 仅支持拖拽路径**（Tauri `onDragDropEvent` 给 Rust 原生路径，Rust 直接读源文件，绕过「前端写文件」）——选择器选中的大文件拒绝并提示；Rust 对前端传回路径统一 canonicalize 后校验仍在允许范围（拖拽源路径只需属用户可读即可）
+- **上传通道（v1 收敛）**：入口 = 拖拽与 `<input type=file>`（非沙箱 WKWebView 弹原生选择器，JS 仅得 File/blob 无原生路径）。<10 MiB 走 invoke 直传（File.arrayBuffer）；**>10 MiB 仅支持拖拽路径**（Tauri `onDragDropEvent` 给 Rust 原生路径，Rust 直接读源文件，绕过「前端写文件」）——选择器选中的大文件拒绝并提示；Rust 对前端传回路径统一 canonicalize 后校验仍在允许范围（拖拽源路径只需属用户可读即可）。**DeepSec L3 加固：`dsh_import_dropped` 仅接受 `on_drag_drop_event` 记录过的路径（Rust 侧白名单，XSS 无法伪造 OS 级拖拽事件）+ 160 MiB 大小上限；`dsh_write_temp`/`dsh_save_export` 均加 160 MiB 上限（防 disk-fill DoS）**
 - **下载 UX（v1 收敛）**：`session.export` 导出 ZIP → Rust 落盘**用户下载目录（`~/Downloads`）**并弹系统通知（或落临时目录 + 通知位置）；「读毕删除」仅限图片类 asset（走 asset protocol 的临时文件）；不使用 dialog 插件（§4.5 排除），另存为 = 用户自行移动下载文件
 - 清理归属：**下载临时文件归 Rust**（读毕/失败/退出时删除 + 启动时按年龄清扫孤儿）；**上传临时文件**（若有）归前端（finally 删除）；App 退出序列（§4.2 ⑤）兜底清扫
 
@@ -213,7 +217,7 @@ Tauri v2 的 IPC 面 = capability 白名单（XSS 经 invoke 只能调到白名�
 - `productName`：dsh-desktop（品牌）；**`identifier` 早定**（影响 cache 目录路径、LaunchAgent、通知身份）
 - `frontendDist`：fork 的 vite dist；`devUrl`：vite dev server（M3 开发流）
 - `bundle.resources: ["dsh/**"]`（§4.4 布局）；`bundle.macOS.minimumSystemVersion: "12.0"`
-- `app.security`：`devtools: false`（release）；`assetProtocol.enable: true` + `scope` 严格限定临时目录（验证 `$APPCACHE` 类路径变量可用性）；`capabilities` 文件路径
+- `app.security`：`devtools: false`（release）；`assetProtocol.enable: true` + `scope` 严格限定临时目录（验证 `$APPCACHE` 类路径变量可用性）；`capabilities` 文件路径；**DeepSec L3：`app.windows` 不定义——主窗口由 `WebviewWindowBuilder` 创建以挂 `on_navigation`（conf 窗口无法挂），两者共存会 duplicate label panic**
 - `exitOnLastWindowClosed: false`；tray（内置）；plugins：autostart / single-instance / notification / opener
 - 验证项：assetProtocol scope 路径变量行为；**tauri dev 下 resource_dir 中 sidecar 资源的位置**（dev 与 release 差异，§8 风险行）
 - capabilities/desktop.json 骨架：`windows: ["main"]` + 上述权限集 + `remote` 段（无外部 URL 窗口，可缺省）
@@ -278,6 +282,7 @@ Tauri v2 的 IPC 面 = capability 白名单（XSS 经 invoke 只能调到白名�
 - 「首次 socket-ready 之前失败不计数」仅适用于**从未达过 socket-ready** 的那次启动（迁移 10）；重启后的 pre-ready 崩溃计入退避（迁移 5）
 - 覆盖「启动后立即死亡」：坏 patch/坏插件崩溃循环每轮存活 < 30s → 5 次后停止（总耗时约 15s + 启动时间）
 - 两循环衔接：sidecar 死 → WS 断 → 前端代际失败 → 快速失败（ENOENT/ECONNREFUSED）→ 前端退避；同时 Rust 重启 sidecar，socket 回归后前端下次重试命中——无需显式衔接信号；唯一断点是 describe 超时（§4.3 已由调用点 10s 超时闭合）
+- **DeepSec L3：退出序列与 watch 循环的并发约束**——watch 循环持 child 句柄执行 `wait().await` 时**不得持有 child Mutex**（否则退出序列 `take_child` 死锁 → sidecar 孤儿常驻）；组信号前 `kill(pid, 0)` 探测防 PID 复用误杀；SIGKILL 后 wait 带 10s 超时
 
 ### 错误处理表
 
@@ -304,9 +309,9 @@ Tauri v2 的 IPC 面 = capability 白名单（XSS 经 invoke 只能调到白名�
 - 进程管理单测（假 sidecar）：正常退出/崩溃码/挂起、**存活 <30s 计数与 ≥30s 重置**、退出序列取消重启定时器、进程组信号、**单实例/活体探测三分支**（活体 → 退出；ENOENT → unlink+spawn；ECONNREFUSED → unlink+spawn）、**describe 挂起 → 调用点 10s 超时 → 代际失败 → 重试**（mock 慢 describe）
 - uds-carrier 插件单测：UDS 请求 → apiProxy 命中、两路 WS 帧、socket 清理、残留 socket 探测 unlink、目录 0700、**信任机制按 M1 定案**（addon 版测 getpeereid 拒绝 / 纯权限版测权限拒绝）
 - 状态机测试：迁移表 11 条路径（含 first-ready 分界与重启后 pre-ready 计数、restart-stopped 重试）
-- 构建管线测试：`generate-manifest.ts` 输出 schema 校验、**bundle 数与组合行数一致（非硬编码 31）**、rev 稳定性、`injectBootManifest` 注入后 boot 可达（无 key 冒烟）、**index.html 含 CSP meta + `connect-src ipc:`** 断言
-- 导航白名单测试：谓词抽纯函数 `allowed_navigation(url, debug)` 单测四象限（tauri://localhost / ipc.localhost / dev URL / 外链拒绝）
-- 临时文件纪律测试：随机名、canonicalize 越界拒绝、age 清扫、退出序列⑤清理、下载目录落盘
+- 构建管线测试：`generate-manifest.ts` 输出 schema 校验、**bundle 数与组合行数一致（非硬编码 31）**、rev 稳定性、`injectBootManifest` 注入后 boot 可达（无 key 冒烟）、**index.html 含 CSP meta + `connect-src ipc:` + `script-src` nonce（或 boot 为外链）断言**、**manifest 注入无 `</script>` 逃逸**（`\u003c` 转义断言）
+- 导航白名单测试：谓词抽纯函数 `allowed_navigation(url, debug)` 单测四象限（tauri://localhost / ipc.localhost / dev URL / 外链拒绝）**+ DeepSec L3 对抗用例（`tauri://localhost.evil.com`、`http://ipc.localhost.evil.com`、userinfo `@evil.com`、端口混淆 `127.0.0.1:14200` 一律拒绝）**
+- 临时文件纪律测试：随机名、canonicalize 越界拒绝、age 清扫、退出序列⑤清理、下载目录落盘、**body 上限拒绝（160 MiB）、拖拽白名单拒绝未记录路径**
 - e2e smoke（两层）：**CI 自动化层** = `tauri build` 产物启动 + Rust 测试钩子（前端 boot/握手成功经状态事件上报，Rust 断言——零 WebDriver；boot 可达性另用 vitest+jsdom+mock `@tauri-apps/api` 无头测）；**可选 WebDriver 层**（tauri-driver）标 nightly/手动，不进阻塞 CI（macOS WKWebView 对 WebDriver 弱支持）。有 `DEEPSEEK_API_KEY` 时可跑一个真实 agent 回合；dev 与 release 双产物各跑
 - 通知：mock notification 插件，验证完成事件触发
 - capability：验证 fork 页 invoke 非白名单命令被拒
@@ -331,6 +336,17 @@ Tauri v2 的 IPC 面 = capability 白名单（XSS 经 invoke 只能调到白名�
 | describe 挂起（sidecar 活但卡死） | 握手 describe 调用点 `AbortSignal.timeout(10s)`（doFetch 层不设超时，保 caller-signal-only 方法） |
 | sidecar 子进程孤儿（SIGKILL 路径） | 进程组 spawn + 组信号（§4.2） |
 | App Sandbox 引入的 sidecar 不可用 | v1 不做沙箱（记录为已知限制）；hardened runtime + 公证 |
+| **capability ACL 不门控 app 命令**（Tauri v2 实证；spec 原把 ACL 当 XSS 闸门） | XSS 闸门改为 CSP `script-src` nonce + 导航白名单 URL 语义比较 + asset scope；capability 仅纵深（§3/§4.5） |
+| **退出序列死锁**（watch loop 持锁跨 await → take_child 死锁 → sidecar 孤儿） | watch 循环锁内 take 再 wait；SIGKILL 后 wait 10s 超时（§4.2/§6） |
+| **socket 目录预置 symlink/异主**（recursive mkdir 跟随，其他 uid MITM） | lstat 校验非 symlink + owner==euid，失败拒启（§4.1） |
+| **XSS → OOM/disk-fill DoS**（dsh_http/dsh_write_temp 无 body 上限） | 全部写路径加 160 MiB 上限（§4.2/§4.6） |
+| **导航白名单前缀绕过**（localhost.evil.com / 端口混淆） | URL 语义比较 + 对抗单测（§4.2/§7） |
+| **构建产物符号链接悬空**（pnpm deploy link: override → 绝对符号链接） | cp -rL 解引用 + 残留校验（§4.4） |
+| **$DSH_HOME/.env 权限**（0644 泄 key） | 首启 chmod 0700/0600（§4.2） |
+| **manifest 注入脚本逃逸**（JSON.stringify 不转义 </script>） | 注入前转义 `<` 为 \u003c（§4.3） |
+| **kill(-pid) PID 复用误杀** | 组信号前 kill(pid,0) 探测（§4.2） |
+| **rpc 响应原型污染**（Object.assign + __proto__） | JSON.parse 后剥键（§4.3） |
+| **侧车响应驱动 reqwest 重定向** | redirect::Policy::none()（§4.2） |
 | 打包架构（arm64/x64 无 universal 免配置） | M4 定：lipo 合并或 per-arch 分发包；**合并/资源重排后 re-sign** node 与 sidecar |
 
 ## 9. 仓库结构（dsh-desktop）
@@ -360,5 +376,5 @@ dsh-desktop/
 1. **M1：uds-carrier 插件 + desktop patch**。验收：真 checkout 下 `dsh --profile web --patch desktop.patch.yml` 启动后——① `lsof -iTCP -sTCP:LISTEN` 无监听端口；② socket 0600、目录 0700；③ `curl --unix-socket <sock> http://dsh/api/host.describe` 返回成功 JSON（带 key）；④ events.mux/host 两路 WS upgrade 握手成功；⑤ uds-carrier 单测全绿（信任机制按 §4.1 定案、残留探测 unlink、路径回退链）；⑥ baseUrl 锚定实测结论落定（§4.4 资源布局定稿）
 2. **M2：Rust 哑管道 + 进程管理**。验收：① Rust 管道/进程管理单测全绿（含 close_stream 幂等、输入校验、退避计数与重置、退出序列取消定时器、进程组信号、活体探测三分支、describe 超时）；② 手动：假 sidecar 下 invoke 转发往返成功；kill -9 → 观察退避节奏 1s→2s→4s→8s→停止；③ Cmd+Q 退出序列 SIGTERM→5s→SIGKILL 可观察；④ 大 body 阈值重测（150 MiB 数据点）
 3. **M3：前端 fork + transport + 构建管线 + dev 模式**。验收：`tauri dev` 无 key——① WebView 渲染 fork dist；② `__DSH_BOOT__` 全部条目 load 成功（数量 = 组合行数，非硬编码）；③ 状态到 connected（双流 open + describe）；④ 会话列表/设置可交互；⑤ 有 key 时一个真实 agent 回合（含工具调用）；⑥ 构建管线测试绿（schema/完整性/rev/inject 后 boot 可达）
-4. **M4：原生壳 + 打包**。验收：托盘显隐/退出；自启 LaunchAgent 注册注销；agent 完成通知；外链走系统浏览器且 target=_blank 不导航主窗口；>10 MiB 附件与导出走既定路径（§4.6）；非白名单 invoke 被拒；frontendDist 缺失弹错误对话框；.app 签名+公证通过（arm64；x64/universal 按架构定案）；identifier 定稿
+4. **M4：原生壳 + 打包**。验收：托盘显隐/退出；自启 LaunchAgent 注册注销；agent 完成通知；外链走系统浏览器且 target=_blank 不导航主窗口；>10 MiB 附件与导出走既定路径（§4.6）；非白名单 invoke 被拒；frontendDist 缺失弹错误对话框；.app 签名+公证通过（arm64；x64/universal 按架构定案）；identifier 定稿；**DeepSec L3 增补：退出序列在 sidecar 挂起时仍 ≤15s 完成（SIGTERM→5s→SIGKILL→10s 兜底，无死锁）；$DSH_HOME 0700/.env 0600 生效；bundle node_modules 无残留绝对符号链接（find -type l 为空）；导航对抗用例单测绿；body 上限拒绝生效**
 5. **M5：测试补齐 + 文档**。验收：§7 清单全绿 + e2e smoke 绿（dev + release）+ Rust 覆盖率门 + README/架构矩阵文档补齐
