@@ -16,3 +16,6 @@
 .opencode/
 .claude/
 artifacts/
+src-tauri/target/
+node_modules/
+.DS_Store
