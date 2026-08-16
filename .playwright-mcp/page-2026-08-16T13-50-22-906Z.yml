@@ -1,0 +1,5 @@
+- generic [ref=f6e4]:
+  - generic [ref=f6e5]: HARNESS
+  - generic [ref=f6e6]:
+    - generic [ref=f6e7]: Failed to load plugins
+    - generic [ref=f6e8]: "failed to import loader entry 675deb65 (@deepseek-ai/dsh-api-remotes): client-modules: require(\"@deepseek-ai/dsh-commands/remote\") missed the module table — not a platform seed word, not a shell-own module, and no registered factory (a build-time externals drift, or a forbidden cross-plugin value import)"

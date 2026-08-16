@@ -1,9 +1,10 @@
 import { fileURLToPath } from 'node:url'
 import { readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { defineConfig } from 'vite'
 import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { buildManifest } from '../../scripts/generate-manifest'
+import { bootScriptFor, buildManifest } from '../../scripts/generate-manifest'
 
 const src = (rel: string): string => fileURLToPath(new URL(rel, import.meta.url))
 
@@ -16,11 +17,18 @@ function devBootManifest(): Plugin {
       order: 'post',
       handler: (html: string) => {
         const entries = JSON.parse(readFileSync(new URL('../../composed-entries.json', import.meta.url), 'utf8'))
-        const manifest = buildManifest(entries.map((e: { id: string; rev: string }) => ({ id: e.id, file: '', rev: e.rev })))
-        // DeepSec L3：JSON.stringify 不转义 </script>——作为纵深防御转义 < 为 \u003c
-        const safe = JSON.stringify(manifest).replace(/</g, '\u003c')
-        const script = `<script>window.__DSH_BOOT__=${safe}</script>`
-        return { html: html.replace('</head>', `${script}</head>`), tags: [] }
+        const manifest = buildManifest(entries.map((e: { id: string; rev: string; inject?: string[]; immediately?: boolean }) => ({
+          id: e.id, file: '', rev: e.rev,
+          ...(e.inject !== undefined ? { inject: e.inject } : {}),
+          ...(e.immediately === true ? { immediately: true } : {}),
+        })))
+        const script = bootScriptFor(manifest)
+        const hash = createHash('sha256').update(script.slice('<script>'.length, -'</script>'.length), 'utf8').digest('base64')
+        let out = html
+          .replace(/script-src 'self' 'unsafe-eval'/, `script-src 'self' 'unsafe-eval' 'sha256-${hash}'`)
+          .replace(/connect-src 'self' ipc: http:\/\/ipc.localhost/, `connect-src 'self' ws://localhost:1420 ipc: http://ipc.localhost`)
+        out = out.replace('</head>', `${script}</head>`)
+        return { html: out, tags: [] }
       },
     },
   }

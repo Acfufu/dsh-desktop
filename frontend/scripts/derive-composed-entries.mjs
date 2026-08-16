@@ -31,7 +31,14 @@ for (const dir of candidateDirs(bundleRoot)) {
   if (!pkg.dsh?.client) continue; // 只收声明 dsh.client 的包
   const content = readFileSync(clientJs);
   const rev = createHash('sha1').update(content).digest('hex').slice(0, 12);
-  entries.push({ id: pkg.name, file: clientJs, rev });
+  const decl = pkg.dsh?.client ?? {};
+  entries.push({
+    id: pkg.name,
+    file: clientJs,
+    rev,
+    ...(Array.isArray(decl.inject) && decl.inject.length > 0 ? { inject: decl.inject } : {}),
+    ...(decl.immediately === true ? { immediately: true } : {}),
+  });
 }
 writeFileSync(outFile, JSON.stringify(entries, null, 2));
 console.log(`derived ${entries.length} entries → ${outFile}`);

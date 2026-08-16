@@ -1,0 +1,113 @@
+[    1053ms] EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self' 'sha256-UAqQCqdhmE/TRFGUwQnYazEl1UP5jpTWURp3nGrL7Lk='".
+
+    at new Function (<anonymous>)
+    at http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=0331ed0a:293:16
+[    1696ms] EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self' 'sha256-UAqQCqdhmE/TRFGUwQnYazEl1UP5jpTWURp3nGrL7Lk='".
+
+    at new Function (<anonymous>)
+    at http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:293:16
+[  237267ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:1420/@vite/client:963
+[  237268ms] [ERROR] WebSocket connection to 'ws://localhost:1420/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:1420/@vite/client:1034
+[  237976ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:1420/node_modules/.vite/deps/chunk-TXZYISKW.js?v=92030f2b:21608
+[  238156ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-api-gateway/client.js?rev=710fe5a7386e:0
+[  238156ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-api-remotes/client.js?rev=4a4ed9a0c49f:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=83a1b2fda1a5:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-hmr/client.js?rev=e300dfc15ea6:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-locale/client.js?rev=e5fd6d0a08b8:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=a7e46f28620f:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-agent-preset/client.js?rev=42fcaaaaafa4:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-commands/client.js?rev=cdbe9846ae5a:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-conversation/client.js?rev=786b07f9aa25:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-cordis/client.js?rev=004a5f28053d:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-deliverables/client.js?rev=689b9b6abfad:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-directory-picker-native/client.js?rev=41ed39029ba6:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-goal/client.js?rev=48969e69d2a0:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-input-trigger/client.js?rev=f356b1075520:0
+[  238157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-jobs/client.js?rev=1d7e6e143247:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-layout/client.js?rev=327448894bf7:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-directory-picker-browse/client.js?rev=0d8f878241e5:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-message-feedback/client.js?rev=9477b40c732c:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-model-selection/client.js?rev=7682652503e8:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-permission-presets/client.js?rev=f2558799e9be:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-plan/client.js?rev=6c3659edade7:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings/client.js?rev=41a054da3ff5:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings-general/client.js?rev=d711d6230077:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings-models/client.js?rev=9bd727e7322f:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings-plugin-inventory/client.js?rev=8ed683e2cfec:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings-plugins/client.js?rev=7d022c3083aa:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-sidebar/client.js?rev=8358c3499e14:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-skill/client.js?rev=2b9476c1d62d:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-theme/client.js?rev=8913d3846aa1:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-tool/client.js?rev=9234635cabf4:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-trajectory/client.js?rev=a32a15fdb57b:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-user-questions/client.js?rev=79d0fd5364df:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-subagent/client.js?rev=e9f52ae88954:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-workspace/client.js?rev=69c4707aaf9a:0
+[  238158ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-cordis-client-runner/client.js?rev=11c6ab0282cb:0
+[  238159ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-session-log-export/client.js?rev=e35e641c7c70:0
+[  238159ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-typert-registry/client.js?rev=8afb53d6d292:0
+[  238159ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-workflow-run/client.js?rev=9eddb325702b:0
+[  238160ms] [ERROR] Error: failed to import loader entry 29230f40 (@deepseek-ai/dsh-api-gateway): client-modules: bundle script /plugins/@deepseek-ai/dsh-api-gateway/client.js?rev=710fe5a7386e failed to load
+    at updateError (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:309:10)
+    at _a4._init (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:525:13)
+    at async _a4.init (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:505:7)
+    at async _a4.update (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:435:41)
+    at async _a.create (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:73:7)
+    at async Proxy.create (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:234:16)
+    at async http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:112:18
+    at async Promise.all (index 1)
+    at async AppWebEntry.runPluginBoot (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:110:5)
+    at async AppWebEntry.run (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:81:7) @ http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:83
+[  253896ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:1420/@vite/client:963
+[  253896ms] [ERROR] WebSocket connection to 'ws://localhost:1420/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:1420/@vite/client:1034
+[  254899ms] [ERROR] WebSocket connection to 'ws://localhost:1420/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:1420/@vite/client:1034
+[  256586ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:1420/node_modules/.vite/deps/chunk-TXZYISKW.js?v=92030f2b:21608
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-api-gateway/client.js?rev=710fe5a7386e:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-api-remotes/client.js?rev=4a4ed9a0c49f:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=83a1b2fda1a5:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-hmr/client.js?rev=e300dfc15ea6:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-locale/client.js?rev=e5fd6d0a08b8:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=a7e46f28620f:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-agent-preset/client.js?rev=42fcaaaaafa4:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-commands/client.js?rev=cdbe9846ae5a:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-conversation/client.js?rev=786b07f9aa25:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-cordis/client.js?rev=004a5f28053d:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-deliverables/client.js?rev=689b9b6abfad:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-directory-picker-native/client.js?rev=41ed39029ba6:0
+[  256639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-goal/client.js?rev=48969e69d2a0:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-input-trigger/client.js?rev=f356b1075520:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-jobs/client.js?rev=1d7e6e143247:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-directory-picker-browse/client.js?rev=0d8f878241e5:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-message-feedback/client.js?rev=9477b40c732c:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-model-selection/client.js?rev=7682652503e8:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-permission-presets/client.js?rev=f2558799e9be:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-plan/client.js?rev=6c3659edade7:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-layout/client.js?rev=327448894bf7:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings-general/client.js?rev=d711d6230077:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings-models/client.js?rev=9bd727e7322f:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings-plugin-inventory/client.js?rev=8ed683e2cfec:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings-plugins/client.js?rev=7d022c3083aa:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-settings/client.js?rev=41a054da3ff5:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-skill/client.js?rev=2b9476c1d62d:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-subagent/client.js?rev=e9f52ae88954:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-theme/client.js?rev=8913d3846aa1:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-tool/client.js?rev=9234635cabf4:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-trajectory/client.js?rev=a32a15fdb57b:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-sidebar/client.js?rev=8358c3499e14:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-user-questions/client.js?rev=79d0fd5364df:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-workflow-run/client.js?rev=9eddb325702b:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-workspace/client.js?rev=69c4707aaf9a:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-cordis-client-runner/client.js?rev=11c6ab0282cb:0
+[  256640ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-session-log-export/client.js?rev=e35e641c7c70:0
+[  256641ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/@deepseek-ai/dsh-typert-registry/client.js?rev=8afb53d6d292:0
+[  256641ms] [ERROR] Error: failed to import loader entry 57f490df (@deepseek-ai/dsh-api-gateway): client-modules: bundle script /plugins/@deepseek-ai/dsh-api-gateway/client.js?rev=710fe5a7386e failed to load
+    at updateError (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:309:10)
+    at _a4._init (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:525:13)
+    at async _a4.init (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:505:7)
+    at async _a4.update (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:435:41)
+    at async _a.create (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:73:7)
+    at async Proxy.create (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:234:16)
+    at async http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:112:18
+    at async Promise.all (index 1)
+    at async AppWebEntry.runPluginBoot (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:110:5)
+    at async AppWebEntry.run (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:81:7) @ http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:83

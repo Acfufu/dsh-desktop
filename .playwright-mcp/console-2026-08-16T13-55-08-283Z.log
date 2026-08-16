@@ -1,0 +1,138 @@
+[      62ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:1420/node_modules/.vite/deps/chunk-TXZYISKW.js?v=92030f2b:21608
+[     137ms] [ERROR] Error: failed to import loader entry 412b9600 (@deepseek-ai/dsh-client-locale): client-modules: require("@deepseek-ai/dsh-client-runtime/client") missed the module table — not a platform seed word, not a shell-own module, and no registered factory (a build-time externals drift, or a forbidden cross-plugin value import)
+    at updateError (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:309:10)
+    at _a4._init (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:525:13)
+    at async _a4.init (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:505:7)
+    at async _a4.update (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:435:41)
+    at async _a.create (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:73:7)
+    at async Proxy.create (http://localhost:1420/node_modules/.vite/deps/@deepseek-ai_cordis-plugin-loader.js?v=92030f2b:234:16)
+    at async http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:112:18
+    at async Promise.all (index 5)
+    at async AppWebEntry.runPluginBoot (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:110:5)
+    at async AppWebEntry.run (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:81:7) @ http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/web/src/boot.tsx:83
+[     155ms] [ERROR] [cordis-client-runner] syncing inspect providers failed: TypeError: ctx.remote.dynamicCordisRunner.syncInspectManifest is not a function
+    at Object.sync (http://localhost:1420/plugins/@deepseek-ai/dsh-cordis-client-runner/client.js?rev=53ff5565d917:3978:60)
+    at http://localhost:1420/plugins/@deepseek-ai/dsh-cordis-client-runner/client.js?rev=53ff5565d917:1023:23 @ http://localhost:1420/plugins/@deepseek-ai/dsh-cordis-client-runner/client.js?rev=53ff5565d917:1024
+[     157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[     157ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[     157ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[     157ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/events:0
+[     157ms] [WARNING] [web-runtime] connection lost, retry #1 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[     652ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[     652ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[     652ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[     652ms] [WARNING] [web-runtime] connection lost, retry #2 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[    1533ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[    1534ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[    1534ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[    1534ms] [WARNING] [web-runtime] connection lost, retry #3 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[    3267ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[    3267ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[    3267ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[    3267ms] [WARNING] [web-runtime] connection lost, retry #4 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[    6966ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[    6966ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[    6966ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[    6966ms] [WARNING] [web-runtime] connection lost, retry #5 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   11962ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   11962ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   11962ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   11963ms] [WARNING] [web-runtime] connection lost, retry #6 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   21063ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   21063ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   21063ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   21063ms] [WARNING] [web-runtime] connection lost, retry #7 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   27273ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   27274ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   27274ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   27274ms] [WARNING] [web-runtime] connection lost, retry #8 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   35274ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   35274ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   35274ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   35274ms] [WARNING] [web-runtime] connection lost, retry #9 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   40965ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   40965ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   40965ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   40965ms] [WARNING] [web-runtime] connection lost, retry #10 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   49519ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   49520ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   49520ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   49520ms] [WARNING] [web-runtime] connection lost, retry #11 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   56782ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   56782ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   56782ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   56782ms] [WARNING] [web-runtime] connection lost, retry #12 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   64529ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   64529ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   64529ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   64529ms] [WARNING] [web-runtime] connection lost, retry #13 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   73231ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   73231ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   73231ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   73231ms] [WARNING] [web-runtime] connection lost, retry #14 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   74226ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:1420/@vite/client:963
+[   75723ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:1420/node_modules/.vite/deps/chunk-TXZYISKW.js?v=92030f2b:21608
+[   75835ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   75835ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   75835ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   75854ms] [WARNING] [web-runtime] connection lost, retry #1 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   75860ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/plugins/events:0
+[   75865ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/settings.describe:0
+[   75871ms] Error: single slot "conversation.hero.workspace.directoryFlow" already has a registration at priority 0 (registered by Loader) — register at a different priority to shadow it (lowest renders)
+    at SlotCore.register (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/ui-slots/src/index.ts:43:29)
+    at Proxy._register (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:251:32)
+    at Object.apply (http://localhost:1420/node_modules/.vite/deps/chunk-HJOQ7T7N.js?v=92030f2b:125:38)
+    at Fiber.<anonymous> (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:333:50)
+    at http://localhost:1420/node_modules/.vite/deps/chunk-HJOQ7T7N.js?v=92030f2b:1103:37
+    at Proxy.register (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:333:20)
+    at Object.apply (http://localhost:1420/node_modules/.vite/deps/chunk-HJOQ7T7N.js?v=92030f2b:125:38)
+    at Fiber.<anonymous> (http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-directory-picker-browse/client.js?rev=184b9a4641ac:1027:21)
+    at reconcile (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:81:33)
+    at Fiber.<anonymous> (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:104:7)
+    at http://localhost:1420/node_modules/.vite/deps/chunk-HJOQ7T7N.js?v=92030f2b:1103:37
+    at Proxy.inject (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:57:35)
+    at Object.apply (http://localhost:1420/node_modules/.vite/deps/chunk-HJOQ7T7N.js?v=92030f2b:125:38)
+    at Fiber.<anonymous> (http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-directory-picker-browse/client.js?rev=184b9a4641ac:1026:82)
+    at http://localhost:1420/node_modules/.vite/deps/chunk-HJOQ7T7N.js?v=92030f2b:1103:37
+    at reconcile (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:81:33)
+    at changed (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:89:8)
+    at SlotCore.notifyDeclaration (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/ui-slots/src/index.ts:397:53)
+    at SlotCore.register (http://localhost:1420/@fs/Users/acfufu/Codehub/dsh-desktop/frontend/packages/client/ui-slots/src/index.ts:118:14)
+    at Proxy._register (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:251:32)
+    at Object.apply (http://localhost:1420/node_modules/.vite/deps/chunk-HJOQ7T7N.js?v=92030f2b:125:38)
+    at Fiber.<anonymous> (http://localhost:1420/plugins/@deepseek-ai/dsh-client-runtime/client.js?rev=5404bd0408a5:333:50)
+    at http://localhost:1420/node_modules/.vite/deps/chunk-HJOQ7T7N.js?v=92030f2b:1103:37
+[   75888ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/settings.describe:0
+[   75888ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/settings.describe:0
+[   75888ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/credentials.describe:0
+[   75888ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/settings.describe:0
+[   75888ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/settings.describe:0
+[   75888ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/settings.describe:0
+[   75908ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/dynamicCordisRunner/syncInspectManifest:0
+[   75908ms] [ERROR] [cordis-client-runner] syncing inspect providers failed: Error: internal: client api: dynamicCordisRunner/syncInspectManifest failed: transport failure for /api/dynamicCordisRunner/syncInspectManifest: HTTP 404
+    at Object.sync (http://localhost:1420/plugins/@deepseek-ai/dsh-cordis-client-runner/client.js?rev=53ff5565d917:3979:30)
+    at async http://localhost:1420/plugins/@deepseek-ai/dsh-cordis-client-runner/client.js?rev=53ff5565d917:1023:7 @ http://localhost:1420/plugins/@deepseek-ai/dsh-cordis-client-runner/client.js?rev=53ff5565d917:1024
+[   75908ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/dynamicCordisRunner/inventory:0
+[   75908ms] [ERROR] [ui-cordis] reading the Cordis inventory failed: Error: internal: client api: dynamicCordisRunner/inventory failed: transport failure for /api/dynamicCordisRunner/inventory: HTTP 404
+    at Object.inventory (http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-cordis/client.js?rev=7349dbb9ec78:1284:30) @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-ui-cordis/client.js?rev=7349dbb9ec78:1288
+[   75908ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/agentPreset.list:0
+[   76311ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   76312ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   76312ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   76312ms] [WARNING] [web-runtime] connection lost, retry #2 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   76893ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   76893ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   76893ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   76893ms] [WARNING] [web-runtime] connection lost, retry #3 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   78013ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   78013ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   78013ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   78013ms] [WARNING] [web-runtime] connection lost, retry #4 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   80913ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   80913ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   80913ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   80913ms] [WARNING] [web-runtime] connection lost, retry #5 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115
+[   85421ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:1420/api/host.describe:0
+[   85421ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.mux' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   85421ms] [WARNING] WebSocket connection to 'ws://localhost:1420/api/events.host' failed: WebSocket is closed before the connection is established. @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:10055
+[   85421ms] [WARNING] [web-runtime] connection lost, retry #6 @ http://localhost:1420/plugins/@deepseek-ai/dsh-client-connection/client.js?rev=bc3c3fa9d26b:115

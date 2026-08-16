@@ -1,0 +1,5 @@
+- generic [ref=f7e4]:
+  - generic [ref=f7e5]: HARNESS
+  - generic [ref=f7e6]:
+    - generic [ref=f7e7]: Failed to load plugins
+    - generic [ref=f7e8]: "failed to import loader entry e5252fee (@deepseek-ai/dsh-client-locale): client-modules: require(\"@deepseek-ai/dsh-client-runtime/client\") missed the module table — not a platform seed word, not a shell-own module, and no registered factory (a build-time externals drift, or a forbidden cross-plugin value import)"

@@ -69,8 +69,19 @@ echo "==> vendor runtime bundle restore (cordis/cosmokit/group/hmr/include/timer
 for v in cordis cosmokit group hmr include timer; do
   MAIN="$OUT/@deepseek-ai/$v/lib/index.js"
   if [ ! -f "$MAIN" ] && [ -f "$OUT/@deepseek-ai/$v/lib/types/index.js" ]; then
-    (cd "$REPO/vendor/$v" && COREPACK_ENABLE_STRICT=0 pnpm exec esbuild "lib/types/index.js" --bundle --format=esm --platform=node --target=es2024 --outfile="lib/index.js" --external:node > /dev/null 2>&1)
+    (cd "$REPO/vendor/$v" && COREPACK_ENABLE_STRICT=0 pnpm exec esbuild "lib/types/index.js" --bundle --format=esm --platform=node --target=es2024 --outfile="lib/index.js" --packages=external --tsconfig-raw='{}' --banner:js="import { createRequire as __dshCr } from 'node:module'; const require = __dshCr(import.meta.url);" > /dev/null 2>&1)
     cp "$REPO/vendor/$v/lib/index.js" "$MAIN" && echo "  restored $v"
+  fi
+done
+
+echo "==> runtime bundle restore（tsconfig paths 别名会把 @deepseek-ai/* 指向源码被内联 → 双实例 symbol 破坏 scope——必须 --tsconfig-raw='{}' 禁别名 + --packages=external）"
+for pj in $(find "$REPO/packages" "$REPO/vendor" -maxdepth 3 -name package.json | grep -v node_modules); do
+  dir=$(dirname "$pj")
+  main=$(node -e "const p=require('$dir/package.json'); console.log(p.main||'')" 2>/dev/null)
+  case "$main" in lib/index.js|lib/*.js) ;; *) continue;; esac
+  entry="$dir/lib/types/index.js"
+  if [ -f "$entry" ] && [ ! -f "$dir/$main" ]; then
+    (cd "$dir" && COREPACK_ENABLE_STRICT=0 pnpm exec esbuild "lib/types/index.js" --bundle --format=esm --platform=node --target=es2024 --outfile="lib/index.js" --packages=external --tsconfig-raw='{}' --banner:js="import { createRequire as __dshCr } from 'node:module'; const require = __dshCr(import.meta.url);" > /dev/null 2>&1)
   fi
 done
 

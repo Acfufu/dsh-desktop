@@ -13,9 +13,24 @@ describe('build pipeline output', () => {
     expect(html).toContain('ipc:');
   });
 
-  it('dist/index.html contains boot manifest script (injectBootManifest inline, nonce removed per evidence)', () => {
+  it('dist/index.html boot script is executable under its CSP (script-src sha256 matches inline script)', () => {
     const html = readFileSync(join(dist, 'index.html'), 'utf8');
-    expect(html).toContain('__DSH_BOOT__');
+    const scriptMatch = html.match(/<script>([^<]+)<\/script>/);
+    expect(scriptMatch, 'boot script must be inline (injected by generate-manifest)').not.toBeNull();
+    const body = scriptMatch![1]; // CSP hash 覆盖 <script> 与 </script> 之间的完整内容
+    const { createHash } = require('node:crypto');
+    const hash = createHash('sha256').update(body, 'utf8').digest('base64');
+    // CSP 必须放行该内联脚本，否则 __DSH_BOOT__ 永不执行 → 白屏（回归：2026-08-16 实测）
+    expect(html).toContain(`script-src 'self' 'sha256-${hash}'`);
+  });
+
+  it('manifest carries immediately/inject tiers (runtime row must be immediately for cross-package require edges)', () => {
+    const html = readFileSync(join(dist, 'index.html'), 'utf8');
+    const m = html.match(/window\.__DSH_BOOT__ = (\{.*?\})<\/script>/s);
+    const manifest = JSON.parse(m![1]);
+    const rt = manifest.entries.find((e: { id: string }) => e.id === '@deepseek-ai/dsh-client-runtime');
+    expect(rt?.immediately).toBe(true);
+    expect(rt?.inject).toEqual(expect.arrayContaining(['@deepseek-ai/dsh-client-connection']));
   });
 
   it('dist/plugins entry count matches composed entries (non-hardcoded)', () => {
