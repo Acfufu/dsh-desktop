@@ -10,14 +10,6 @@
     "frontendDist": "../frontend/dist"
   },
   "app": {
-    "windows": [
-      {
-        "title": "dsh-desktop",
-        "width": 1200,
-        "height": 800,
-        "devtools": false
-      }
-    ],
     "security": {
       "assetProtocol": {
         "enable": true,
@@ -27,7 +19,8 @@
       }
     },
     "trayIcon": {
-      "iconPath": "icons/icon.png"
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
     }
   },
   "bundle": {
@@ -40,6 +33,9 @@
     },
     "resources": [
       "dsh"
+    ],
+    "icon": [
+      "icons/icon.png"
     ]
   }
 }
