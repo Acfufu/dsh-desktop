@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.dsh-desktop.app",
   "build": {
-    "beforeDevCommand": "pnpm --dir frontend dev",
+    "beforeDevCommand": "/Users/acfufu/Codehub/dsh-desktop/scripts/dev-frontend.sh",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "",
     "frontendDist": "../frontend/dist"

@@ -43,7 +43,7 @@ pub fn run() {
     std::env::set_var("RUST_LOG", "info"); // spec §4.2：App 自身日志
     let logs_dir = std::path::PathBuf::from(std::env::var("HOME").unwrap_or_default()).join("Library/Logs/dsh-desktop");
     logging::setup_panic_hook(&logs_dir);
-    let uds_path = std::env::var("DSH_SOCKET").unwrap_or_else(|_| http_command::UDS_PATH.to_string());
+    let uds_path = std::env::var("DSH_SOCKET").unwrap_or_else(|_| process::default_socket_path());
     let http_client = reqwest::ClientBuilder::new()
         .unix_socket(uds_path.as_str())
         .redirect(reqwest::redirect::Policy::none()) // DeepSec L3：禁用重定向——防侧车响应驱动 reqwest 到非 /api 路径
@@ -73,6 +73,10 @@ pub fn run() {
                 .inner_size(1200.0, 800.0)
                 .on_navigation(|url| navigation::allowed_navigation(url.as_str(), cfg!(debug_assertions)))
                 .build()?;
+            // 临时诊断：读嵌入的 index.html 内容（定稿移除）
+            {
+                use tauri::Manager;
+            }
             let _ = win;
             tray::build_tray(app)?;
 

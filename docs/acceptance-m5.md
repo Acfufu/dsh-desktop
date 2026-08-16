@@ -31,6 +31,24 @@
 - .app 端到端：launch → 解包 → spawn → socket → describe OK（release smoke）
 - 构建管线可复现：`./scripts/build-sidecar.sh` 全流程 EXIT 0（deploy → 物化 → 闭包 → 原生二进制 → typert → tar）
 
+## 2026-08-17 白屏修复追加（用户 review 发现 .app 空白）
+
+**根因链（三连环）**：
+
+1. **CSP 拦截内联 boot script**：`injectBootManifest` 产内联 `<script>window.__DSH_BOOT__</script>`，而 CSP `script-src 'self'`（M3 决策移除 nonce）阻止所有内联 → `__DSH_BOOT__` 未定义 → fork boot 失败白屏。
+   → 修复：`injectBootWithCsp` 给内联 script 计算 sha256 并加入 CSP；`script-src` 追加 `'unsafe-eval'`（vendored loader 的 `new Function`（YAML !!js 表达式）硬需求——上游 web 模式无 CSP 所以从未暴露）。
+2. **插件 bundle 来自上游产物（WebApiClient）**：dev/release 的 client bundles 是 harness tsdown 构建（上游 WebApiClient → fetch tauri://localhost → 404 + 直连 WS）。fork 的 TauriApiClient 替换从未进入运行 bundle。
+   → 修复：`scripts/build-fork-client-bundles.sh`（tsdown + 上游 clientConfig 复刻 + `--tsconfig-raw` 禁 paths 别名）构建 fork connection bundle（0 WebApiClient，4 invoke 引用）；derive-composed-entries 覆盖 connection 条目。
+3. **uds_path 未接 $DSH_HOME**：lib.rs run() 仍用测试常量 `/tmp/dsh-uds-test/dsh.sock`——HTTP 曾"成功"是残留假 sidecar socket 巧合；WS 直连 ENOENT。前端永连不上。
+   → 修复：`uds_path = DSH_SOCKET || process::default_socket_path()`（$DSH_HOME/run/dsh.sock）。
+
+**验证证据**：
+- playwright（dev + mock invoke）：完整 UI 渲染（侧边栏/搜索/设置/品牌/工作区选择器）；TauriApiClient 调用经 mock→vite-proxy→UDS 代理→真实 sidecar 全通
+- release .app：嵌入 index.html hasBoot+CSP ✓；invoke 日志显示 describe/settings/credentials/agentPreset 全链路到达；WS mux+host 双流建立（node 3 fds）且持久
+- 全测试：45 Rust + 17 frontend + 11 carrier 绿
+
+**回归防护**：build-pipeline.test 断言 CSP sha256 令牌 + immediately/inject 层；capability.test 扫描 fork 源码（bundle 含内联第三方死代码会误报）。
+
 ## 已知偏差（实证记录）
 
 1. harness root tsdown workspace 构建在 root `lib/types` 陈旧产物缺失时失败——sidecar 管线改为 per-package esbuild + typert generator 直出（docs/architecture-matrix.md 风险行）。

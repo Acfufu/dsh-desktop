@@ -5,4 +5,4 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export DSH_HOME="${DSH_HOME:-$HOME/.dsh-dev}"
 mkdir -p "$DSH_HOME"
-cd "$ROOT/src-tauri" && cargo tauri dev
+cd "$ROOT/src-tauri" && npx tauri dev
