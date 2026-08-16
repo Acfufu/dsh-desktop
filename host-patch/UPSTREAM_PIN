@@ -1,0 +1,7 @@
+# deepseek-harness 上游 commit 锁定（vendor 拷贝 + npm 依赖必须同 commit）
+REPO=deepseek-harness
+COMMIT=47f943859bef60e4160492346772ded9b24f765a
+BRANCH=master
+DATE=2026-08-16
+# 变更记录
+# - 初始 pin：vendor http-bridge.ts + websocket-downlink.ts（connection 包）
