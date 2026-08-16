@@ -1,0 +1,21 @@
+# dsh-desktop desktop patch（应用顺序：web-app bundle 之后，agent-presets/telemetry 之前）
+# 目标：禁用全部 TCP 载体行，插入 UDS 载体。
+# 注意：disabled 行保留在组合树、激活期跳过（见 00-verified-facts §1），并因 plugins 源码级 inject
+#       ['webServer'...] 而必须禁（webserver 禁用后无 provider，不禁则 Loader 结算失败）。
+- id: webserver
+  disabled: true
+- id: web-runtime
+  disabled: true
+- id: connection
+  disabled: true
+- id: client-hmr
+  disabled: true
+- id: modules
+  disabled: true
+- id: directory-picker
+  disabled: true
+- insert:
+    - id: uds-carrier
+      name: '@dsh-desktop/uds-carrier'
+    - id: uds-directory-picker
+      name: '@deepseek-ai/dsh-host-directory-picker-native'
