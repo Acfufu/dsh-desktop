@@ -100,7 +100,7 @@ export default defineConfig({
   root: 'apps/web',
   plugins: [devBootManifest(), react()],
   build: {
-    outDir: '../dist',
+    outDir: '../../dist',
     sourcemap: true,
     rollupOptions: {
       output: {
