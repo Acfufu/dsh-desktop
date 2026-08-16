@@ -19,3 +19,5 @@ artifacts/
 src-tauri/target/
 node_modules/
 .DS_Store
+tmp-cli-deploy/
+tmp-closure-home/

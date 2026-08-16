@@ -65,6 +65,36 @@ for d in "$C"/*/; do
   fi
 done
 
+echo "==> vendor runtime bundle restore (cordis/cosmokit/group/hmr/include/timer: main=lib/index.js 由 root tsdown 产出，root entry 缺口时缺失)"
+for v in cordis cosmokit group hmr include timer; do
+  MAIN="$OUT/@deepseek-ai/$v/lib/index.js"
+  if [ ! -f "$MAIN" ] && [ -f "$OUT/@deepseek-ai/$v/lib/types/index.js" ]; then
+    (cd "$REPO/vendor/$v" && COREPACK_ENABLE_STRICT=0 pnpm exec esbuild "lib/types/index.js" --bundle --format=esm --platform=node --target=es2024 --outfile="lib/index.js" --external:node > /dev/null 2>&1)
+    cp "$REPO/vendor/$v/lib/index.js" "$MAIN" && echo "  restored $v"
+  fi
+done
+
+echo "==> typert generated artifacts (root tsdown 缺口时由 generator 直出)"
+(cd "$REPO" && cat > tmp-typert-gen.mts << 'TYPEOF'
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { WorkspaceTypertGenerator } from './packages/typert/generator/src/workspace.ts';
+const gen = new WorkspaceTypertGenerator(process.cwd());
+const pkgs = ['@deepseek-ai/dsh-commands','@deepseek-ai/dsh-goal','@deepseek-ai/dsh-host-plugin-inventory','@deepseek-ai/dsh-message-feedback','@deepseek-ai/dsh-cordis-host-runner'];
+for (const a of gen.generate(pkgs, ['host'])) {
+  const out = join(process.cwd(), a.packageRoot, 'lib');
+  mkdirSync(out, { recursive: true });
+  writeFileSync(join(out, `typert.${a.face}.js`), a.js);
+  writeFileSync(join(out, `typert.${a.face}.d.ts`), a.dts);
+  if (a.remote !== undefined) {
+    writeFileSync(join(out, 'typert.remote-client.js'), a.remote.js);
+    writeFileSync(join(out, 'typert.remote-client.d.ts'), a.remote.dts);
+    writeFileSync(join(out, 'typert.remote-client.d.ts.map'), a.remote.dtsMap);
+  }
+}
+TYPEOF
+COREPACK_ENABLE_STRICT=0 pnpm exec tsx tmp-typert-gen.mts > /dev/null 2>&1; rm -f tmp-typert-gen.mts)
+
 echo "==> native optional deps (sharp/koffi)"
 for p in @img/sharp-darwin-arm64 @img/sharp-libvips-darwin-arm64 @koromix/koffi-darwin-arm64; do
   mkdir -p "$OUT/$(dirname "$p")"

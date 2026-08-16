@@ -12,10 +12,10 @@ git -C "$REPO" rev-parse HEAD | grep -q "^$COMMIT" || {
   echo "WARN: $REPO HEAD != $COMMIT; run 'git -C $REPO checkout $COMMIT' to match pin"; exit 1;
 }
 
-echo "==> pnpm install + build (web profile closure)"
+echo "==> pnpm install + build (web profile closure; 实证：harness root lib/types 为陈旧产物，clean 后 tsc noEmit 不再产出——boot 不需要它，build 失败不阻塞)"
 cd "$REPO"
-pnpm install 2>&1 | tail -2
-pnpm run build 2>&1 | tail -2
+pnpm install 2>&1 | tail -2 || true
+pnpm run build > /tmp/dsh-harness-build.log 2>&1 || echo "WARN: harness build failed (see /tmp/dsh-harness-build.log); using existing lib outputs" 
 
 echo "==> assemble $OUT"
 rm -rf "$OUT"
