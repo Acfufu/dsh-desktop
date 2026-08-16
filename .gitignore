@@ -26,3 +26,4 @@ src-tauri/resources/dsh.tar.gz
 frontend/dist/
 frontend/public/plugins/
 frontend/composed-entries.json
+.playwright-mcp/

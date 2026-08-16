@@ -1,5 +1,0 @@
-- generic [ref=f4e4]:
-  - generic [ref=f4e5]: HARNESS
-  - generic [ref=f4e6]:
-    - generic [ref=f4e7]: Failed to load plugins
-    - generic [ref=f4e8]: "failed to import loader entry 65436fb8 (@deepseek-ai/dsh-api-gateway): client-modules: bundle script /plugins/@deepseek-ai/dsh-api-gateway/client.js?rev=710fe5a7386e failed to load"
