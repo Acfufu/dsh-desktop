@@ -1,0 +1,15 @@
+{
+  "name": "@dsh-desktop/uds-carrier",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./lib/index.js",
+  "exports": { ".": "./lib/index.js" },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-host-apiproxy": "0.1.0-rc.6",
+    "ws": "^8.18.0"
+  }
+}
