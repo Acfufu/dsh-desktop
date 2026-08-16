@@ -111,3 +111,18 @@ it('refuses to start when chmod 600 unsupported (platform claim) — dirs are 07
   expect(mode).toBe(0o700);
   fs.rmSync(dir, { recursive: true, force: true });
 });
+
+describe('stale socket cleanup', () => {
+  it('UdsCarrierService.start() drives start path (probe/unlink 由 M1 集成验证)', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dsh-stale-'));
+    const sock = path.join(dir, 'dsh.sock');
+    fs.writeFileSync(sock, 'stale');
+    const { UdsCarrierService } = await import('./index.js');
+    const svc = new UdsCarrierService(
+      { logger: { info: vi.fn(), error: vi.fn() }, get: vi.fn(() => ({ call: async () => ({}) })), provide: vi.fn(), on: vi.fn(), reflect: { provide: vi.fn() } } as any, // test-only cast
+      { udsPath: sock },
+    );
+    await expect(svc.start()).resolves.toBeUndefined();
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+});

@@ -100,7 +100,8 @@ pub fn run() {
                 let abs_patch = format!("{dsh_dir}/patch/desktop.patch.yml");
                 (
                     format!("{dsh_dir}/bin/node"),
-                    vec!["lib/bin.js".into(), "--profile".into(), "web".into(), "--port".into(), "0".into(), "--patch".into(), abs_patch],
+                    // 注：不加 --port（app 级参数，放在 launcher 旗标区会吞掉后续 --patch；webserver 已禁，端口无意义）
+                    vec!["lib/bin.js".into(), "--profile".into(), "web".into(), "--patch".into(), abs_patch],
                     dsh_dir.clone(),
                 )
             } else {
