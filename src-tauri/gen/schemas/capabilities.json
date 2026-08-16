@@ -1,0 +1,1 @@
+{"desktop-capability":{"identifier":"desktop-capability","description":"","local":true,"windows":["main"],"permissions":["core:default","notification:default","autostart:allow-enable","autostart:allow-disable","autostart:allow-is-enabled","opener:default"]}}
