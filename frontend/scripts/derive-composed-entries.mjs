@@ -7,6 +7,15 @@ import { createHash } from 'node:crypto';
 const [,, bundleRoot, outFile] = process.argv;
 const entries = [];
 
+// 桌面组合选择（与 host-patch/desktop.patch.yml 的 picker seam 一致：native host 插入、browse host 禁用）。
+// 排除 browse client：它只调用 browse host 服务（ctx.workspaces.listDirectory，桌面未启用），且与 native
+// 争用 conversation.hero.workspace.directoryFlow / sidebar.workspaces.directoryFlow 两个 single slot —
+// 双注册同 priority 0 → 第二注册 throw → loader entry apply 失败 → boot 失败（白屏）。
+// 同步纪律：改 picker 选择须同时改 desktop.patch.yml 与这里的排除表。
+const DESKTOP_EXCLUDED_CLIENT_IDS = new Set([
+  '@deepseek-ai/dsh-client-ui-directory-picker-browse',
+]);
+
 function candidateDirs(root) {
   const out = [];
   for (const entry of readdirSync(root, { withFileTypes: true })) {
@@ -29,6 +38,7 @@ for (const dir of candidateDirs(bundleRoot)) {
   if (!existsSync(pkgJson) || !existsSync(clientJs)) continue;
   const pkg = JSON.parse(readFileSync(pkgJson, 'utf8'));
   if (!pkg.dsh?.client) continue; // 只收声明 dsh.client 的包
+  if (DESKTOP_EXCLUDED_CLIENT_IDS.has(pkg.name)) continue; // 桌面组合排除（见上）
   const content = readFileSync(clientJs);
   const rev = createHash('sha1').update(content).digest('hex').slice(0, 12);
   const decl = pkg.dsh?.client ?? {};
