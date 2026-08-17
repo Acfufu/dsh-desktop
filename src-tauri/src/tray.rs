@@ -7,11 +7,14 @@ pub fn build_tray(app: &tauri::App) -> tauri::Result<()> {
         .build()?;
 
     TrayIconBuilder::with_id("main-tray")
-        // R3 修正：conf 加 bundle.icon 后 default_window_icon() 非 None；仍用 if let Some 防 panic
-        .icon(app.default_window_icon().cloned().unwrap_or_else(|| {
+        // R6 修正：托盘图标显式取自上游 anywhere-labs template PNG（32px @2x 单图，
+        // tray-icon crate 无 @2x 自动检测，NSImage 强制 18pt，32px 背板 retina 清晰）。
+        // bundle.icon（icons/icon.icns）仍保留供 Dock 图标，与托盘无关。
+        .icon(tauri::image::Image::from_bytes(include_bytes!("../icons/tray-iconTemplate@2x.png")).unwrap_or_else(|_| {
             // 兜底：1×1 透明占位（不崩启动）
             tauri::image::Image::new_owned(vec![0; 4], 1, 1)
         }))
+        .icon_as_template(true)
         .menu(&show_i)
         .on_menu_event(|app, event| match event.id.as_ref() {
             "show" => { show_main_window(app); }
