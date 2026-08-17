@@ -148,8 +148,9 @@ pub fn run() {
                 let log_file = logging::init_sidecar_log(&logs_dir).expect("init sidecar log");
                 let pm2 = Arc::clone(&pm);
                 let app2 = app.handle().clone();
+                let dsh_home2 = dsh_home.clone(); // R6：随 spawn 传入——sidecar socket 路径与 Rust 同源
                 tauri::async_runtime::spawn(async move {
-                    let _ = pm2.start(app2, node_bin, args, cwd, log_file).await;
+                    let _ = pm2.start(app2, node_bin, args, cwd, dsh_home2, log_file).await;
                 });
             }
             Ok(())

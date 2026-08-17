@@ -37,7 +37,7 @@ impl ProcessManager {
 
     /// watch 循环：spawn → 探测 → 事件 → child.wait → on_exit → 退避 sleep（监听 cancel）→ respawn
     /// DeepSec L3：不得持 child Mutex 跨 await（wait 期间 take_child 会死锁 → 退出序列卡死）
-    pub async fn start(self: Arc<Self>, app: AppHandle, node_bin: String, args: Vec<String>, cwd: String, log_file: std::fs::File) -> Result<(), String> {
+    pub async fn start(self: Arc<Self>, app: AppHandle, node_bin: String, args: Vec<String>, cwd: String, dsh_home: String, log_file: std::fs::File) -> Result<(), String> {
         // 活体探测（spec §4.2 单实例）：Alive → 已在运行；仅 ENOENT/ECONNREFUSED 才 unlink 再 spawn
         let socket = crate::process::default_socket_path();
         match probe_socket(&socket).await {
@@ -53,7 +53,7 @@ impl ProcessManager {
         *self.state.lock().unwrap() = AppState2::FirstStarting;
 
         let args_ref = args.iter().map(|s| s.as_str()).collect::<Vec<_>>();
-        match spawn_sidecar(&node_bin, &args_ref, &cwd, &log_file) {
+        match spawn_sidecar(&node_bin, &args_ref, &cwd, &dsh_home, &log_file) {
             Ok(child) => { *self.child.lock().unwrap() = Some(child); }
             Err(e) => {
                 if first {
@@ -73,6 +73,7 @@ impl ProcessManager {
         let node_bin2 = node_bin.clone();
         let args2 = args.clone();
         let cwd2 = cwd.clone();
+        let dsh_home2 = dsh_home.clone();
         let log2 = log_file.try_clone().map_err(|e| e.to_string())?;
         tokio::spawn(async move {
             loop {
@@ -107,7 +108,7 @@ impl ProcessManager {
                 if mgr.cancel.is_cancelled() { break; }
                 *mgr.state.lock().unwrap() = transition(AppState2::Restarting, AppEvent::BackoffElapsed, &mut mgr.counter.lock().unwrap(), 0);
                 let args_ref = args2.iter().map(|s| s.as_str()).collect::<Vec<_>>();
-                match spawn_sidecar(&node_bin2, &args_ref, &cwd2, &log2) {
+                match spawn_sidecar(&node_bin2, &args_ref, &cwd2, &dsh_home2, &log2) {
                     Ok(child) => { *mgr.child.lock().unwrap() = Some(child); }
                     Err(_) => { /* 下次循环处理 */ }
                 }

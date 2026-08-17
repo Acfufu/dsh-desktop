@@ -8,16 +8,23 @@ use std::process::Stdio;
 use std::os::unix::process::CommandExt;
 
 /// spawn sidecar 并使其成为独立进程组组长（spec §4.2：组信号收尾 agent 子进程）。
+/// R6 修正：显式传 `$DSH_HOME`——GUI 启动（Finder/LaunchServices）无 shell env，继承环境里没有
+/// DSH_HOME；carrier 的 `selectSocketPath` 读 `process.env.DSH_HOME`，未设时回退
+/// `os.tmpdir()/dsh-<uid>/dsh.sock`，而 Rust `default_socket_path()` 回退 `~/.dsh/run/dsh.sock`——
+/// 两侧路径不一致 → 全部 dsh_http 连接 ENOENT → 「transport after rebuild」。显式传入使两侧
+/// 从同一真源派生 socket 路径。
 pub fn spawn_sidecar(
     node_bin: &str,
     args: &[&str],
     cwd: &str,
+    dsh_home: &str,
     log_file: &std::fs::File,
 ) -> std::io::Result<Child> {
     let mut cmd = Command::new(node_bin);
     cmd.args(args)
         .current_dir(cwd)
         .env("LC_ALL", "en_US.UTF-8") // spec §4.2：显式 locale 防乱码
+        .env("DSH_HOME", dsh_home) // R6：socket 路径唯一真源（见上）
         .stdout(Stdio::from(log_file.try_clone()?))
         .stderr(Stdio::from(log_file.try_clone()?))
         .process_group(0); // 独立进程组（组长 = sidecar 自身 pid）
@@ -109,6 +116,30 @@ mod tests {
         tokio::time::sleep(Duration::from_millis(100)).await;
         let r = probe_socket(sock.to_str().unwrap()).await;
         assert!(matches!(r, ProbeResult::Stale));
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    // R6 回归：GUI 启动无 shell env 时 DSH_HOME 必须显式传入——否则 carrier 的 selectSocketPath
+    // 回退 os.tmpdir()/dsh-<uid>/dsh.sock，与 Rust default_socket_path()（$DSH_HOME/run/dsh.sock）
+    // 不一致 → 全部 dsh_http「transport after rebuild」。
+    #[tokio::test]
+    async fn spawn_passes_dsh_home_to_child_env() {
+        let dir = std::env::temp_dir().join(format!("dsh-spawn-env-{}", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        let log_path = dir.join("sidecar.log");
+        let log = fs::File::create(&log_path).unwrap();
+        let home = "/tmp/dsh-spawn-env-home";
+        let mut child = spawn_sidecar(
+            "node",
+            &["-e", "console.log(process.env.DSH_HOME)"],
+            dir.to_str().unwrap(),
+            home,
+            &log,
+        )
+        .unwrap();
+        let _ = child.wait().await;
+        let out = fs::read_to_string(&log_path).unwrap();
+        assert!(out.contains(home), "child env must carry DSH_HOME, got: {out}");
         let _ = fs::remove_dir_all(&dir);
     }
 }
