@@ -15,6 +15,7 @@
 | koffi（@koromix/koffi-darwin-arm64） | 3.1.1 | MIT | 包内 LICENSE（实证：包目录存在 LICENSE） |
 | sharp（@img/sharp-darwin-arm64 + libvips） | 0.35.3 | Apache-2.0 | 包内 LICENSE |
 | node-pty | 1.1.0 | MIT | 包内 LICENSE |
+| anywhere-labs/deepseek-harness-desktop（图标资产：app-icon-mac.png / tray-icon.svg / tray-iconTemplate.png / tray-iconTemplate@2x.png） | commit `8734c2cd21db2b31e670c24d9361acdaf14b7e3c` | MIT © 2026 Anywhere Labs | `https://raw.githubusercontent.com/anywhere-labs/deepseek-harness-desktop/8734c2cd21db2b31e670c24d9361acdaf14b7e3c/LICENSE`（2026-08-17 实证）；文件保留上游原名 |
 | GPL-3.0（本仓库根 LICENSE） | — | GPL-3.0 | 本仓库 `LICENSE`（项目自身许可，2026-08-16 定） |
 
 > 注：sidecar 包目录闭包内含约 300+ npm 包——完整逐包清单由 `pnpm deploy` 的锁闭闭包构成；上表覆盖直接再分发面（运行时二进制 + fork 源码 + 壳依赖）。完整机器可查清单：`src-tauri/resources/dsh/node_modules/**/package.json` 的 license 字段。deepseek-harness 为 MIT；再分发符合其许可条款。
