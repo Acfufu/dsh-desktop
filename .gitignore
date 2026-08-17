@@ -11,6 +11,9 @@
 .DS_Store
 
 # AI agent work files
+docs
+.omo
+.impeccable
 .codegraph/
 .omc/
 .opencode/
